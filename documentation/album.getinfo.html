@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>album.getInfo - PHP Last.fm API</title>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+	<h1>album.getInfo</h1>
+	
+	<h2>Description</h2>
+	<div id="description">
+		<p>Get the metadata for an album on Last.fm using the album name or a musicbrainz id. See playlist.fetch on how to get the album playlist</p>
+	</div>
+	
+	<h2>Parameters</h2>
+	<h3>Class Call</h3>
+	<ol id="classparameters">
+		<li><strong>api_key</strong> <em>(required)</em>: A Last.fm API key</li>
+		<li><strong>album</strong> <em>(optional)</em>: The album name in question</li>
+		<li><strong>artist</strong> <em>(optional)</em>: The artist name in question</li>
+		<li><strong>mbid</strong> <em>(optional)</em>: The musicbrainz id for the album</li>
+	</ol>
+	<h3>Method Call</h3>
+	<p><em>None</em></p>
+	
+	<h2>Example Usage</h2>
+	<pre id="example">
+// Include the API
+require '../../lastfmapi/lastfmapi.php';
+
+// Setup the variables
+$apiKey = '';
+$artist = 'Green day';
+$album = 'Dookie';
+
+// Create the class
+$apiClass = new lastfmApiAlbum($apiKey, $artist, $album);
+
+// Call the method
+if ( $return = $apiClass->getInfo() ) {
+	// $return contain the returned array
+}
+else {
+	// Have a better error handeling system here
+	die('Error '.$apiClass->error['code'].' - '.$apiClass->error['desc']);
+}
+	</pre>
+	
+	<h2>Sample Return Array</h2>
+	<pre id="returnarray">
+Array
+(
+    [name] => Dookie
+    [artist] => Green Day
+    [lastfmid] => 1412498
+    [mbid] => 17ca17ed-f061-4d5b-97e2-848d85e47d95
+    [url] => http://www.last.fm/music/Green+Day/Dookie
+    [releasedate] =>     1 Feb 1994, 00:00
+    [image] => Array
+        (
+            [small] => http://userserve-ak.last.fm/serve/34/8624469.jpg
+            [medium] => http://userserve-ak.last.fm/serve/64/8624469.jpg
+            [large] => http://userserve-ak.last.fm/serve/126/8624469.jpg
+        )
+
+    [listeners] => 363611
+    [playcount] => 5115050
+)
+	</pre>
+</body>
+</html>
