@@ -14,5 +14,6 @@ require 'api/group.php';
 require 'api/library.php';
 require 'api/playlist.php';
 require 'api/tag.php';
+require 'api/tasteometer.php';
 
 ?>
