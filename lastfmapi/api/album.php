@@ -34,7 +34,7 @@ class lastfmApiAlbum extends lastfmApiBase {
 			$this->info['lastfmid'] = (string) $call->album[0]->id;
 			$this->info['mbid'] = (string) $call->album[0]->mbid;
 			$this->info['url'] = (string) $call->album[0]->url;
-			$this->info['releasedate'] = (string) $call->album[0]->releasedate;
+			$this->info['releasedate'] = strtotime(trim((string) $call->album[0]->releasedate));
 			$this->info['image']['small'] = (string) $call->album[0]->image[0];
 			$this->info['image']['medium'] = (string) $call->album[0]->image[1];
 			$this->info['image']['large'] = (string) $call->album[0]->image[2];
