@@ -113,6 +113,53 @@ class lastfmApiTrack extends lastfmApiBase {
 			return FALSE;
 		}
 	}
+	
+	public function getTopFans() {
+		$vars = array(
+			'method' => 'track.gettopfans',
+			'api_key' => $this->apiKey,
+			'track' => $this->track,
+			'artist' => $this->artist
+		);
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->topfans->user) > 0 ) {
+				$this->topFans['artist'] = (string) $call->topfans['artist'];
+				$this->topFans['track'] = (string) $call->topfans['track'];
+				$i = 0;
+				foreach ( $call->topfans->user as $user ) {
+					$this->topFans['users'][$i]['name'] = (string) $user->name;
+					$this->topFans['users'][$i]['url'] = (string) $user->url;
+					$this->topFans['users'][$i]['image']['small'] = (string) $user->image[0];
+					$this->topFans['users'][$i]['image']['medium'] = (string) $user->image[1];
+					$this->topFans['users'][$i]['image']['large'] = (string) $user->image[2];
+					$this->topFans['users'][$i]['weight'] = (string) $user->weight;
+					$i++;
+				}
+				
+				return $this->topFans;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This track has no fans';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
 }
 
 ?>
