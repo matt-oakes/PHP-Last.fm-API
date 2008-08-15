@@ -160,6 +160,50 @@ class lastfmApiTrack extends lastfmApiBase {
 			return FALSE;
 		}
 	}
+	
+	public function getTopTags() {
+		$vars = array(
+			'method' => 'track.gettoptags',
+			'api_key' => $this->apiKey,
+			'track' => $this->track,
+			'artist' => $this->artist
+		);
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->toptags->tag) > 0 ) {
+				$this->topTags['artist'] = (string) $call->toptags['artist'];
+				$this->topTags['track'] = (string) $call->toptags['track'];
+				$i = 0;
+				foreach ( $call->toptags->tag as $tag ) {
+					$this->topTags['tags'][$i]['name'] = (string) $tag->name;
+					$this->topTags['tags'][$i]['count'] = (string) $tag->count;
+					$this->topTags['tags'][$i]['url'] = (string) $tag->url;
+					$i++;
+				}
+				
+				return $this->topTags;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This track has no tags';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
 }
 
 ?>
