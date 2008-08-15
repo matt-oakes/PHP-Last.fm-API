@@ -11,7 +11,7 @@ class lastfmApiTrack extends lastfmApiBase {
 	private $artist;
 	private $mbid;
 	
-	function __construct($apiKey, $track, $artist) {
+	function __construct($apiKey, $track = '', $artist = '') {
 		$this->apiKey = $apiKey;
 		$this->track = $track;
 		$this->artist = $artist;
@@ -188,6 +188,65 @@ class lastfmApiTrack extends lastfmApiBase {
 			else {
 				$this->error['code'] = 90;
 				$this->error['desc'] = 'This track has no tags';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function search($page = '', $limit = '') {
+		$vars = array(
+			'method' => 'track.search',
+			'api_key' => $this->apiKey,
+			'artist' => $this->artist,
+			'track' => $this->track
+		);
+		if ( !empty($limit) ) {
+			$vars['limit'] = $limit;
+		}
+		if ( !empty($page) ) {
+			$vars['page'] = $page;
+		}
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			$opensearch = $call->results->children('http://a9.com/-/spec/opensearch/1.1/');
+			if ( $opensearch->totalResults > 0 ) {
+				$this->searchResults['totalResults'] = (string) $opensearch->totalResults;
+				$this->searchResults['startIndex'] = (string) $opensearch->startIndex;
+				$this->searchResults['itemsPerPage'] = (string) $opensearch->itemsPerPage;
+				$i = 0;
+				foreach ( $call->results->trackmatches->track as $track ) {
+					$this->searchResults['results'][$i]['name'] = (string) $track->name;
+					$this->searchResults['results'][$i]['artist'] = (string) $track->artist;
+					$this->searchResults['results'][$i]['url'] = (string) $track->url;
+					$this->searchResults['results'][$i]['streamable'] = (string) $track->streamable;
+					$this->searchResults['results'][$i]['fulltrack'] = (string) $track->streamable['fulltrack'];
+					$this->searchResults['results'][$i]['listeners'] = (string) $track->listeners;
+					$this->searchResults['results'][$i]['image']['small'] = (string) $track->image[0];
+					$this->searchResults['results'][$i]['image']['medium'] = (string) $track->image[1];
+					$this->searchResults['results'][$i]['image']['large'] = (string) $track->image[2];
+					$i++;
+				}
+				
+				return $this->searchResults;
+			}
+			else {
+				// No tagsare found
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'No results';
 				return FALSE;
 			}
 		}
