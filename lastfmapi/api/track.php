@@ -17,6 +17,57 @@ class lastfmApiTrack extends lastfmApiBase {
 		$this->artist = $artist;
 	}
 	
+	public function getSimilar() {
+		$vars = array(
+			'method' => 'track.getsimilar',
+			'api_key' => $this->apiKey,
+			'track' => $this->track,
+			'artist' => $this->artist
+		);
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->similartracks->track) > 0 ) {
+				$i = 0;
+				foreach ( $call->similartracks->track as $track ) {
+					$this->similar[$i]['name'] = (string) $track->name;
+					$this->similar[$i]['match'] = (string) $track->match;
+					$this->similar[$i]['mbid'] = (string) $track->mbid;
+					$this->similar[$i]['url'] = (string) $track->url;
+					$this->similar[$i]['streamable'] = (string) $track->streamable;
+					$this->similar[$i]['fulltrack'] = (string) $track->streamable['fulltrack'];
+					$this->similar[$i]['artist']['name'] = (string) $track->artist->name;
+					$this->similar[$i]['artist']['mbid'] = (string) $track->artist->mbid;
+					$this->similar[$i]['artist']['url'] = (string) $track->artist->url;
+					$this->similar[$i]['images']['small'] = (string) $track->image[0];
+					$this->similar[$i]['images']['medium'] = (string) $track->image[1];
+					$this->similar[$i]['images']['large'] = (string) $track->image[2];
+					$i++;
+				}
+				
+				return $this->similar;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This track has no similar tracks';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
 	public function getTags($sessionKey, $secret) {
 		$vars = array(
 			'method' => 'track.gettags',
