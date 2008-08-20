@@ -16,5 +16,6 @@ require 'api/playlist.php';
 require 'api/tag.php';
 require 'api/tasteometer.php';
 require 'api/track.php';
+require 'api/user.php';
 
 ?>
