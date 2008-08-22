@@ -6,6 +6,7 @@ class lastfmApiUser extends lastfmApiBase {
 	public $info;
 	public $lovedtracks;
 	public $neighbours;
+	public $pastevents;
 	
 	private $apiKey;
 	private $user;
@@ -44,7 +45,7 @@ class lastfmApiUser extends lastfmApiBase {
 					$geoPoints = $event->venue->location->children('http://www.w3.org/2003/01/geo/wgs84_pos#');
 					$this->events[$i]['venue']['location']['geopoint']['lat'] = (string) $geoPoints->point->lat;
 					$this->events[$i]['venue']['location']['geopoint']['long'] = (string) $geoPoints->point->long;
-					$this->events[$i]['venue']['timezone'] = (string) $event->venue->timezone;
+					$this->events[$i]['venue']['timezone'] = (string) $event->venue->location->timezone;
 					$this->events[$i]['startDate'] = strtotime(trim((string) $event->startDate));
 					$this->events[$i]['description'] = (string) $event->description;
 					$this->events[$i]['image']['small'] = (string) $event->image[0];
@@ -251,6 +252,75 @@ class lastfmApiUser extends lastfmApiBase {
 			else {
 				$this->error['code'] = 90;
 				$this->error['desc'] = 'This user has no neighbours';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function getPastEvents($page = '', $limit = '') {
+		$vars = array(
+			'method' => 'user.getpastevents',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		if ( !empty($page) ) {
+			$vars['page'] = $page;
+		}
+		if ( !empty($limit) ) {
+			$vars['limit'] = $limit;
+		}
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( $call->events['total'] > 0 ) {
+				$i = 0;
+				foreach ( $call->events->event as $event ) {
+					$this->pastevents[$i]['id'] = (string) $event->id;
+					$this->pastevents[$i]['title'] = (string) $event->title;
+					$ii = 0;
+					foreach ( $event->artists->artist as $artist ) {
+						$this->pastevents[$i]['artists'][$ii] = (string) $artist;
+						$ii++;
+					}
+					$this->pastevents[$i]['headliner'] = (string) $event->artists->headliner;
+					$this->pastevents[$i]['venue']['name'] = (string) $event->venue->name;
+					$this->pastevents[$i]['venue']['location']['city'] = (string) $event->venue->location->city;
+					$this->pastevents[$i]['venue']['location']['country'] = (string) $event->venue->location->country;
+					$this->pastevents[$i]['venue']['location']['street'] = (string) $event->venue->location->street;
+					$this->pastevents[$i]['venue']['location']['postalcode'] = (string) $event->venue->location->postalcode;
+					$geoPoints = $event->venue->location->children('http://www.w3.org/2003/01/geo/wgs84_pos#');
+					$this->pastevents[$i]['venue']['location']['geopoint']['lat'] = (string) $geoPoints->point->lat;
+					$this->pastevents[$i]['venue']['location']['geopoint']['long'] = (string) $geoPoints->point->long;
+					$this->pastevents[$i]['startDate'] = strtotime(trim((string) $event->startDate));
+					$this->pastevents[$i]['description'] = (string) $event->description;
+					$this->pastevents[$i]['image']['small'] = (string) $event->image[0];
+					$this->pastevents[$i]['image']['medium'] = (string) $event->image[1];
+					$this->pastevents[$i]['image']['large'] = (string) $event->image[2];
+					$this->pastevents[$i]['attendance'] = (string) $event->attendance;
+					$this->pastevents[$i]['reviews'] = (string) $event->reviews;
+					$this->pastevents[$i]['tag'] = (string) $event->tag;
+					$this->pastevents[$i]['url'] = (string) $event->url;
+					$i++;
+				}
+				
+				return $this->pastevents;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This user has no past events';
 				return FALSE;
 			}
 		}
