@@ -2,6 +2,7 @@
 
 class lastfmApiUser extends lastfmApiBase {
 	public $events;
+	public $friends;
 	
 	private $apiKey;
 	private $user;
@@ -58,6 +59,63 @@ class lastfmApiUser extends lastfmApiBase {
 			else {
 				$this->error['code'] = 90;
 				$this->error['desc'] = 'This track has no similar tracks';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function getFriends($recentTracks = '', $limit = '') {
+		$vars = array(
+			'method' => 'user.getfriends',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		if ( !empty($recentTracks) ) {
+			$vars['recenttracks'] = 1;
+		}
+		if ( !empty($limit) ) {
+			$vars['limit'] = 1;
+		}
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->friends->user) > 0 ) {
+				$i = 0;
+				foreach ( $call->friends->user as $user ) {
+					$this->friends[$i]['name'] = (string) $user->name;
+					$this->friends[$i]['images']['small'] = (string) $user->image[0];
+					$this->friends[$i]['images']['medium'] = (string) $user->image[1];
+					$this->friends[$i]['images']['large'] = (string) $user->image[2];
+					$this->friends[$i]['url'] = (string) $user->url;
+					if ( !empty($recentTracks) ) {
+						$this->friends[$i]['recenttrack']['artist']['name'] = (string) $user->recenttrack->artist->name;
+						$this->friends[$i]['recenttrack']['artist']['mbid'] = (string) $user->recenttrack->artist->mbid;
+						$this->friends[$i]['recenttrack']['artist']['url'] = (string) $user->recenttrack->artist->url;
+						$this->friends[$i]['recenttrack']['name'] = (string) $user->recenttrack->name;
+						$this->friends[$i]['recenttrack']['mbid'] = (string) $user->recenttrack->mbid;
+						$this->friends[$i]['recenttrack']['url'] = (string) $user->recenttrack->url;
+					}
+					$i++;
+				}
+				
+				return $this->friends;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This user has no friends';
 				return FALSE;
 			}
 		}
