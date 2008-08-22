@@ -8,6 +8,7 @@ class lastfmApiUser extends lastfmApiBase {
 	public $neighbours;
 	public $pastevents;
 	public $topalbums;
+	public $topartists;
 	
 	private $apiKey;
 	private $user;
@@ -470,6 +471,60 @@ class lastfmApiUser extends lastfmApiBase {
 				}
 				
 				return $this->topalbums;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This user has no top albums';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function getTopArtists($period = '') {
+		$vars = array(
+			'method' => 'user.gettopartists',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		if ( $period == 3 || $period == 6 || $period == 12 ) {
+			$vars['period'] = $period.'month';
+		}
+		else {
+			$vars['period'] = 'overall';
+		}
+		
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->topartists->artist) > 0 ) {
+				$i = 0;
+				foreach ( $call->topartists->artist as $artist ) {
+					$this->topartists[$i]['name'] = (string) $artist->name;
+					$this->topartists[$i]['rank'] = (string) $artist['rank'];
+					$this->topartists[$i]['playcount'] = (string) $artist->playcount;
+					$this->topartists[$i]['mbid'] = (string) $artist->mbid;
+					$this->topartists[$i]['url'] = (string) $artist->url;
+					$this->topartists[$i]['streamable'] = (string) $artist->streamable;
+					$this->topartists[$i]['images']['small'] = (string) $artist->image[0];
+					$this->topartists[$i]['images']['medium'] = (string) $artist->image[1];
+					$this->topartists[$i]['images']['large'] = (string) $artist->image[2];
+					$i++;
+				}
+				
+				return $this->topartists;
 			}
 			else {
 				$this->error['code'] = 90;
