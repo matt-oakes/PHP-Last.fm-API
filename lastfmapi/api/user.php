@@ -4,6 +4,7 @@ class lastfmApiUser extends lastfmApiBase {
 	public $events;
 	public $friends;
 	public $info;
+	public $lovedtracks;
 	
 	private $apiKey;
 	private $user;
@@ -158,6 +159,54 @@ class lastfmApiUser extends lastfmApiBase {
 			$this->info['playlists'] = (string) $call->user->playlists;
 			
 			return $this->info;
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function getLovedTracks() {
+		$vars = array(
+			'method' => 'user.getlovedtracks',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->lovedtracks->track) > 0 ) {
+				$i = 0;
+				foreach ( $call->lovedtracks->track as $track ) {
+					$this->lovedtracks[$i]['name'] = (string) $track->name;
+					$this->lovedtracks[$i]['mbid'] = (string) $track->mbid;
+					$this->lovedtracks[$i]['url'] = (string) $track->url;
+					$this->lovedtracks[$i]['date'] = (string) $track->date['uts'];
+					$this->lovedtracks[$i]['artist']['name'] = (string) $track->artist->name;
+					$this->lovedtracks[$i]['artist']['mbid'] = (string) $track->artist->mbid;
+					$this->lovedtracks[$i]['artist']['url'] = (string) $track->artist->url;
+					$this->lovedtracks[$i]['image']['small'] = (string) $track->image[0];
+					$this->lovedtracks[$i]['image']['medium'] = (string) $track->image[1];
+					$this->lovedtracks[$i]['image']['large'] = (string) $track->image[2];
+					$i++;
+				}
+				
+				return $this->lovedtracks;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This user has no loved tracks';
+				return FALSE;
+			}
 		}
 		elseif ( $call['status'] == 'failed' ) {
 			// Fail with error code
