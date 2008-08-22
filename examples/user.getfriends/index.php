@@ -11,10 +11,10 @@ require '../../lastfmapi/lastfmapi.php';
 
 $userClass = new lastfmApiUser($apiKey, 'lotrgamemast');
 
-if ( $events = $userClass->getFriends(1) ) {
+if ( $users = $userClass->getFriends(1) ) {
 	echo '<b>Data Returned</b>';
 	echo '<pre>';
-	print_r($events);
+	print_r($users);
 	echo '</pre>';
 }
 else {
