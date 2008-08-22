@@ -591,6 +591,64 @@ class lastfmApiUser extends lastfmApiBase {
 			return FALSE;
 		}
 	}
+	
+	public function getTopTracks($period = '') {
+		$vars = array(
+			'method' => 'user.gettoptracks',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		if ( $period == 3 || $period == 6 || $period == 12 ) {
+			$vars['period'] = $period.'month';
+		}
+		else {
+			$vars['period'] = 'overall';
+		}
+		
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->toptracks->track) > 0 ) {
+				$i = 0;
+				foreach ( $call->toptracks->track as $track ) {
+					$this->toptracks[$i]['name'] = (string) $track->name;
+					$this->toptracks[$i]['rank'] = (string) $track['rank'];
+					$this->toptracks[$i]['playcount'] = (string) $track->playcount;
+					$this->toptracks[$i]['mbid'] = (string) $track->mbid;
+					$this->toptracks[$i]['url'] = (string) $track->url;
+					$this->toptracks[$i]['streamable'] = (string) $track->streamable;
+					$this->toptracks[$i]['fulltrack'] = (string) $track->streamable['fulltrack'];
+					$this->toptracks[$i]['artist']['name'] = (string) $track->artist->name;
+					$this->toptracks[$i]['artist']['mbid'] = (string) $track->artist->mbid;
+					$this->toptracks[$i]['artist']['url'] = (string) $track->artist->url;
+					$this->toptracks[$i]['images']['small'] = (string) $track->image[0];
+					$this->toptracks[$i]['images']['medium'] = (string) $track->image[1];
+					$this->toptracks[$i]['images']['large'] = (string) $track->image[2];
+					$i++;
+				}
+				
+				return $this->toptracks;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This user has no top tracks';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
 }
 
 ?>
