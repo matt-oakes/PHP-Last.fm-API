@@ -3,6 +3,7 @@
 class lastfmApiUser extends lastfmApiBase {
 	public $events;
 	public $friends;
+	public $info;
 	
 	private $apiKey;
 	private $user;
@@ -58,7 +59,7 @@ class lastfmApiUser extends lastfmApiBase {
 			}
 			else {
 				$this->error['code'] = 90;
-				$this->error['desc'] = 'This track has no similar tracks';
+				$this->error['desc'] = 'This user has no events';
 				return FALSE;
 			}
 		}
@@ -118,6 +119,45 @@ class lastfmApiUser extends lastfmApiBase {
 				$this->error['desc'] = 'This user has no friends';
 				return FALSE;
 			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function getInfo($sessionKey, $secret) {
+		$vars = array(
+			'method' => 'user.getinfo',
+			'api_key' => $this->apiKey,
+			'sk' => $sessionKey
+		);
+		$apiSig = $this->apiSig($secret, $vars);
+		$vars['api_sig'] = $apiSig;
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			$this->info['name'] = (string) $call->user->name;
+			$this->info['url'] = (string) $call->user->url;
+			$this->info['image'] = (string) $call->user->image;
+			$this->info['lang'] = (string) $call->user->lang;
+			$this->info['country'] = (string) $call->user->country;
+			$this->info['age'] = (string) $call->user->age;
+			$this->info['gender'] = (string) $call->user->gender;
+			$this->info['subscriber'] = (string) $call->user->subscriber;
+			$this->info['playcount'] = (string) $call->user->playcount;
+			$this->info['playlists'] = (string) $call->user->playlists;
+			
+			return $this->info;
 		}
 		elseif ( $call['status'] == 'failed' ) {
 			// Fail with error code
