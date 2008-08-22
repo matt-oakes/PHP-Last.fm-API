@@ -48,9 +48,9 @@ class lastfmApiUser extends lastfmApiBase {
 					$this->events[$i]['venue']['timezone'] = (string) $event->venue->location->timezone;
 					$this->events[$i]['startDate'] = strtotime(trim((string) $event->startDate));
 					$this->events[$i]['description'] = (string) $event->description;
-					$this->events[$i]['image']['small'] = (string) $event->image[0];
-					$this->events[$i]['image']['medium'] = (string) $event->image[1];
-					$this->events[$i]['image']['large'] = (string) $event->image[2];
+					$this->events[$i]['images']['small'] = (string) $event->image[0];
+					$this->events[$i]['images']['medium'] = (string) $event->image[1];
+					$this->events[$i]['images']['large'] = (string) $event->image[2];
 					$this->events[$i]['attendance'] = (string) $event->attendance;
 					$this->events[$i]['reviews'] = (string) $event->reviews;
 					$this->events[$i]['tag'] = (string) $event->tag;
@@ -196,9 +196,9 @@ class lastfmApiUser extends lastfmApiBase {
 					$this->lovedtracks[$i]['artist']['name'] = (string) $track->artist->name;
 					$this->lovedtracks[$i]['artist']['mbid'] = (string) $track->artist->mbid;
 					$this->lovedtracks[$i]['artist']['url'] = (string) $track->artist->url;
-					$this->lovedtracks[$i]['image']['small'] = (string) $track->image[0];
-					$this->lovedtracks[$i]['image']['medium'] = (string) $track->image[1];
-					$this->lovedtracks[$i]['image']['large'] = (string) $track->image[2];
+					$this->lovedtracks[$i]['images']['small'] = (string) $track->image[0];
+					$this->lovedtracks[$i]['images']['medium'] = (string) $track->image[1];
+					$this->lovedtracks[$i]['images']['large'] = (string) $track->image[2];
 					$i++;
 				}
 				
@@ -242,7 +242,7 @@ class lastfmApiUser extends lastfmApiBase {
 				foreach ( $call->neighbours->user as $user ) {
 					$this->neighbours[$i]['name'] = (string) $user->name;
 					$this->neighbours[$i]['url'] = (string) $user->url;
-					$this->neighbours[$i]['images'] = (string) $user->image;
+					$this->neighbours[$i]['image'] = (string) $user->image;
 					$this->neighbours[$i]['match'] = (string) $user->match;
 					$i++;
 				}
@@ -306,9 +306,9 @@ class lastfmApiUser extends lastfmApiBase {
 					$this->pastevents[$i]['venue']['location']['geopoint']['long'] = (string) $geoPoints->point->long;
 					$this->pastevents[$i]['startDate'] = strtotime(trim((string) $event->startDate));
 					$this->pastevents[$i]['description'] = (string) $event->description;
-					$this->pastevents[$i]['image']['small'] = (string) $event->image[0];
-					$this->pastevents[$i]['image']['medium'] = (string) $event->image[1];
-					$this->pastevents[$i]['image']['large'] = (string) $event->image[2];
+					$this->pastevents[$i]['images']['small'] = (string) $event->image[0];
+					$this->pastevents[$i]['images']['medium'] = (string) $event->image[1];
+					$this->pastevents[$i]['images']['large'] = (string) $event->image[2];
 					$this->pastevents[$i]['attendance'] = (string) $event->attendance;
 					$this->pastevents[$i]['reviews'] = (string) $event->reviews;
 					$this->pastevents[$i]['tag'] = (string) $event->tag;
@@ -365,6 +365,59 @@ class lastfmApiUser extends lastfmApiBase {
 			else {
 				$this->error['code'] = 90;
 				$this->error['desc'] = 'This user has no past events';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function getRecentTracks() {
+		$vars = array(
+			'method' => 'user.getrecenttracks',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->recenttracks->track) > 0 ) {
+				$i = 0;
+				foreach ( $call->recenttracks->track as $track ) {
+					$this->recenttracks[$i]['name'] = (string) $track->name;
+					if ( isset($track['nowplaying']) ) {
+						$this->recenttracks[$i]['nowplaying'] = TRUE;
+					}
+					$this->recenttracks[$i]['mbid'] = (string) $track->mbid;
+					$this->recenttracks[$i]['url'] = (string) $track->url;
+					$this->recenttracks[$i]['date'] = (string) $track->date['uts'];
+					$this->recenttracks[$i]['streamable'] = (string) $track->streamable;
+					$this->recenttracks[$i]['artist']['name'] = (string) $track->artist;
+					$this->recenttracks[$i]['artist']['mbid'] = (string) $track->artist['mbid'];
+					$this->recenttracks[$i]['album']['name'] = (string) $track->album;
+					$this->recenttracks[$i]['album']['mbid'] = (string) $track->album['mbid'];
+					$this->recenttracks[$i]['images']['small'] = (string) $track->image[0];
+					$this->recenttracks[$i]['images']['medium'] = (string) $track->image[1];
+					$this->recenttracks[$i]['images']['large'] = (string) $track->image[2];
+					$i++;
+				}
+				
+				return $this->recenttracks;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This user has no recent tracks';
 				return FALSE;
 			}
 		}
