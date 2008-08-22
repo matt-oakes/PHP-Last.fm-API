@@ -7,6 +7,7 @@ class lastfmApiUser extends lastfmApiBase {
 	public $lovedtracks;
 	public $neighbours;
 	public $pastevents;
+	public $topalbums;
 	
 	private $apiKey;
 	private $user;
@@ -418,6 +419,61 @@ class lastfmApiUser extends lastfmApiBase {
 			else {
 				$this->error['code'] = 90;
 				$this->error['desc'] = 'This user has no recent tracks';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function getTopAlbums($period = '') {
+		$vars = array(
+			'method' => 'user.gettopalbums',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		if ( $period == 3 || $period == 6 || $period == 12 ) {
+			$vars['period'] = $period.'month';
+		}
+		else {
+			$vars['period'] = 'overall';
+		}
+		
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->topalbums->album) > 0 ) {
+				$i = 0;
+				foreach ( $call->topalbums->album as $album ) {
+					$this->topalbums[$i]['name'] = (string) $album->name;
+					$this->topalbums[$i]['playcount'] = (string) $album->playcount;
+					$this->topalbums[$i]['mbid'] = (string) $album->mbid;
+					$this->topalbums[$i]['url'] = (string) $album->url;
+					$this->topalbums[$i]['artist']['name'] = (string) $album->artist->name;
+					$this->topalbums[$i]['artist']['mbid'] = (string) $album->artist->mbid;
+					$this->topalbums[$i]['artist']['url'] = (string) $album->artist->url;
+					$this->topalbums[$i]['images']['small'] = (string) $album->image[0];
+					$this->topalbums[$i]['images']['medium'] = (string) $album->image[1];
+					$this->topalbums[$i]['images']['large'] = (string) $album->image[2];
+					$i++;
+				}
+				
+				return $this->topalbums;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This user has no top albums';
 				return FALSE;
 			}
 		}
