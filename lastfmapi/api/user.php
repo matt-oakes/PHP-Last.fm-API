@@ -9,6 +9,7 @@ class lastfmApiUser extends lastfmApiBase {
 	public $pastevents;
 	public $topalbums;
 	public $topartists;
+	public $toptags;
 	
 	private $apiKey;
 	private $user;
@@ -528,7 +529,52 @@ class lastfmApiUser extends lastfmApiBase {
 			}
 			else {
 				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no top albums';
+				$this->error['desc'] = 'This user has no top artists';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function getTopTags($limit = '') {
+		$vars = array(
+			'method' => 'user.gettoptags',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		if ( !empty($limit) ) {
+			$vars['limit'] = $limit;
+		}
+		
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->toptags->tag) > 0 ) {
+				$i = 0;
+				foreach ( $call->toptags->tag as $tag ) {
+					$this->toptags[$i]['name'] = (string) $tag->name;
+					$this->toptags[$i]['count'] = (string) $tag->count;
+					$this->toptags[$i]['url'] = (string) $tag->url;
+					$i++;
+				}
+				
+				return $this->toptags;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This user has no top tags';
 				return FALSE;
 			}
 		}
