@@ -337,6 +337,50 @@ class lastfmApiUser extends lastfmApiBase {
 			return FALSE;
 		}
 	}
+	
+	public function getPlaylists() {
+		$vars = array(
+			'method' => 'user.getplaylists',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->playlists->playlist) > 0 ) {
+				$i = 0;
+				foreach ( $call->playlists->playlist as $playlist ) {
+					$this->playlists[$i]['id'] = (string) $playlist->id;
+					$this->playlists[$i]['title'] = (string) $playlist->title;
+					$this->playlists[$i]['date'] = strtotime(trim((string) $playlist->date));
+					$this->playlists[$i]['size'] = (string) $playlist->size;
+					$this->playlists[$i]['streamalbe'] = (string) $playlist->streamable;
+					$this->playlists[$i]['creator'] = (string) $playlist->creator;
+					$i++;
+				}
+				
+				return $this->playlists;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This user has no past events';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
 }
 
 ?>
