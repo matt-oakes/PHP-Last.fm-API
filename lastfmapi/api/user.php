@@ -5,6 +5,7 @@ class lastfmApiUser extends lastfmApiBase {
 	public $friends;
 	public $info;
 	public $lovedtracks;
+	public $neighbours;
 	
 	private $apiKey;
 	private $user;
@@ -88,7 +89,7 @@ class lastfmApiUser extends lastfmApiBase {
 			$vars['recenttracks'] = 1;
 		}
 		if ( !empty($limit) ) {
-			$vars['limit'] = 1;
+			$vars['limit'] = $limit;
 		}
 		
 		$call = $this->apiGetCall($vars);
@@ -205,6 +206,51 @@ class lastfmApiUser extends lastfmApiBase {
 			else {
 				$this->error['code'] = 90;
 				$this->error['desc'] = 'This user has no loved tracks';
+				return FALSE;
+			}
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function getNeighbours($limit = '') {
+		$vars = array(
+			'method' => 'user.getneighbours',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		if ( !empty($limit) ) {
+			$vars['limit'] = $limit;
+		}
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			if ( count($call->neighbours->user) > 0 ) {
+				$i = 0;
+				foreach ( $call->neighbours->user as $user ) {
+					$this->neighbours[$i]['name'] = (string) $user->name;
+					$this->neighbours[$i]['url'] = (string) $user->url;
+					$this->neighbours[$i]['images'] = (string) $user->image;
+					$this->neighbours[$i]['match'] = (string) $user->match;
+					$i++;
+				}
+				
+				return $this->neighbours;
+			}
+			else {
+				$this->error['code'] = 90;
+				$this->error['desc'] = 'This user has no neighbours';
 				return FALSE;
 			}
 		}
