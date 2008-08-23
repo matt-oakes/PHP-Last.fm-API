@@ -12,6 +12,7 @@ class lastfmApiUser extends lastfmApiBase {
 	public $toptags;
 	public $weeklyalbums;
 	public $weeklyartists;
+	public $weeklytracks;
 	
 	private $apiKey;
 	private $user;
@@ -723,6 +724,50 @@ class lastfmApiUser extends lastfmApiBase {
 			}
 			
 			return $this->weeklyartists;
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function getWeeklyTrackChart($from = '', $to = '') {
+		$vars = array(
+			'method' => 'user.getweeklytrackchart',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		if ( !empty($from) ) {
+			$vars['from'] = $from;
+		}
+		if ( !empty($to) ) {
+			$vars['to'] = $to;
+		}
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			$i = 0;
+			foreach ( $call->weeklytrackchart->track as $track ) {
+				$this->weeklytracks[$i]['name'] = (string) $track->name;
+				$this->weeklytracks[$i]['rank'] = (string) $track['rank'];
+				$this->weeklytracks[$i]['artist']['name'] = (string) $track->artist;
+				$this->weeklytracks[$i]['artist']['mbid'] = (string) $track->artist['mbid'];
+				$this->weeklytracks[$i]['mbid'] = (string) $track->mbid;
+				$this->weeklytracks[$i]['playcount'] = (string) $track->playcount;
+				$this->weeklytracks[$i]['url'] = (string) $track->url;
+				$i++;
+			}
+			
+			return $this->weeklytracks;
 		}
 		elseif ( $call['status'] == 'failed' ) {
 			// Fail with error code
