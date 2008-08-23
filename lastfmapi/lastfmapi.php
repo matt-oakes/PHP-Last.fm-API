@@ -5,6 +5,7 @@ require 'class/apibase.php';
 require 'class/socket.php';
 
 // Include all files of the API
+// TODO: Allow some to be missing
 require 'api/album.php';
 require 'api/artist.php';
 require 'api/auth.php';
