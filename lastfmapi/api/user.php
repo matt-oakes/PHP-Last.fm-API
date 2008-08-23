@@ -12,6 +12,7 @@ class lastfmApiUser extends lastfmApiBase {
 	public $toptags;
 	public $weeklyalbums;
 	public $weeklyartists;
+	public $weeklychartlist;
 	public $weeklytracks;
 	
 	private $apiKey;
@@ -724,6 +725,39 @@ class lastfmApiUser extends lastfmApiBase {
 			}
 			
 			return $this->weeklyartists;
+		}
+		elseif ( $call['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $call->error['code'];
+			$this->error['desc'] = $call->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
+	}
+	
+	public function getWeeklyChartList() {
+		$vars = array(
+			'method' => 'user.getweeklychartlist',
+			'api_key' => $this->apiKey,
+			'user' => $this->user
+		);
+		
+		$call = $this->apiGetCall($vars);
+		
+		if ( $call['status'] == 'ok' ) {
+			$i = 0;
+			foreach ( $call->weeklychartlist->chart as $chart ) {
+				$this->weeklychartlist[$i]['from'] = (string) $chart['from'];
+				$this->weeklychartlist[$i]['to'] = (string) $chart['to'];
+				$i++;
+			}
+			
+			return $this->weeklychartlist;
 		}
 		elseif ( $call['status'] == 'failed' ) {
 			// Fail with error code
