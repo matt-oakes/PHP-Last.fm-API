@@ -27,19 +27,19 @@ class lastfmApiAlbum extends lastfmApiBase {
 		);
 		
 		if ( $call = $this->apiGetCall($vars) ) {
-			$this->info['name'] = (string) $call->album[0]->name;
-			$this->info['artist'] = (string) $call->album[0]->artist;
-			$this->info['lastfmid'] = (string) $call->album[0]->id;
-			$this->info['mbid'] = (string) $call->album[0]->mbid;
-			$this->info['url'] = (string) $call->album[0]->url;
-			$this->info['releasedate'] = strtotime(trim((string) $call->album[0]->releasedate));
-			$this->info['image']['small'] = (string) $call->album[0]->image[0];
-			$this->info['image']['medium'] = (string) $call->album[0]->image[1];
-			$this->info['image']['large'] = (string) $call->album[0]->image[2];
-			$this->info['listeners'] = (string) $call->album[0]->listeners;
-			$this->info['playcount'] = (string) $call->album[0]->playcount;
+			$this->info['name'] = (string) $call->album->name;
+			$this->info['artist'] = (string) $call->album->artist;
+			$this->info['lastfmid'] = (string) $call->album->id;
+			$this->info['mbid'] = (string) $call->album->mbid;
+			$this->info['url'] = (string) $call->album->url;
+			$this->info['releasedate'] = strtotime(trim((string) $call->album->releasedate));
+			$this->info['image']['small'] = (string) $call->album->image;
+			$this->info['image']['medium'] = (string) $call->album->image[1];
+			$this->info['image']['large'] = (string) $call->album->image[2];
+			$this->info['listeners'] = (string) $call->album->listeners;
+			$this->info['playcount'] = (string) $call->album->playcount;
 			$i = 0;
-			foreach ( $call->album[0]->toptags->tag as $tags ) {
+			foreach ( $call->album->toptags->tag as $tags ) {
 				$this->info['toptags'][$i]['name'] = (string) $tags->name;
 				$this->info['toptags'][$i]['url'] = (string) $tags->url;
 				$i++;
@@ -66,7 +66,7 @@ class lastfmApiAlbum extends lastfmApiBase {
 		if ( $call = $this->apiGetCall($vars) ) {
 			if ( count($call->tags->tag) > 0 ) {
 				$i = 0;
-				foreach ( $call->tags[0]->tag as $tag ) {
+				foreach ( $call->tags->tag as $tag ) {
 					$this->tags[$i]['name'] = (string) $tag->name;
 					$this->tags[$i]['url'] = (string) $tag->url;
 					$i++;
@@ -75,9 +75,7 @@ class lastfmApiAlbum extends lastfmApiBase {
 				return $this->tags;
 			}
 			else {
-				// No tagsare found
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'Artist has no tags from this user';
+				$this->handleError(90, 'Artist has no tags from this user');
 				return FALSE;
 			}
 		}

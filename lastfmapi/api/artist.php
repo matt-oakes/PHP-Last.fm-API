@@ -67,8 +67,7 @@ class lastfmApiArtist extends lastfmApiBase {
 			}
 			else {
 				// No events are found
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'Artist has no events';
+				$this->handleError(90, 'Artist has no events');
 				return FALSE;
 			}
 		}
@@ -178,8 +177,7 @@ class lastfmApiArtist extends lastfmApiBase {
 			}
 			else {
 				// No tagsare found
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'Artist has no tags from this user';
+				$this->handleError(90, 'Artist has no tags from this user');
 				return FALSE;
 			}
 		}
@@ -214,8 +212,7 @@ class lastfmApiArtist extends lastfmApiBase {
 			}
 			else {
 				// No tagsare found
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'Artist has no top albums';
+				$this->handleError(90, 'Artist has no top albums');
 				return FALSE;
 			}
 		}
@@ -248,8 +245,7 @@ class lastfmApiArtist extends lastfmApiBase {
 			}
 			else {
 				// No tagsare found
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'Artist has no top users';
+				$this->handleError(90, 'Artist has no top users');
 				return FALSE;
 			}
 		}
@@ -278,8 +274,7 @@ class lastfmApiArtist extends lastfmApiBase {
 			}
 			else {
 				// No tagsare found
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'Artist has no top tags';
+				$this->handleError(90, 'Artist has no top tags');
 				return FALSE;
 			}
 		}
@@ -314,8 +309,7 @@ class lastfmApiArtist extends lastfmApiBase {
 			}
 			else {
 				// No tagsare found
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'Artist has no top tracks';
+				$this->handleError(90, 'Artist has no top tracks');
 				return FALSE;
 			}
 		}
@@ -358,8 +352,7 @@ class lastfmApiArtist extends lastfmApiBase {
 			}
 			else {
 				// No tagsare found
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'No results';
+				$this->handleError(90, 'No results');
 				return FALSE;
 			}
 		}

@@ -36,19 +36,36 @@ class lastfmApiBase {
 		$xml = new SimpleXMLElement($xmlstr);
 		
 		if ( $xml['status'] == 'ok' ) {
+			// All is well :)
 			return $xml;
 		}
 		elseif ( $xml['status'] == 'failed' ) {
-			// Fail with error code
-			$this->error['code'] = $xml->error['code'];
-			$this->error['desc'] = $xml->error;
+			// Woops - error has been returned
+			$this->handleError($xml->error);
 			return FALSE;
+		}
+		else {
+			// I put this in just in case but this really shouldn't happen. Pays to be safe
+			$this->handleError();
+			return FALSE;
+		}
+	}
+	
+	function handleError($error = '', $customDesc = '') {
+		if ( !empty($error) && is_object($error) ) {
+			// Fail with error code
+			$this->error['code'] = $error['code'];
+			$this->error['desc'] = $error;
+		}
+		elseif( !empty($error) && is_numeric($error) ) {
+			// Fail with custom error code
+			$this->error['code'] = $error;
+			$this->error['desc'] = $customDesc;
 		}
 		else {
 			//Hard failure
 			$this->error['code'] = 0;
 			$this->error['desc'] = 'Unknown error';
-			return FALSE;
 		}
 	}
 	

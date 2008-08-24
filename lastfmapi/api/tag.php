@@ -173,8 +173,7 @@ class lastfmApiTag extends lastfmApiBase {
 			}
 			else {
 				// No tagsare found
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'No results';
+				$this->handleError(90, 'No results');
 				return FALSE;
 			}
 		}

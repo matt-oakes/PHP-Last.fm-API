@@ -46,8 +46,7 @@ class lastfmApiTrack extends lastfmApiBase {
 				return $this->similar;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This track has no similar tracks';
+				$this->handleError(90, 'This track has no similar tracks');
 				return FALSE;
 			}
 		}
@@ -80,8 +79,7 @@ class lastfmApiTrack extends lastfmApiBase {
 				return $this->tags;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'The user has no tags on this track';
+				$this->handleError(90, 'The user has no tags on this track');
 				return FALSE;
 			}
 		}
@@ -115,8 +113,7 @@ class lastfmApiTrack extends lastfmApiBase {
 				return $this->topFans;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This track has no fans';
+				$this->handleError(90, 'This track has no fans');
 				return FALSE;
 			}
 		}
@@ -147,8 +144,7 @@ class lastfmApiTrack extends lastfmApiBase {
 				return $this->topTags;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This track has no tags';
+				$this->handleError(90, 'This track has no tags');
 				return FALSE;
 			}
 		}
@@ -194,8 +190,7 @@ class lastfmApiTrack extends lastfmApiBase {
 			}
 			else {
 				// No tagsare found
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'No results';
+				$this->handleError(90, 'No results');
 				return FALSE;
 			}
 		}

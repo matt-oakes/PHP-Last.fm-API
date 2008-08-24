@@ -65,8 +65,7 @@ class lastfmApiUser extends lastfmApiBase {
 				return $this->events;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no events';
+				$this->handleError(90, 'This user has no events');
 				return FALSE;
 			}
 		}
@@ -111,8 +110,7 @@ class lastfmApiUser extends lastfmApiBase {
 				return $this->friends;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no friends';
+				$this->handleError(90, 'This user has no friends');
 				return FALSE;
 			}
 		}
@@ -176,8 +174,7 @@ class lastfmApiUser extends lastfmApiBase {
 				return $this->lovedtracks;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no loved tracks';
+				$this->handleError(90, 'This user has no loved tracks');
 				return FALSE;
 			}
 		}
@@ -210,8 +207,7 @@ class lastfmApiUser extends lastfmApiBase {
 				return $this->neighbours;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no neighbours';
+				$this->handleError(90, 'This user has no neighbours');
 				return FALSE;
 			}
 		}
@@ -268,8 +264,7 @@ class lastfmApiUser extends lastfmApiBase {
 				return $this->pastevents;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no past events';
+				$this->handleError(90, 'This user has no past events');
 				return FALSE;
 			}
 		}
@@ -301,8 +296,7 @@ class lastfmApiUser extends lastfmApiBase {
 				return $this->playlists;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no past events';
+				$this->handleError(90, 'This user has no past events');
 				return FALSE;
 			}
 		}
@@ -343,8 +337,7 @@ class lastfmApiUser extends lastfmApiBase {
 				return $this->recenttracks;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no recent tracks';
+				$this->handleError(90, 'This user has no recent tracks');
 				return FALSE;
 			}
 		}
@@ -386,8 +379,7 @@ class lastfmApiUser extends lastfmApiBase {
 				return $this->topalbums;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no top albums';
+				$this->handleError(90, 'This user has no top albums');
 				return FALSE;
 			}
 		}
@@ -428,8 +420,7 @@ class lastfmApiUser extends lastfmApiBase {
 				return $this->topartists;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no top artists';
+				$this->handleError(90, 'This user has no top artists');
 				return FALSE;
 			}
 		}
@@ -461,8 +452,7 @@ class lastfmApiUser extends lastfmApiBase {
 				return $this->toptags;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no top tags';
+				$this->handleError(90, 'This user has no top tags');
 				return FALSE;
 			}
 		}
@@ -507,8 +497,7 @@ class lastfmApiUser extends lastfmApiBase {
 				return $this->toptracks;
 			}
 			else {
-				$this->error['code'] = 90;
-				$this->error['desc'] = 'This user has no top tracks';
+				$this->handleError(90, 'This user has no top tracks');
 				return FALSE;
 			}
 		}
