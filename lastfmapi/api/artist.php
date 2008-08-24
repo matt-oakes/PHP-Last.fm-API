@@ -86,34 +86,38 @@ class lastfmApiArtist extends lastfmApiBase {
 		);
 		
 		if ( $call = $this->apiGetCall($vars) ) {
-			$this->info['name'] = (string) $call->artist[0]->name;
-			$this->info['mbid'] = (string) $call->artist[0]->mbid;
-			$this->info['url'] = (string) $call->artist[0]->url;
-			$this->info['image']['small'] = (string) $call->artist[0]->image[0];
-			$this->info['image']['medium'] = (string) $call->artist[0]->image[1];
-			$this->info['image']['large'] = (string) $call->artist[0]->image[2];
-			$this->info['streamable'] = (string) $call->artist[0]->streamable;
-			$this->info['stats']['listeners'] = (string) $call->artist[0]->stats->listeners;
-			$this->info['stats']['playcount'] = (string) $call->artist[0]->stats->plays;
+			$this->info['name'] = (string) $call->artist->name;
+			$this->info['mbid'] = (string) $call->artist->mbid;
+			$this->info['url'] = (string) $call->artist->url;
+			$this->info['image']['small'] = (string) $call->artist->image;
+			$this->info['image']['medium'] = (string) $call->artist->image[1];
+			$this->info['image']['large'] = (string) $call->artist->image[2];
+			$this->info['streamable'] = (string) $call->artist->streamable;
+			$this->info['stats']['listeners'] = (string) $call->artist->stats->listeners;
+			$this->info['stats']['playcount'] = (string) $call->artist->stats->plays;
 			$i = 0;
-			foreach ( $call->artist[0]->similar->artist as $artist ) {
+			foreach ( $call->artist->similar->artist as $artist ) {
 				$this->info['similar'][$i]['name'] = (string) $artist->name;
 				$this->info['similar'][$i]['url'] = (string) $artist->url;
-				$this->info['similar'][$i]['image']['small'] = (string) $artist->image[0];
+				$this->info['similar'][$i]['image']['small'] = (string) $artist->image;
 				$this->info['similar'][$i]['image']['medium'] = (string) $artist->image[1];
 				$this->info['similar'][$i]['image']['large'] = (string) $artist->image[2];
 				$i++;
 			}
-			$i = 0;
-			foreach ( $call->artist[0]->tags->tag as $tag ) {
-				$this->tags[$i]['name'] = (string) $tag->name;
-				$this->tags[$i]['url'] = (string) $tag->url;
-				$i++;
+			if ( count($call->artist->tags->tag) > 0 ) {
+				$i = 0;
+				foreach ( $call->artist->tags->tag as $tag ) {
+					$this->info['tags'][$i]['name'] = (string) $tag->name;
+					$this->info['tags'][$i]['url'] = (string) $tag->url;
+					$i++;
+				}
 			}
-			$this->info['tags'] = $this->tags;
-			$this->info['bio']['published'] = (string) $call->artist[0]->bio->published;
-			$this->info['bio']['summary'] = (string) $call->artist[0]->bio->summary;
-			$this->info['bio']['content'] = (string) $call->artist[0]->bio->content;
+			else {
+				$this->info['tags'] = FALSE;
+			}
+			$this->info['bio']['published'] = (string) $call->artist->bio->published;
+			$this->info['bio']['summary'] = (string) $call->artist->bio->summary;
+			$this->info['bio']['content'] = (string) $call->artist->bio->content;
 			
 			return $this->info;
 		}
