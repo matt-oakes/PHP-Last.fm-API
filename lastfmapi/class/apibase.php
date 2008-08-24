@@ -16,8 +16,6 @@ class lastfmApiBase {
 		$url = substr($url, 0, -1);
 		$url = str_replace(' ', '%20', $url);
 		
-		//echo 'http://'.$host.$url.'<br /<br />';
-		
 		$this->socket = new lastfmApiSocket($host, $port);
 		$out = "GET ".$url." HTTP/1.0\r\n";
    		$out .= "Host: ".$host."\r\n";
@@ -27,7 +25,6 @@ class lastfmApiBase {
 		$xlstr = '';
 		$record = 0;
 		foreach ( $response as $line ) {
-			//echo $line.'<br />';
 			if ( $record == 1 ) {
 				$xmlstr .= $line;
 			}
@@ -38,7 +35,21 @@ class lastfmApiBase {
 		
 		$xml = new SimpleXMLElement($xmlstr);
 		
-		return $xml;
+		if ( $xml['status'] == 'ok' ) {
+			return $xml;
+		}
+		elseif ( $xml['status'] == 'failed' ) {
+			// Fail with error code
+			$this->error['code'] = $xml->error['code'];
+			$this->error['desc'] = $xml->error;
+			return FALSE;
+		}
+		else {
+			//Hard failure
+			$this->error['code'] = 0;
+			$this->error['desc'] = 'Unknown error';
+			return FALSE;
+		}
 	}
 	
 	function apiSig($secret, $vars) {

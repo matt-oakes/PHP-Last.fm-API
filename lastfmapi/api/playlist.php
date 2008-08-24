@@ -18,9 +18,7 @@ class lastfmApiPlaylist extends lastfmApiBase {
 			'playlistURL' => $this->playlistUrl
 		);
 		
-		$call = $this->apiGetCall($vars);
-		
-		if ( $call['status'] == 'ok' ) {
+		if ( $call = $this->apiGetCall($vars) ) {
 			$this->playlist['title'] = (string) $call->playlist->title;
 			$this->playlist['annotation'] = (string) $call->playlist->annotation;
 			$this->playlist['creator'] = (string) $call->playlist->creator;
@@ -40,19 +38,9 @@ class lastfmApiPlaylist extends lastfmApiBase {
 				$this->playlist['tracklisting'][$i]['trackPage'] = (string) $track->extention->trackpage;
 				$i++;
 			}
-			
 			return $this->playlist;
 		}
-		elseif ( $call['status'] == 'failed' ) {
-			// Fail with error code
-			$this->error['code'] = $call->error['code'];
-			$this->error['desc'] = $call->error;
-			return FALSE;
-		}
 		else {
-			//Hard failure
-			$this->error['code'] = 0;
-			$this->error['desc'] = 'Unknown error';
 			return FALSE;
 		}
 	}
@@ -70,9 +58,7 @@ class lastfmApiPlaylist extends lastfmApiBase {
 			$vars['limit'] = $limit;
 		}
 		
-		$call = $this->apiGetCall($vars);
-		
-		if ( $call['status'] == 'ok' ) {
+		if ( $call = $this->apiGetCall($vars) ) {
 			$this->artists['page'] = (string) $call->artists['page'];
 			$this->artists['perPage'] = (string) $call->artists['perPage'];
 			$this->artists['totalPages'] = (string) $call->artists['totalPages'];
@@ -90,19 +76,9 @@ class lastfmApiPlaylist extends lastfmApiBase {
 				$this->artists['results'][$i]['image']['large'] = (string) $artist->image[2];
 				$i++;
 			}
-			
 			return $this->artists;
 		}
-		elseif ( $call['status'] == 'failed' ) {
-			// Fail with error code
-			$this->error['code'] = $call->error['code'];
-			$this->error['desc'] = $call->error;
-			return FALSE;
-		}
 		else {
-			//Hard failure
-			$this->error['code'] = 0;
-			$this->error['desc'] = 'Unknown error';
 			return FALSE;
 		}
 	}
@@ -120,9 +96,7 @@ class lastfmApiPlaylist extends lastfmApiBase {
 			$vars['limit'] = $limit;
 		}
 		
-		$call = $this->apiGetCall($vars);
-		
-		if ( $call['status'] == 'ok' ) {
+		if ( $call = $this->apiGetCall($vars) ) {
 			$this->tracks['page'] = (string) $call->tracks['page'];
 			$this->tracks['perPage'] = (string) $call->tracks['perPage'];
 			$this->tracks['totalPages'] = (string) $call->tracks['totalPages'];
@@ -143,19 +117,9 @@ class lastfmApiPlaylist extends lastfmApiBase {
 				$this->tracks['results'][$i]['image']['large'] = (string) $track->image[2];
 				$i++;
 			}
-			
 			return $this->tracks;
 		}
-		elseif ( $call['status'] == 'failed' ) {
-			// Fail with error code
-			$this->error['code'] = $call->error['code'];
-			$this->error['desc'] = $call->error;
-			return FALSE;
-		}
 		else {
-			//Hard failure
-			$this->error['code'] = 0;
-			$this->error['desc'] = 'Unknown error';
 			return FALSE;
 		}
 	}

@@ -45,12 +45,13 @@ class lastfmApiAuth extends lastfmApiBase {
 		$sig = $this->apiSig($this->secret, $vars);
 		$vars['api_sig'] = $sig;
 		
-		$call = $this->apiGetCall($vars);
-		
-		if ( $call['status'] == 'ok' ) {
+		if ( $call = $this->apiGetCall($vars) ) {
 			$this->username = (string) $call->session->name;
 			$this->sessionKey = (string) $call->session->key;
 			$this->subscriber = (string) $call->session->subscriber;
+		}
+		else {
+			return FALSE;
 		}
 	}
 }

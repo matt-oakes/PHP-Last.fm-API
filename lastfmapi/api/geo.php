@@ -26,9 +26,7 @@ class lastfmApiGeo extends lastfmApiBase {
 			$vars['page'] = $page;
 		}
 		
-		$call = $this->apiGetCall($vars);
-		
-		if ( $call['status'] == 'ok' ) {
+		if ( $call = $this->apiGetCall($vars) ) {
 			$this->events['location'] = (string) $call->events['location'];
 			$this->events['currentPage'] = (string) $call->events['page'];
 			$this->events['totalPages'] = (string) $call->events['totalpages'];
@@ -62,34 +60,21 @@ class lastfmApiGeo extends lastfmApiBase {
 				$this->events['events'][$i]['url'] = (string) $event->url;
 				$i++;
 			}
-			
 			return $this->events;
 		}
-		elseif ( $call['status'] == 'failed' ) {
-			// Fail with error code
-			$this->error['code'] = $call->error['code'];
-			$this->error['desc'] = $call->error;
-			return FALSE;
-		}
 		else {
-			//Hard failure
-			$this->error['code'] = 0;
-			$this->error['desc'] = 'Unknown error';
 			return FALSE;
 		}
 	}
 	
-	// geo.getTopArtists is currently broken
-	/* public function getTopArtists() {
+	public function getTopArtists() {
 		$vars = array(
 			'method' => 'geo.gettopartists',
 			'api_key' => $this->apiKey,
 			'location' => $this->location
 		);
 		
-		$call = $this->apiGetCall($vars);
-		
-		if ( $call['status'] == 'ok' ) {
+		if ( $call = $this->apiGetCall($vars) ) {
 			$i = 0;
 			foreach ( $call->topartists->artist as $artist ) {
 				$this->artists[$i]['name'] = (string) $artist->name;
@@ -106,19 +91,10 @@ class lastfmApiGeo extends lastfmApiBase {
 			
 			return $this->events;
 		}
-		elseif ( $call['status'] == 'failed' ) {
-			// Fail with error code
-			$this->error['code'] = $call->error['code'];
-			$this->error['desc'] = $call->error;
-			return FALSE;
-		}
 		else {
-			//Hard failure
-			$this->error['code'] = 0;
-			$this->error['desc'] = 'Unknown error';
 			return FALSE;
 		}
-	} */
+	}
 }
 
 ?>

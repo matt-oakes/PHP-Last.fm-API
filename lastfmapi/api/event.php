@@ -18,9 +18,7 @@ class lastfmApiEvent extends lastfmApiBase {
 			'event' => $this->eventId
 		);
 		
-		$call = $this->apiGetCall($vars);
-		
-		if ( $call['status'] == 'ok' ) {
+		if ( $call = $this->apiGetCall($vars) ) {
 			$this->info['id'] = (string) $call->event->id;
 			$this->info['title'] = (string) $call->event->title;
 			$ii = 0;
@@ -51,16 +49,7 @@ class lastfmApiEvent extends lastfmApiBase {
 			
 			return $this->info;
 		}
-		elseif ( $call['status'] == 'failed' ) {
-			// Fail with error code
-			$this->error['code'] = $call->error['code'];
-			$this->error['desc'] = $call->error;
-			return FALSE;
-		}
 		else {
-			//Hard failure
-			$this->error['code'] = 0;
-			$this->error['desc'] = 'Unknown error';
 			return FALSE;
 		}
 	}

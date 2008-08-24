@@ -26,9 +26,7 @@ class lastfmApiAlbum extends lastfmApiBase {
 			'mbid' => $this->mbid
 		);
 		
-		$call = $this->apiGetCall($vars);
-		
-		if ( $call['status'] == 'ok' ) {
+		if ( $call = $this->apiGetCall($vars) ) {
 			$this->info['name'] = (string) $call->album[0]->name;
 			$this->info['artist'] = (string) $call->album[0]->artist;
 			$this->info['lastfmid'] = (string) $call->album[0]->id;
@@ -49,16 +47,7 @@ class lastfmApiAlbum extends lastfmApiBase {
 			
 			return $this->info;
 		}
-		elseif ( $call['status'] == 'failed' ) {
-			// Fail with error code
-			$this->error['code'] = $call->error['code'];
-			$this->error['desc'] = $call->error;
-			return FALSE;
-		}
 		else {
-			//Hard failure
-			$this->error['code'] = 0;
-			$this->error['desc'] = 'Unknown error';
 			return FALSE;
 		}
 	}
@@ -74,9 +63,7 @@ class lastfmApiAlbum extends lastfmApiBase {
 		$sig = $this->apiSig($secret, $vars);
 		$vars['api_sig'] = $sig;
 		
-		$call = $this->apiGetCall($vars);
-		
-		if ( $call['status'] == 'ok' ) {
+		if ( $call = $this->apiGetCall($vars) ) {
 			if ( count($call->tags->tag) > 0 ) {
 				$i = 0;
 				foreach ( $call->tags[0]->tag as $tag ) {
@@ -94,16 +81,7 @@ class lastfmApiAlbum extends lastfmApiBase {
 				return FALSE;
 			}
 		}
-		elseif ( $call['status'] == 'failed' ) {
-			// Fail with error code
-			$this->error['code'] = $call->error['code'];
-			$this->error['desc'] = $call->error;
-			return FALSE;
-		}
 		else {
-			//Hard failure
-			$this->error['code'] = 0;
-			$this->error['desc'] = 'Unknown error';
 			return FALSE;
 		}
 	}
