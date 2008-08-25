@@ -123,7 +123,9 @@ class lastfmApiBase {
 	}
 	
 	function apiSig($secret, $vars) {
+		print_r($vars);
 		ksort($vars);
+		print_r($vars);
 		
 		$sig = '';
 		foreach ( $vars as $name => $value ) {

@@ -17,6 +17,26 @@ class lastfmApiAlbum extends lastfmApiBase {
 		$this->mbid = $mbid;
 	}
 	
+	public function addTags($tags, $sessionKey, $secret) {
+		$vars = array(
+			'method' => 'album.addtags',
+			'api_key' => $this->apiKey,
+			'album' => $this->album,
+			'artist' => $this->artist,
+			'tags' => $tags,
+			'sk' => $sessionKey
+		);
+		$sig = $this->apiSig($secret, $vars);
+		$vars['api_sig'] = $sig;
+		
+		if ( $call = $this->apiPostCall($vars) ) {
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
+	}
+	
 	public function getInfo() {
 		$vars = array(
 			'method' => 'album.getinfo',
