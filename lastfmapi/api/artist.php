@@ -337,6 +337,25 @@ class lastfmApiArtist extends lastfmApiBase {
 		}
 	}
 	
+	public function removeTag($tag, $sessionKey, $secret) {
+		$vars = array(
+			'method' => 'artist.removetag',
+			'api_key' => $this->apiKey,
+			'artist' => $this->artist,
+			'tag' => $tag,
+			'sk' => $sessionKey
+		);
+		$sig = $this->apiSig($secret, $vars);
+		$vars['api_sig'] = $sig;
+		
+		if ( $call = $this->apiPostCall($vars) ) {
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
+	}
+	
 	public function search($page = '', $limit = '') {
 		$vars = array(
 			'method' => 'artist.search',
