@@ -51,6 +51,59 @@ class lastfmApiBase {
 		}
 	}
 	
+	function apiPostCall($vars) {
+		$host = 'ws.audioscrobbler.com';
+		$port = 80;
+		
+		$url = '/2.0/';
+		
+		$data = '';
+		foreach ( $vars as $name => $value ) {
+			$data .= trim($name).'='.trim($value).'&';
+		}
+		$data = substr($data, 0, -1);
+		$data = str_replace(' ', '%20', $data);
+		
+		$this->socket = new lastfmApiSocket($host, $port);
+		
+		$out = "POST ".$url." HTTP/1.1\r\n";
+   		$out .= "Host: ".$host."\r\n";
+   		$out .= "Content-Length: ".strlen($data)."\r\n";
+   		$out .= "Content-Type: application/x-www-form-urlencoded\r\n";
+   		$out .= "\r\n";
+   		$out .= $data."\r\n";
+		
+		$response = $this->socket->send($out, 'array');
+		
+		$xlstr = '';
+		$record = 0;
+		foreach ( $response as $line ) {
+			if ( $record == 1 ) {
+				$xmlstr .= $line;
+			}
+			elseif( substr($line, 0, 1) == '<' ) {
+				$record = 1;
+			}
+		}
+		
+		$xml = new SimpleXMLElement($xmlstr);
+		
+		if ( $xml['status'] == 'ok' ) {
+			// All is well :)
+			return TRUE;
+		}
+		elseif ( $xml['status'] == 'failed' ) {
+			// Woops - error has been returned
+			$this->handleError($xml->error);
+			return FALSE;
+		}
+		else {
+			// I put this in just in case but this really shouldn't happen. Pays to be safe
+			$this->handleError();
+			return FALSE;
+		}
+	}
+	
 	function handleError($error = '', $customDesc = '') {
 		if ( !empty($error) && is_object($error) ) {
 			// Fail with error code
