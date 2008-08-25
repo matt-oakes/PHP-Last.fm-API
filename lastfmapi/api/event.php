@@ -11,6 +11,31 @@ class lastfmApiEvent extends lastfmApiBase {
 		$this->eventId = $eventId;
 	}
 	
+	public function attend($status, $sessionKey, $secret) {
+		if ( is_numeric($status) && $status >= 0 && $status <= 2 ) {
+			$vars = array(
+				'method' => 'event.attend',
+				'api_key' => $this->apiKey,
+				'event' => $this->eventId,
+				'status' => $status,
+				'sk' => $sessionKey
+			);
+			$sig = $this->apiSig($secret, $vars);
+			$vars['api_sig'] = $sig;
+			
+			if ( $call = $this->apiPostCall($vars) ) {
+				return TRUE;
+			}
+			else {
+				return FALSE;
+			}
+		}
+		else {
+			$this->handleError(91, 'Incorrect use of status variable (0=Attending, 1=Maybe attending, 2=Not attending)');
+			return FALSE;
+		}
+	}
+	
 	public function getInfo() {
 		$vars = array(
 			'method' => 'event.getinfo',
