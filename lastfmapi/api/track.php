@@ -17,6 +17,26 @@ class lastfmApiTrack extends lastfmApiBase {
 		$this->artist = $artist;
 	}
 	
+	public function addTags($tags, $sessionKey, $secret) {
+		$vars = array(
+			'method' => 'track.addtags',
+			'api_key' => $this->apiKey,
+			'artist' => $this->artist,
+			'track' => $this->track,
+			'tags' => $tags,
+			'sk' => $sessionKey
+		);
+		$sig = $this->apiSig($secret, $vars);
+		$vars['api_sig'] = $sig;
+		
+		if ( $call = $this->apiPostCall($vars) ) {
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
+	}
+	
 	public function ban($sessionKey, $secret) {
 		$vars = array(
 			'method' => 'track.ban',
