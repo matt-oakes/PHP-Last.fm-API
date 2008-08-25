@@ -17,6 +17,25 @@ class lastfmApiTrack extends lastfmApiBase {
 		$this->artist = $artist;
 	}
 	
+	public function ban($sessionKey, $secret) {
+		$vars = array(
+			'method' => 'track.ban',
+			'api_key' => $this->apiKey,
+			'artist' => $this->artist,
+			'track' => $this->track,
+			'sk' => $sessionKey
+		);
+		$sig = $this->apiSig($secret, $vars);
+		$vars['api_sig'] = $sig;
+		
+		if ( $call = $this->apiPostCall($vars) ) {
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
+	}
+	
 	public function getSimilar() {
 		$vars = array(
 			'method' => 'track.getsimilar',
@@ -147,6 +166,25 @@ class lastfmApiTrack extends lastfmApiBase {
 				$this->handleError(90, 'This track has no tags');
 				return FALSE;
 			}
+		}
+		else {
+			return FALSE;
+		}
+	}
+	
+	public function love($sessionKey, $secret) {
+		$vars = array(
+			'method' => 'track.love',
+			'api_key' => $this->apiKey,
+			'artist' => $this->artist,
+			'track' => $this->track,
+			'sk' => $sessionKey
+		);
+		$sig = $this->apiSig($secret, $vars);
+		$vars['api_sig'] = $sig;
+		
+		if ( $call = $this->apiPostCall($vars) ) {
+			return TRUE;
 		}
 		else {
 			return FALSE;
