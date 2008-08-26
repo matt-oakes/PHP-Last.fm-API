@@ -1,39 +1,44 @@
 <?php
 
 class lastfmApiAuth extends lastfmApiBase {
+	public $apiKey;
+	public $secret;
 	public $username;
 	public $sessionKey;
 	public $subscriber;
-	public $apiKey;
 	
 	private $token;
-	private $secret;
 	
-	function __construct($apiKey, $token, $secret) {
-		// Check the API Key is 32 characters long
-		if ( strlen($apiKey) == 32 ) {
-			// Set it to the private variable if it is correct
-			$this->apiKey = $apiKey;
+	function __construct($method, $vars) {
+		if ( $method == 'getsession' ) {
+			if ( !empty($vars['apiKey']) && !empty($vars['secret']) && !empty($vars['token']) ) {
+				$this->apiKey = $vars['apiKey'];
+				$this->secret = $vars['secret'];
+				$this->token = $vars['token'];
+				$this->getSession();
+			}
+			else {
+				$this->handleError(91, 'Must send an apiKey, token and a secret in the call for getsession');
+				return FALSE;
+			}
+		}
+		elseif ( $method == 'setsession' ) {
+			if ( !empty($vars['apiKey']) && !empty($vars['secret']) && !empty($vars['username']) && !empty($vars['sessionKey']) && !empty($vars['subscriber']) ) {
+				$this->apiKey = $vars['apiKey'];
+				$this->secret = $vars['secret'];
+				$this->username = $vars['username'];
+				$this->sessionKey = $vars['sessionKey'];
+				$this->subscriber = $vars['subscriber'];
+			}
+			else {
+				$this->handleError(91, 'Must send an apiKey, secret, usernamne, subcriber and sessionKey in the call for setsession');
+				return FALSE;
+			}
 		}
 		else {
-			// Give an error if it's the wrong length
-			trigger_error('API Key is not 32 characters long', FATAL);
+			$this->handleError(91, 'Incorrect use of method variable ("getsession" or "setsession")');
+			return FALSE;
 		}
-		
-		// Set the token to the private variable
-		$this->token = $token;
-		
-		// Check the secret is 32 characters long
-		if ( strlen($secret) == 32 ) {
-			// Set it to the private variable if it is correct
-			$this->secret = $secret;
-		}
-		else {
-			// Give an error if it's the wrong length
-			trigger_error('The secret is not 32 characters long', FATAL);
-		}
-		
-		$this->getSession();
 	}
 	
 	private function getSession() {
