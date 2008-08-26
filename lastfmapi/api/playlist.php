@@ -4,18 +4,38 @@ class lastfmApiPlaylist extends lastfmApiBase {
 	public $playlist;
 	
 	private $apiKey;
-	private $playlistUrl;
+	private $playlistId;
 	
-	function __construct($apiKey, $playlistUrl) {
+	function __construct($apiKey, $playlistId = '') {
 		$this->apiKey = $apiKey;
-		$this->playlistUrl = $playlistUrl;
+		$this->playlistId = $playlistId;
+	}
+	
+	public function addTrack($artist, $track, $sessionKey, $secret) {
+		$vars = array(
+			'method' => 'playlist.addtrack',
+			'api_key' => $this->apiKey,
+			'artist' => $artist,
+			'track' => $track,
+			'playlistID' => $this->playlistId,
+			'sk' => $sessionKey
+		);
+		$sig = $this->apiSig($secret, $vars);
+		$vars['api_sig'] = $sig;
+		
+		if ( $call = $this->apiPostCall($vars) ) {
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
 	}
 	
 	public function fetch() {
 		$vars = array(
 			'method' => 'playlist.fetch',
 			'api_key' => $this->apiKey,
-			'playlistURL' => $this->playlistUrl
+			'playlistURL' => $this->playlistId
 		);
 		
 		if ( $call = $this->apiGetCall($vars) ) {
