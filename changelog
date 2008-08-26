@@ -6,12 +6,14 @@
 -- album.removeTag
 -- artist.addTags
 -- artist.removeTag
+-- artist.share
 -- event.attend
 -- playlist.addTrack
 -- track.addTags
 -- track.ban
 -- track.love
 -- track.removeTag
+-- track.share
 
 == INITIAL VERSION - 0.1 ==
 
