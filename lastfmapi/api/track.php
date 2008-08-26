@@ -276,6 +276,27 @@ class lastfmApiTrack extends lastfmApiBase {
 			return FALSE;
 		}
 	}
+	
+	public function share($recipient, $sessionKey, $secret, $message = '') {
+		$vars = array(
+			'method' => 'track.share',
+			'api_key' => $this->apiKey,
+			'artist' => $this->artist,
+			'track' => $this->track,
+			'recipient' => $recipient,
+			'message' => $message,
+			'sk' => $sessionKey
+		);
+		$sig = $this->apiSig($secret, $vars);
+		$vars['api_sig'] = $sig;
+		
+		if ( $call = $this->apiPostCall($vars) ) {
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
+	}
 }
 
 ?>
