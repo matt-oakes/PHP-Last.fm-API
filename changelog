@@ -1,6 +1,16 @@
 == VERSION 0.1 TO VERSION 0.2 ==
 
 * Restructured all methods with error handling done in base class functions
+* Added new methods:
+-- album.addTags
+-- album.removeTag
+-- artist.addTags
+-- artist.removeTag
+-- event.attend
+-- track.addTags
+-- track.ban
+-- track.love
+-- track.removeTag
 
 == INITIAL VERSION - 0.1 ==
 
