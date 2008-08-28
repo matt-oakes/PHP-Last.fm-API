@@ -2,6 +2,7 @@
 
 // Include helper classes
 require 'class/apibase.php';
+require 'class/mainclass.php';
 require 'class/socket.php';
 
 // Include all files of the API

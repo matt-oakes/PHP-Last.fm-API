@@ -1,24 +1,39 @@
 <?php
 
-$file = fopen('../auth.txt', 'r');
-$apiKey = trim(fgets($file));
-$secret = trim(fgets($file));
-$username = trim(fgets($file));
-$sessionKey = trim(fgets($file));
-$subscriber = trim(fgets($file));
-
+// Include the API
 require '../../lastfmapi/lastfmapi.php';
 
-$artist = 'Green day';
-$album = 'Dookie';
-$tag = 'testing';
+// Get the session auth data
+$file = fopen('../auth.txt', 'r');
+// Put the auth data into an array
+$authVars = array(
+	'apiKey' => trim(fgets($file)),
+	'secret' => trim(fgets($file)),
+	'username' => trim(fgets($file)),
+	'sessionKey' => trim(fgets($file)),
+	'subscriber' => trim(fgets($file))
+);
+// Pass the array to the auth class to eturn a valid auth
+$auth = new lastfmApiAuth('setsession', $authVars);
 
-$albumClass = new lastfmApiAlbum($apiKey, $artist, $album);
+// Call for the album package class with auth data
+$apiClass = new lastfmApi();
+$albumClass = $apiClass->getPackage($auth, 'album');
 
-if ( $albumClass->removeTag($tag, $sessionKey, $secret) ) {
-	echo '<b>Tag <em>'.$tag.'</em> removed</b>';
+// Setup the variables
+$methodVars = array(
+	'artist' => 'Green day',
+	'album' => 'Dookie',
+	'tag' => 'testing'
+);
+
+// Call the method with the variables
+if ( $albumClass->removeTag($methodVars) ) {
+	// Method returned as a success
+	echo '<b>Tag removed</b>';
 }
 else {
+	// Method returned an error
 	die('<b>Error '.$albumClass->error['code'].' - </b><i>'.$albumClass->error['desc'].'</i>');
 }
 

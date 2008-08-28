@@ -4,46 +4,75 @@ class lastfmApiAlbum extends lastfmApiBase {
 	public $info;
 	public $tags;
 	
-	private $apiKey;
-	private $artist;
-	private $album;
-	private $mbid;
 	private $auth;
+	private $fullAuth;
 	
-	function __construct($apiKey, $artist = '', $album = '', $mbid = '') {
-		$this->apiKey = $apiKey;
-		$this->artist = $artist;
-		$this->album = $album;
-		$this->mbid = $mbid;
+	function __construct($auth, $fullAuth) {
+		$this->auth = $auth;
+		$this->fullAuth = $fullAuth;
 	}
 	
-	public function addTags($tags, $sessionKey, $secret) {
-		$vars = array(
-			'method' => 'album.addtags',
-			'api_key' => $this->apiKey,
-			'album' => $this->album,
-			'artist' => $this->artist,
-			'tags' => $tags,
-			'sk' => $sessionKey
-		);
-		$sig = $this->apiSig($secret, $vars);
-		$vars['api_sig'] = $sig;
-		
-		if ( $call = $this->apiPostCall($vars) ) {
-			return TRUE;
+	public function addTags($methodVars) {
+		// Only allow full authed calls
+		if ( $this->fullAuth == TRUE ) {
+			// Check for required variables
+			if ( !empty($methodVars['album']) && !empty($methodVars['artist']) && !empty($methodVars['tags']) ) {
+				// If the tags variables is an array build a CS list
+				if ( is_array($methodVars['tags']) ) {
+					$tags = '';
+					foreach ( $methodVars['tags'] as $tag ) {
+						$tags .= $tag.',';
+					}
+					$tags = substr($tags, 0, -1);
+				}
+				else {
+					$tags = $methodVars['tags'];
+				}
+				
+				// Set the call variables
+				$vars = array(
+					'method' => 'album.addtags',
+					'api_key' => $this->auth->apiKey,
+					'album' => $methodVars['album'],
+					'artist' => $methodVars['artist'],
+					'tags' => $tags,
+					'sk' => $this->auth->sessionKey
+				);
+				// Generate a call signiture
+				$sig = $this->apiSig($this->auth->secret, $vars);
+				$vars['api_sig'] = $sig;
+				
+				// Do the call and check for errors
+				if ( $call = $this->apiPostCall($vars) ) {
+					// If none return true
+					return TRUE;
+				}
+				else {
+					// If there is return false
+					return FALSE;
+				}
+			}
+			else {
+				// Give a 91 error if incorrect variables are used
+				$this->handleError(91, 'You must include album, artist and tags varialbes in the call for this method');
+				return FALSE;
+			}
 		}
 		else {
+			// Give a 92 error if not fully authed
+			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 			return FALSE;
 		}
 	}
 	
-	public function getInfo() {
+	public function getInfo($methodVars) {
+		// Set the call variables
 		$vars = array(
 			'method' => 'album.getinfo',
-			'api_key' => $this->apiKey,
-			'album' => $this->album,
-			'artist' => $this->artist,
-			'mbid' => $this->mbid
+			'api_key' => $this->auth->apiKey,
+			'album' => @$methodVars['album'],
+			'artist' => @$methodVars['artist'],
+			'mbid' => @$methodVars['mbid']
 		);
 		
 		if ( $call = $this->apiGetCall($vars) ) {
@@ -72,54 +101,92 @@ class lastfmApiAlbum extends lastfmApiBase {
 		}
 	}
 	
-	public function getTags($sessionKey, $secret) {
-		$vars = array(
-			'method' => 'album.gettags',
-			'api_key' => $this->apiKey,
-			'sk' => $sessionKey,
-			'album' => $this->album,
-			'artist' => $this->artist
-		);
-		$sig = $this->apiSig($secret, $vars);
-		$vars['api_sig'] = $sig;
-		
-		if ( $call = $this->apiGetCall($vars) ) {
-			if ( count($call->tags->tag) > 0 ) {
-				$i = 0;
-				foreach ( $call->tags->tag as $tag ) {
-					$this->tags[$i]['name'] = (string) $tag->name;
-					$this->tags[$i]['url'] = (string) $tag->url;
-					$i++;
-				}
+	public function getTags($methodVars) {
+		// Only allow full authed calls
+		if ( $this->fullAuth == TRUE ) {
+			// Check for required variables
+			if ( !empty($methodVars['album']) && !empty($methodVars['artist']) ) {
+				// Set the variables
+				$vars = array(
+					'method' => 'album.gettags',
+					'api_key' => $this->auth->apiKey,
+					'sk' => $this->auth->sessionKey,
+					'album' => $methodVars['album'],
+					'artist' => $methodVars['artist']
+				);
+				// Generate a call signiture
+				$sig = $this->apiSig($this->auth->secret, $vars);
+				$vars['api_sig'] = $sig;
 				
-				return $this->tags;
+				// Make the call
+				if ( $call = $this->apiGetCall($vars) ) {
+					if ( count($call->tags->tag) > 0 ) {
+						$i = 0;
+						foreach ( $call->tags->tag as $tag ) {
+							$this->tags[$i]['name'] = (string) $tag->name;
+							$this->tags[$i]['url'] = (string) $tag->url;
+							$i++;
+						}
+						
+						return $this->tags;
+					}
+					else {
+						$this->handleError(90, 'User has no tags for this artist');
+						return FALSE;
+					}
+				}
+				else {
+					return FALSE;
+				}
 			}
 			else {
-				$this->handleError(90, 'Artist has no tags from this user');
+				// Give a 91 error if incorrect variables are used
+				$this->handleError(91, 'You must include album and artist varialbes in the call for this method');
 				return FALSE;
 			}
 		}
 		else {
+			// Give a 92 error if not fully authed
+			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 			return FALSE;
 		}
 	}
 	
-	public function removeTag($tag, $sessionKey, $secret) {
-		$vars = array(
-			'method' => 'album.removetag',
-			'api_key' => $this->apiKey,
-			'album' => $this->album,
-			'artist' => $this->artist,
-			'tag' => $tag,
-			'sk' => $sessionKey
-		);
-		$sig = $this->apiSig($secret, $vars);
-		$vars['api_sig'] = $sig;
-		
-		if ( $call = $this->apiPostCall($vars) ) {
-			return TRUE;
+	public function removeTag($methodVars) {
+		// Only allow full authed calls
+		if ( $this->fullAuth == TRUE ) {
+			// Check for required variables
+			if ( !empty($methodVars['album']) && !empty($methodVars['artist']) && !empty($methodVars['tag']) ) {
+				// Set the variables
+				$vars = array(
+					'method' => 'album.removetag',
+					'api_key' => $this->auth->apiKey,
+					'album' => $methodVars['album'],
+					'artist' => $methodVars['artist'],
+					'tag' => $methodVars['tag'],
+					'sk' => $this->auth->sessionKey
+				);
+				// Generate a call signature
+				$sig = $this->apiSig($this->auth->secret, $vars);
+				$vars['api_sig'] = $sig;
+				
+				// Do the call
+				if ( $call = $this->apiPostCall($vars) ) {
+					return TRUE;
+				}
+				else {
+					return FALSE;
+				}
+			}
+			else {
+				// Give a 91 error if incorrect variables are used
+				$this->handleError(91, 'You must include album, artist and tag varialbes in the call for this method');
+				return FALSE;
+			}
 		}
 		else {
+			// Give a 92 error if not fully authed
+			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 			return FALSE;
 		}
 	}

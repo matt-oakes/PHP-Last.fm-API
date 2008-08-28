@@ -23,12 +23,14 @@ class lastfmApiAuth extends lastfmApiBase {
 			}
 		}
 		elseif ( $method == 'setsession' ) {
-			if ( !empty($vars['apiKey']) && !empty($vars['secret']) && !empty($vars['username']) && !empty($vars['sessionKey']) && !empty($vars['subscriber']) ) {
+			if ( !empty($vars['apiKey']) ) {
 				$this->apiKey = $vars['apiKey'];
-				$this->secret = $vars['secret'];
-				$this->username = $vars['username'];
-				$this->sessionKey = $vars['sessionKey'];
-				$this->subscriber = $vars['subscriber'];
+				if ( !empty($vars['secret']) && !empty($vars['username']) && !empty($vars['sessionKey']) && !empty($vars['subscriber']) ) {
+					$this->secret = $vars['secret'];
+					$this->username = $vars['username'];
+					$this->sessionKey = $vars['sessionKey'];
+					$this->subscriber = $vars['subscriber'];
+				}
 			}
 			else {
 				$this->handleError(91, 'Must send an apiKey, secret, usernamne, subcriber and sessionKey in the call for setsession');
