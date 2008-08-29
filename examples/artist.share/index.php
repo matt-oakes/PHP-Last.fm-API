@@ -1,21 +1,33 @@
 <?php
 
-$file = fopen('../auth.txt', 'r');
-$apiKey = trim(fgets($file));
-$secret = trim(fgets($file));
-$username = trim(fgets($file));
-$sessionKey = trim(fgets($file));
-$subscriber = trim(fgets($file));
-
+// Include the API
 require '../../lastfmapi/lastfmapi.php';
 
-$artist = 'Athlete';
-$recipient = ''; // Either a username or an email address
-$message = 'You might like this';
+// Get the session auth data
+$file = fopen('../auth.txt', 'r');
+// Put the auth data into an array
+$authVars = array(
+	'apiKey' => trim(fgets($file)),
+	'secret' => trim(fgets($file)),
+	'username' => trim(fgets($file)),
+	'sessionKey' => trim(fgets($file)),
+	'subscriber' => trim(fgets($file))
+);
+// Pass the array to the auth class to eturn a valid auth
+$auth = new lastfmApiAuth('setsession', $authVars);
 
-$artistClass = new lastfmApiArtist($apiKey, $artist);
+// Call for the album package class with auth data
+$apiClass = new lastfmApi();
+$artistClass = $apiClass->getPackage($auth, 'artist');
 
-if ( $events = $artistClass->share($recipient, $sessionKey, $secret, $message) ) {
+// Setup the variables
+$methodVars = array(
+	'artist' => 'Athlete',
+	'recipient' => '', // Either a lastfm username or an email
+	'message' => 'Something you might like :)'
+);
+
+if ( $artistClass->share($methodVars) ) {
 	echo '<b>Artist shared</b>';
 }
 else {

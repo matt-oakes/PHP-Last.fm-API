@@ -1,21 +1,34 @@
 <?php
 
-$file = fopen('../auth.txt', 'r');
-$apiKey = trim(fgets($file));
-$secret = trim(fgets($file));
-$username = trim(fgets($file));
-$sessionKey = trim(fgets($file));
-$subscriber = trim(fgets($file));
-
+// Include the API
 require '../../lastfmapi/lastfmapi.php';
 
-$artist = 'Green Day';
+// Get the session auth data
+$file = fopen('../auth.txt', 'r');
+// Put the auth data into an array
+$authVars = array(
+	'apiKey' => trim(fgets($file)),
+	'secret' => trim(fgets($file)),
+	'username' => trim(fgets($file)),
+	'sessionKey' => trim(fgets($file)),
+	'subscriber' => trim(fgets($file))
+);
+// Pass the array to the auth class to eturn a valid auth
+$auth = new lastfmApiAuth('setsession', $authVars);
 
-$artistClass = new lastfmApiArtist($apiKey, $artist);
-if ( $topAlbums = $artistClass->getTopAlbums() ) {
+// Call for the album package class with auth data
+$apiClass = new lastfmApi();
+$artistClass = $apiClass->getPackage($auth, 'artist');
+
+// Setup the variables
+$methodVars = array(
+	'artist' => 'Athlete'
+);
+
+if ( $albums = $artistClass->getTopAlbums($methodVars) ) {
 	echo '<b>Data Returned</b>';
 	echo '<pre>';
-	print_r($topAlbums);
+	print_r($albums);
 	echo '</pre>';
 }
 else {
