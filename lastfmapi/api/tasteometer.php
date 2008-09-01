@@ -15,9 +15,6 @@ class lastfmApiTasteometer extends lastfmApiBase {
 		$this->valueOne = $valueOne;
 		$this->typeTwo = $typeTwo;
 		$this->valueTwo = $valueTwo;
-		
-		echo $this->valueOne;
-		echo $this->valueTwo;
 	}
 	
 	public function compare() {
