@@ -1,21 +1,33 @@
+<h1>Currently broken on lastfm's end. Nothing we can do about it :-(</h1>
+
 <?php
 
-echo ' <h1><i>geo.getTopTracks is currently broken on Last.FM\'s end. You cannot use it</i></h1>';
-
-$file = fopen('../auth.txt', 'r');
-$apiKey = fgets($file);
-$secret = fgets($file);
-$username = fgets($file);
-$sessionKey = fgets($file);
-$subscriber = fgets($file);
-
+// Include the API
 require '../../lastfmapi/lastfmapi.php';
 
-$location = 'Spain';
+// Get the session auth data
+$file = fopen('../auth.txt', 'r');
+// Put the auth data into an array
+$authVars = array(
+	'apiKey' => trim(fgets($file)),
+	'secret' => trim(fgets($file)),
+	'username' => trim(fgets($file)),
+	'sessionKey' => trim(fgets($file)),
+	'subscriber' => trim(fgets($file))
+);
+// Pass the array to the auth class to eturn a valid auth
+$auth = new lastfmApiAuth('setsession', $authVars);
 
-$geoClass = new lastfmApiGeo($apiKey, $location);
+// Call for the album package class with auth data
+$apiClass = new lastfmApi();
+$geoClass = $apiClass->getPackage($auth, 'geo');
 
-if ( $tracks = $geoClass->getToTracks() ) {
+// Setup the variables
+$methodVars = array(
+	'country' => 'gb'
+);
+
+if ( $tracks = $geoClass->getTopTracks($methodVars) ) {
 	echo '<b>Data Returned</b>';
 	echo '<pre>';
 	print_r($tracks);

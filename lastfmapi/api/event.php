@@ -3,8 +3,8 @@
 class lastfmApiEvent extends lastfmApiBase {
 	public $info;
 	
-	private $apiKey;
-	private $eventId;
+	private $auth;
+	private $fullAuth;
 	
 	function __construct($auth, $fullAuth) {
 		$this->auth = $auth;
