@@ -77,7 +77,7 @@ class lastfmApiEvent extends lastfmApiBase {
 				$this->info['startdate'] = strtotime(trim((string) $call->event->startDate));
 				$this->info['description'] = (string) $call->event->description;
 				$this->info['image']['small'] = (string) $call->event->image[0];
-				$this->info['image']['mendium'] = (string) $call->event->image[1];
+				$this->info['image']['medium'] = (string) $call->event->image[1];
 				$this->info['image']['large'] = (string) $call->event->image[2];
 				$this->info['attendance'] = (string) $call->event->attendance;
 				$this->info['reviews'] = (string) $call->event->reviews;
