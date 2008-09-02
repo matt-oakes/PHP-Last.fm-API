@@ -46,6 +46,8 @@ class lastfmApiTasteometer extends lastfmApiBase {
 			);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
+				$this->result = '';
+				
 				$this->result['score'] = (string) $call->comparison->result->score;
 				$this->result['matches'] = (string) $call->comparison->result->artists['matches'];
 				$i = 0;
