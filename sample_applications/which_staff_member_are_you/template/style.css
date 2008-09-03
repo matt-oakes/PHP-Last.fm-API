@@ -1,0 +1,119 @@
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+body {
+	line-height: 1;
+	color: black;
+	background: white;
+}
+ol, ul {
+	list-style: none;
+}
+table {
+	border-collapse: separate;
+	border-spacing: 0;
+}
+caption, th, td {
+	text-align: left;
+	font-weight: normal;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: "";
+}
+blockquote, q {
+	quotes: "" "";
+}
+
+/* END RESET */
+
+body {
+	font: 10pt Arial, 'Lucida Console', Sans-Serif;
+}
+a {
+	text-decoration: underline;
+	color: #000000;
+}
+a:hover {
+	text-decoration: none;
+}
+a img {
+	border: 0px;
+}
+
+h1 {
+	font-size: 2.5em;
+	font-weight: bold;
+	text-align: center;
+	margin: 10px 0;
+}
+h2 {
+	font-size: 1.8em;
+	font-weight: bold;
+	margin: 5px 15px;
+}
+
+/* Index page */
+form {
+	padding: 5px;
+}
+label {
+	font-weight: bold;
+}
+input {
+	border: 1px solid #cccccc;
+	padding: 2px;
+}
+
+/* Results page */
+div.match {
+	margin: 10px 25px;
+	padding: 15px 15px 0 15px;
+	background-color: #cccccc;
+	clear: left;
+}
+div.match.top {
+	background-color: #CC8F8F;
+}
+div.match img.avatar {
+	float: left;
+	margin-right: 15px;
+	border: 1px solid black;
+	padding: 3px;
+	background-color: #ffffff;
+}
+div.match h3 {
+	font-size: 1.4em;
+	font-weight: bold;
+	margin-bottom: 3px;
+}
+div.match p {
+	position: relative;
+	left: 5px;
+}
+div.match ul {
+	margin-top: 5px;
+	position: relative;
+	left: 15px;
+}
+div.match ul li {
+	display: inline;
+}
+div.match ul li img.icon {
+	vertical-align: middle;
+	margin-right: 3px;
+	border: 1px solid black;
+	padding: 1px;
+	background-color: #ffffff;
+}
+div.match ul li a {
+	margin-right: 10px;
+}
