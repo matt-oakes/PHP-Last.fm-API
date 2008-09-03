@@ -3,143 +3,87 @@
 class lastfmApiPlaylist extends lastfmApiBase {
 	public $playlist;
 	
-	private $apiKey;
-	private $playlistId;
+	private $auth;
+	private $fullAuth;
 	
-	function __construct($apiKey, $playlistId = '') {
-		$this->apiKey = $apiKey;
-		$this->playlistId = $playlistId;
+	function __construct($auth, $fullAuth) {
+		$this->auth = $auth;
+		$this->fullAuth = $fullAuth;
 	}
 	
-	public function addTrack($artist, $track, $sessionKey, $secret) {
-		$vars = array(
-			'method' => 'playlist.addtrack',
-			'api_key' => $this->apiKey,
-			'artist' => $artist,
-			'track' => $track,
-			'playlistID' => $this->playlistId,
-			'sk' => $sessionKey
-		);
-		$sig = $this->apiSig($secret, $vars);
-		$vars['api_sig'] = $sig;
-		
-		if ( $call = $this->apiPostCall($vars) ) {
-			return TRUE;
+	public function addTrack($methodVars) {
+		// Only allow full authed calls
+		if ( $this->fullAuth == TRUE ) {
+			// Check for required variables
+			if ( !empty($methodVars['playlistId']) && !empty($methodVars['artist']) && !empty($methodVars['track']) ) {
+				$vars = array(
+					'method' => 'playlist.addtrack',
+					'api_key' => $this->auth->apiKey,
+					'artist' => $methodVars['artist'],
+					'track' => $methodVars['track'],
+					'playlistID' => $methodVars['playlistId'],
+					'sk' => $this->auth->sessionKey
+				);
+				$sig = $this->apiSig($this->auth->secret, $vars);
+				$vars['api_sig'] = $sig;
+				
+				if ( $call = $this->apiPostCall($vars) ) {
+					return TRUE;
+				}
+				else {
+					return FALSE;
+				}
+			}
+			else {
+				// Give a 91 error if incorrect variables are used
+				$this->handleError(91, 'You must include playlistId, artist and track varialbes in the call for this method');
+				return FALSE;
+			}
 		}
 		else {
+			// Give a 92 error if not fully authed
+			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 			return FALSE;
 		}
 	}
 	
-	public function fetch() {
-		$vars = array(
-			'method' => 'playlist.fetch',
-			'api_key' => $this->apiKey,
-			'playlistURL' => $this->playlistId
-		);
-		
-		if ( $call = $this->apiGetCall($vars) ) {
-			$this->playlist['title'] = (string) $call->playlist->title;
-			$this->playlist['annotation'] = (string) $call->playlist->annotation;
-			$this->playlist['creator'] = (string) $call->playlist->creator;
-			$this->playlist['date'] = strtotime(trim((string) $call->playlist->date));
-			$this->playlist['version'] = (string) $call->playlist['version'];
-			$i = 0;
-			foreach ( $call->playlist->trackList->track as $track ) {
-				$this->playlist['tracklisting'][$i]['title'] = (string) $track->title;
-				$this->playlist['tracklisting'][$i]['identifier'] = (string) $track->identifier;
-				$this->playlist['tracklisting'][$i]['album'] = (string) $track->album;
-				$this->playlist['tracklisting'][$i]['creator'] = (string) $track->creator;
-				$this->playlist['tracklisting'][$i]['duration'] = (string) $track->duration;
-				$this->playlist['tracklisting'][$i]['info'] = (string) $track->info;
-				$this->playlist['tracklisting'][$i]['image'] = (string) $track->image;
-				$this->playlist['tracklisting'][$i]['artistPage'] = (string) $track->extention->artistpage;
-				$this->playlist['tracklisting'][$i]['albumPage'] = (string) $track->extention->albumpage;
-				$this->playlist['tracklisting'][$i]['trackPage'] = (string) $track->extention->trackpage;
-				$i++;
+	public function fetch($methodVars) {
+		// Check for required variables
+		if ( !empty($methodVars['playlistUrl']) ) {
+			$vars = array(
+				'method' => 'playlist.fetch',
+				'api_key' => $this->auth->apiKey,
+				'playlistURL' => $methodVars['playlistUrl']
+			);
+			
+			if ( $call = $this->apiGetCall($vars) ) {
+				$this->playlist['title'] = (string) $call->playlist->title;
+				$this->playlist['annotation'] = (string) $call->playlist->annotation;
+				$this->playlist['creator'] = (string) $call->playlist->creator;
+				$this->playlist['date'] = strtotime(trim((string) $call->playlist->date));
+				$this->playlist['version'] = (string) $call->playlist['version'];
+				$i = 0;
+				foreach ( $call->playlist->trackList->track as $track ) {
+					$this->playlist['tracklisting'][$i]['title'] = (string) $track->title;
+					$this->playlist['tracklisting'][$i]['url'] = (string) $track->extension->trackpage;
+					$this->playlist['tracklisting'][$i]['duration'] = (string) $track->duration;
+					$this->playlist['tracklisting'][$i]['info'] = (string) $track->info;
+					$this->playlist['tracklisting'][$i]['image'] = (string) $track->image;
+					$this->playlist['tracklisting'][$i]['artist']['name'] = (string) $track->creator;
+					$this->playlist['tracklisting'][$i]['artist']['url'] = (string) $track->extension->artistpage;
+					$this->playlist['tracklisting'][$i]['album']['name'] = (string) $track->album;
+					$this->playlist['tracklisting'][$i]['album']['url'] = (string) $track->extension->albumpage;
+					$i++;
+				}
+				return $this->playlist;
 			}
-			return $this->playlist;
+			else {
+				return FALSE;
+			}
 		}
 		else {
-			return FALSE;
-		}
-	}
-	
-	public function getArtists($page = '', $limit = '') {
-		$vars = array(
-			'method' => 'library.getartists',
-			'api_key' => $this->apiKey,
-			'user' => $this->user
-		);
-		if ( !empty($page) ) {
-			$vars['page'] = $page;
-		}
-		if ( !empty($limit) ) {
-			$vars['limit'] = $limit;
-		}
-		
-		if ( $call = $this->apiGetCall($vars) ) {
-			$this->artists['page'] = (string) $call->artists['page'];
-			$this->artists['perPage'] = (string) $call->artists['perPage'];
-			$this->artists['totalPages'] = (string) $call->artists['totalPages'];
-			$i = 0;
-			foreach ( $call->artists->artist as $artist ) {
-				$this->artists['results'][$i]['name'] = (string) $artist->name;
-				// THIS DOESN'T WORK AS DOCUMENTED  --- $this->artists['results'][$i]['rank'] = (string) $artist['rank'];
-				$this->artists['results'][$i]['playcount'] = (string) $artist->playcount;
-				$this->artists['results'][$i]['tagcount'] = (string) $artist->tagcount;
-				$this->artists['results'][$i]['mbid'] = (string) $artist->mbid;
-				$this->artists['results'][$i]['url'] = (string) $artist->url;
-				$this->artists['results'][$i]['streamable'] = (string) $artist->streamable;
-				$this->artists['results'][$i]['image']['small'] = (string) $artist->image[0];
-				$this->artists['results'][$i]['image']['medium'] = (string) $artist->image[1];
-				$this->artists['results'][$i]['image']['large'] = (string) $artist->image[2];
-				$i++;
-			}
-			return $this->artists;
-		}
-		else {
-			return FALSE;
-		}
-	}
-	
-	public function getTracks($page = '', $limit = '') {
-		$vars = array(
-			'method' => 'library.gettracks',
-			'api_key' => $this->apiKey,
-			'user' => $this->user
-		);
-		if ( !empty($page) ) {
-			$vars['page'] = $page;
-		}
-		if ( !empty($limit) ) {
-			$vars['limit'] = $limit;
-		}
-		
-		if ( $call = $this->apiGetCall($vars) ) {
-			$this->tracks['page'] = (string) $call->tracks['page'];
-			$this->tracks['perPage'] = (string) $call->tracks['perPage'];
-			$this->tracks['totalPages'] = (string) $call->tracks['totalPages'];
-			$i = 0;
-			foreach ( $call->tracks->track as $track ) {
-				$this->tracks['results'][$i]['name'] = (string) $track->name;
-				// THIS DOESN'T WORK AS DOCUMENTED  --- $this->tracks['results'][$i]['rank'] = (string) $track['rank'];
-				$this->tracks['results'][$i]['playcount'] = (string) $track->playcount;
-				$this->tracks['results'][$i]['tagcount'] = (string) $track->tagcount;
-				$this->tracks['results'][$i]['url'] = (string) $track->url;
-				$this->tracks['results'][$i]['streamable'] = (string) $track->streamable;
-				$this->tracks['results'][$i]['fulltrack'] = (string) $track->streamable['fulltrack'];
-				$this->tracks['results'][$i]['artist']['name'] = (string) $track->artist->name;
-				$this->tracks['results'][$i]['artist']['mbid'] = (string) $track->artist->mbid;
-				$this->tracks['results'][$i]['artist']['url'] = (string) $track->artist->url;
-				$this->tracks['results'][$i]['image']['small'] = (string) $track->image[0];
-				$this->tracks['results'][$i]['image']['medium'] = (string) $track->image[1];
-				$this->tracks['results'][$i]['image']['large'] = (string) $track->image[2];
-				$i++;
-			}
-			return $this->tracks;
-		}
-		else {
+			// Give a 91 error if incorrect variables are used
+			$this->handleError(91, 'You must include playlistUrl varialbe in the call for this method');
 			return FALSE;
 		}
 	}

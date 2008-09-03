@@ -1,20 +1,33 @@
 <?php
 
-$file = fopen('../auth.txt', 'r');
-$apiKey = trim(fgets($file));
-$secret = trim(fgets($file));
-$username = trim(fgets($file));
-$sessionKey = trim(fgets($file));
-$subscriber = trim(fgets($file));
-
+// Include the API
 require '../../lastfmapi/lastfmapi.php';
 
-$playlistId = '25168';
+// Get the session auth data
+$file = fopen('../auth.txt', 'r');
+// Put the auth data into an array
+$authVars = array(
+	'apiKey' => trim(fgets($file)),
+	'secret' => trim(fgets($file)),
+	'username' => trim(fgets($file)),
+	'sessionKey' => trim(fgets($file)),
+	'subscriber' => trim(fgets($file))
+);
+// Pass the array to the auth class to eturn a valid auth
+$auth = new lastfmApiAuth('setsession', $authVars);
 
-$playlistClass = new lastfmApiPlaylist($apiKey, $playlistId);
+$apiClass = new lastfmApi();
+$playlistClass = $apiClass->getPackage($auth, 'playlist');
 
-if ( $playlist = $playlistClass->addTrack('Green Day', 'American Idiot', $sessionKey, $secret) ) {
-	echo '<b>Track added</b>';
+// Setup the variables
+$methodVars = array(
+	'playlistId' => '25168',
+	'artist' => 'Green Day',
+	'track' => 'American Idiot'
+);
+
+if ( $playlistClass->addTrack($methodVars) ) {
+	echo '<b>Done!</b>';
 }
 else {
 	die('<b>Error '.$playlistClass->error['code'].' - </b><i>'.$playlistClass->error['desc'].'</i>');

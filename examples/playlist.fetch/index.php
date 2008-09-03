@@ -1,22 +1,33 @@
 <?php
 
-$file = fopen('../auth.txt', 'r');
-$apiKey = fgets($file);
-$secret = fgets($file);
-$username = fgets($file);
-$sessionKey = fgets($file);
-$subscriber = fgets($file);
-
+// Include the API
 require '../../lastfmapi/lastfmapi.php';
 
-$playlistUrl = 'lastfm://playlist/tag/rock/freetracks';
+// Get the session auth data
+$file = fopen('../auth.txt', 'r');
+// Put the auth data into an array
+$authVars = array(
+	'apiKey' => trim(fgets($file)),
+	'secret' => trim(fgets($file)),
+	'username' => trim(fgets($file)),
+	'sessionKey' => trim(fgets($file)),
+	'subscriber' => trim(fgets($file))
+);
+// Pass the array to the auth class to eturn a valid auth
+$auth = new lastfmApiAuth('setsession', $authVars);
 
-$playlistClass = new lastfmApiPlaylist($apiKey, $playlistUrl);
+$apiClass = new lastfmApi();
+$playlistClass = $apiClass->getPackage($auth, 'playlist');
 
-if ( $playlist = $playlistClass->fetch() ) {
+// Setup the variables
+$methodVars = array(
+	'playlistUrl' => 'lastfm://playlist/25168'
+);
+
+if ( $tracks = $playlistClass->fetch($methodVars) ) {
 	echo '<b>Data Returned</b>';
 	echo '<pre>';
-	print_r($playlist);
+	print_r($tracks);
 	echo '</pre>';
 }
 else {
