@@ -1,19 +1,32 @@
 <?php
 
-$file = fopen('../auth.txt', 'r');
-$apiKey = fgets($file);
-$secret = fgets($file);
-$username = fgets($file);
-$sessionKey = fgets($file);
-$subscriber = fgets($file);
-
+// Include the API
 require '../../lastfmapi/lastfmapi.php';
 
-$group = 'Last.fm Web Services';
+// Get the session auth data
+$file = fopen('../auth.txt', 'r');
+// Put the auth data into an array
+$authVars = array(
+	'apiKey' => trim(fgets($file)),
+	'secret' => trim(fgets($file)),
+	'username' => trim(fgets($file)),
+	'sessionKey' => trim(fgets($file)),
+	'subscriber' => trim(fgets($file))
+);
+// Pass the array to the auth class to eturn a valid auth
+$auth = new lastfmApiAuth('setsession', $authVars);
 
-$groupClass = new lastfmApiGroup($apiKey, $group);
+$apiClass = new lastfmApi();
+$groupClass = $apiClass->getPackage($auth, 'group');
 
-if ( $albums = $groupClass->getWeeklyAlbumChart(1217764800, 1218369600) ) {
+// Setup the variables
+$methodVars = array(
+	'group' => 'Last.fm Web Services',
+	'from' => '1217764800',
+	'to' => '1218369600'
+);
+
+if ( $albums = $groupClass->getWeeklyAlbumChart($methodVars) ) {
 	echo '<b>Data Returned</b>';
 	echo '<pre>';
 	print_r($albums);
