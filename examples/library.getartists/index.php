@@ -1,19 +1,30 @@
 <?php
 
-$file = fopen('../auth.txt', 'r');
-$apiKey = fgets($file);
-$secret = fgets($file);
-$username = fgets($file);
-$sessionKey = fgets($file);
-$subscriber = fgets($file);
-
+// Include the API
 require '../../lastfmapi/lastfmapi.php';
 
-$user = 'lotrgamemast';
+// Get the session auth data
+$file = fopen('../auth.txt', 'r');
+// Put the auth data into an array
+$authVars = array(
+	'apiKey' => trim(fgets($file)),
+	'secret' => trim(fgets($file)),
+	'username' => trim(fgets($file)),
+	'sessionKey' => trim(fgets($file)),
+	'subscriber' => trim(fgets($file))
+);
+// Pass the array to the auth class to eturn a valid auth
+$auth = new lastfmApiAuth('setsession', $authVars);
 
-$libraryClass = new lastfmApiLibrary($apiKey, $user);
+$apiClass = new lastfmApi();
+$libraryClass = $apiClass->getPackage($auth, 'library');
 
-if ( $artists = $libraryClass->getArtists() ) {
+// Setup the variables
+$methodVars = array(
+	'user' => 'lotrgamemast'
+);
+
+if ( $artists = $libraryClass->getArtists($methodVars) ) {
 	echo '<b>Data Returned</b>';
 	echo '<pre>';
 	print_r($artists);
