@@ -94,7 +94,6 @@ if ( !empty($_GET['username']) ) {
 		'irvinebrown',
 		'bambidambo',
 		'nananaina',
-		'mbrodbelt',
 		'wakehurst2',
 		'dundez',
 		'Tars21',
