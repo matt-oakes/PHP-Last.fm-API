@@ -1,19 +1,22 @@
 == VERSION 0.1 TO VERSION 0.2 ==
 
 * Restructured all methods with error handling done in base class functions
-* Added new methods:
--- album.addTags
--- album.removeTag
--- artist.addTags
--- artist.removeTag
--- artist.share
--- event.attend
--- playlist.addTrack
--- track.addTags
--- track.ban
--- track.love
--- track.removeTag
--- track.share
++ Added new methods:
+	+ album.addTags
+	+ album.removeTag
+	+ artist.addTags
+	+ artist.removeTag
+	+ artist.share
+	+ event.attend
+	+ playlist.addTrack
+	+ track.addTags
+	+ track.ban
+	+ track.love
+	+ track.removeTag
+	+ track.share
+* Changed the method of calling all of the API to make it more uniform and easier to learn
++ Added sample application to show extended examples of using the API
+	+ Which Staff Member Are You?
 
 == INITIAL VERSION - 0.1 ==
 
