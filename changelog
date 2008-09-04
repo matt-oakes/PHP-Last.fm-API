@@ -11,6 +11,7 @@
 	+ playlist.addTrack
 	+ track.addTags
 	+ track.ban
+	+ track.getInfo
 	+ track.love
 	+ track.removeTag
 	+ track.share
