@@ -1,17 +1,30 @@
 <?php
 
-$file = fopen('../auth.txt', 'r');
-$apiKey = trim(fgets($file));
-$secret = trim(fgets($file));
-$username = trim(fgets($file));
-$sessionKey = trim(fgets($file));
-$subscriber = trim(fgets($file));
-
+// Include the API
 require '../../lastfmapi/lastfmapi.php';
 
-$userClass = new lastfmApiUser($apiKey, 'lotrgamemast');
+// Get the session auth data
+$file = fopen('../auth.txt', 'r');
+// Put the auth data into an array
+$authVars = array(
+	'apiKey' => trim(fgets($file)),
+	'secret' => trim(fgets($file)),
+	'username' => trim(fgets($file)),
+	'sessionKey' => trim(fgets($file)),
+	'subscriber' => trim(fgets($file))
+);
+// Pass the array to the auth class to eturn a valid auth
+$auth = new lastfmApiAuth('setsession', $authVars);
 
-if ( $charts = $userClass->getWeeklyChartList() ) {
+$apiClass = new lastfmApi();
+$userClass = $apiClass->getPackage($auth, 'user');
+
+// Setup the variables
+$methodVars = array(
+	'user' => 'RJ'
+);
+
+if ( $charts = $userClass->getWeeklyChartList($methodVars) ) {
 	echo '<b>Data Returned</b>';
 	echo '<pre>';
 	print_r($charts);
