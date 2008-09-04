@@ -1,6 +1,7 @@
 <?php
 
 class lastfmApiTrack extends lastfmApiBase {
+	public $info;
 	public $similar;
 	public $topFans;
 	public $topTags;
@@ -93,6 +94,61 @@ class lastfmApiTrack extends lastfmApiBase {
 		else {
 			// Give a 92 error if not fully authed
 			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
+			return FALSE;
+		}
+	}
+	
+	public function getInfo($methodVars) {
+		$vars = array(
+			'method' => 'track.getinfo',
+			'api_key' => $this->auth->apiKey,
+			'track' => $methodVars['track'],
+			'artist' => $methodVars['artist']
+		);
+		if ( !empty($methodVars['track']) ) {
+			$vars['track'] = $methodVars['track'];
+		}
+		if ( !empty($methodVars['artist']) ) {
+			$vars['artist'] = $methodVars['artist'];
+		}
+		if ( !empty($methodVars['mbid']) ) {
+			$vars['mbid'] = $methodVars['mbid'];
+		}
+		
+		if ( $call = $this->apiGetCall($vars) ) {
+			$this->info['id'] = (string) $call->track->id;
+			$this->info['name'] = (string) $call->track->name;
+			$this->info['mbid'] = (string) $call->track->mbid;
+			$this->info['url'] = (string) $call->track->url;
+			$this->info['duration'] = (string) $call->track->duration;
+			$this->info['streamable'] = (string) $call->track->streamable;
+			$this->info['fulltrack'] = (string) $call->track->streamable['fulltrack'];
+			$this->info['listeners'] = (string) $call->track->listeners;
+			$this->info['playcount'] = (string) $call->track->playcount;
+			$this->info['artist']['name'] = (string) $call->track->artist->name;
+			$this->info['artist']['mbid'] = (string) $call->track->artist->mbid;
+			$this->info['artist']['url'] = (string) $call->track->artist->url;
+			$this->info['album']['position'] = (string) $call->track->album['position'];
+			$this->info['album']['artist'] = (string) $call->track->album->artist;
+			$this->info['album']['title'] = (string) $call->track->album->title;
+			$this->info['album']['mbid'] = (string) $call->track->album->mbid;
+			$this->info['album']['url'] = (string) $call->track->album->url;
+			$this->info['album']['image']['small'] = (string) $call->track->album->image[0];
+			$this->info['album']['image']['medium'] = (string) $call->track->album->image[1];
+			$this->info['album']['image']['large'] = (string) $call->track->album->image[2];
+			$i = 0;
+			foreach ( $call->track->toptags->tag as $tag ) {
+				$this->info['toptags'][$i]['name'] = (string) $tag->name;
+				$this->info['toptags'][$i]['url'] = (string) $tag->url;
+				$i++;
+			}
+			$this->info['wiki']['published'] = (string) $call->track->wiki->published;
+			$this->info['wiki']['summary'] = (string) $call->track->wiki->summary;
+			$this->info['wiki']['content'] = (string) $call->track->wiki->content;
+			
+			return $this->info;
+		}
+		else {
 			return FALSE;
 		}
 	}
