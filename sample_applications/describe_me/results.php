@@ -86,7 +86,7 @@ if ( !empty($_GET['username']) ) {
 						// Write this score back to the results array
 						$results[$tag['name']] = array(
 							'name' => $tag['name'],
-							'url' => $result['url'],
+							'url' => $tag['url'],
 							'value' => $new
 						);
 						
