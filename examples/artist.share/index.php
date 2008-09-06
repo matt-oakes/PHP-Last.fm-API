@@ -18,20 +18,20 @@ $auth = new lastfmApiAuth('setsession', $authVars);
 
 // Call for the album package class with auth data
 $apiClass = new lastfmApi();
-$artistClass = $apiClass->getPackage($auth, 'artist');
+$eventClass = $apiClass->getPackage($auth, 'event');
 
 // Setup the variables
 $methodVars = array(
-	'artist' => 'Athlete',
+	'eventId' => '666379',
 	'recipient' => '', // Either a lastfm username or an email
 	'message' => 'Something you might like :)'
 );
 
-if ( $artistClass->share($methodVars) ) {
-	echo '<b>Artist shared</b>';
+if ( $eventClass->share($methodVars) ) {
+	echo '<b>event shared</b>';
 }
 else {
-	die('<b>Error '.$artistClass->error['code'].' - </b><i>'.$artistClass->error['desc'].'</i>');
+	die('<b>Error '.$eventClass->error['code'].' - </b><i>'.$eventClass->error['desc'].'</i>');
 }
 
 ?>
