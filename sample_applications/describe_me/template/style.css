@@ -1,0 +1,99 @@
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+body {
+	line-height: 1;
+	color: black;
+	background: white;
+}
+ol, ul {
+	list-style: none;
+}
+table {
+	border-collapse: separate;
+	border-spacing: 0;
+}
+caption, th, td {
+	text-align: left;
+	font-weight: normal;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: "";
+}
+blockquote, q {
+	quotes: "" "";
+}
+
+/* END RESET */
+
+body {
+	font: 10pt Arial, 'Lucida Console', Sans-Serif;
+}
+a {
+	text-decoration: underline;
+	color: #000000;
+}
+a:hover {
+	text-decoration: none;
+}
+a img {
+	border: 0px;
+}
+
+h1 {
+	font-size: 2.5em;
+	font-weight: bold;
+	text-align: center;
+	margin: 10px 0;
+}
+h2 {
+	font-size: 1.8em;
+	font-weight: bold;
+	margin: 5px 15px;
+}
+
+/* Index page */
+form {
+	padding: 5px;
+}
+label {
+	font-weight: bold;
+}
+input {
+	border: 1px solid #cccccc;
+	padding: 2px;
+}
+
+/* Results page */
+p {
+	font-size: 1.1em;
+	margin: 0 0 15px 10px;
+}
+p em {
+	font-style: italic;
+	font-weight: bold;
+}
+p strong a {
+	font-size: 1.3em;
+	font-weight: bold;
+	color: red;
+	padding-left: 35px;
+}
+ol {
+	list-style-type: disc;
+	margin-left: 35px;
+}
+span.score {
+	font-size: 0.8em;
+	font-style: italic;
+	color: grey;
+}
