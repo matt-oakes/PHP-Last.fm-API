@@ -8,6 +8,7 @@
 	+ artist.removeTag
 	+ artist.share
 	+ event.attend
+	+ event.share
 	+ playlist.addTrack
 	+ track.addTags
 	+ track.ban
@@ -18,6 +19,7 @@
 * Changed the method of calling all of the API to make it more uniform and easier to learn
 + Added sample application to show extended examples of using the API
 	+ Which Staff Member Are You?
+	+ Describe Me
 
 == INITIAL VERSION - 0.1 ==
 
