@@ -22,7 +22,7 @@ class lastfmApiBase {
    		$out .= "\r\n";
 		$response = $this->socket->send($out, 'array');
 		
-		$xlstr = '';
+		$xmlstr = '';
 		$record = 0;
 		foreach ( $response as $line ) {
 			if ( $record == 1 ) {
