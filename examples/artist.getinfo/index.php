@@ -22,7 +22,7 @@ $artistClass = $apiClass->getPackage($auth, 'artist');
 
 // Setup the variables
 $methodVars = array(
-	'artist' => 'Athlete'
+	'artist' => 'Chase & Status'
 );
 
 if ( $artist = $artistClass->getInfo($methodVars) ) {

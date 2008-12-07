@@ -11,7 +11,7 @@ class lastfmApiBase {
 		
 		$url = '/2.0/?';
 		foreach ( $vars as $name => $value ) {
-			$url .= trim($name).'='.trim($value).'&';
+			$url .= trim(urlencode($name)).'='.trim(urlencode($value)).'&';
 		}
 		$url = substr($url, 0, -1);
 		$url = str_replace(' ', '%20', $url);
