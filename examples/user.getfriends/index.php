@@ -21,7 +21,8 @@ $userClass = $apiClass->getPackage($auth, 'user');
 
 // Setup the variables
 $methodVars = array(
-	'user' => 'RJ'
+	'user' => 'RJ',
+	'recenttracks' => 'true'
 );
 
 if ( $friends = $userClass->getFriends($methodVars) ) {
