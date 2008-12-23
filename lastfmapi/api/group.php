@@ -2,6 +2,7 @@
 
 class lastfmApiGroup extends lastfmApiBase {
 	public $artists;
+	public $members;
 	public $albums;
 	public $tracks;
 	public $chartList;
@@ -12,6 +13,49 @@ class lastfmApiGroup extends lastfmApiBase {
 	function __construct($auth, $fullAuth) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
+	}
+	
+	public function getMembers($methodVars) {
+		// Check for required variables
+		if ( !empty($methodVars['group']) ) {
+			$vars = array(
+				'method' => 'group.getmembers',
+				'api_key' => $this->auth->apiKey,
+				'group' => $methodVars['group']
+			);
+			if ( !empty($methodVars['page']) ) {
+				$vars['page'] = $methodVars['page'];
+			}
+			if ( !empty($methodVars['limit']) ) {
+				$vars['limit'] = $methodVars['limit'];
+			}
+			
+			if ( $call = $this->apiGetCall($vars) ) {
+				$i = 0;
+				$this->members['for'] = (string) $call->members['for'];
+				$this->members['page'] = (string) $call->members['page'];
+				$this->members['perPage'] = (string) $call->members['perPage'];
+				$this->members['totalPages'] = (string) $call->members['totalPages'];
+				foreach ( $call->members->user as $user ) {
+					$this->members['members'][$i]['name'] = (string) $user->name;
+					$this->members['members'][$i]['realname'] = (string) $user->realname;
+					$this->members['members'][$i]['url'] = (string) $user->url;
+					$this->members['members'][$i]['image']['small'] = (string) $user->image[0];
+					$this->members['members'][$i]['image']['medium'] = (string) $user->image[1];
+					$this->members['members'][$i]['image']['large'] = (string) $user->image[2];
+					$i++;
+				}
+				return $this->members;
+			}
+			else {
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 91 error if incorrect variables are used
+			$this->handleError(91, 'You must include a group variable in the call for this method');
+			return FALSE;
+		}
 	}
 	
 	public function getWeeklyAlbumChart($methodVars) {
