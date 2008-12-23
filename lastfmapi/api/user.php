@@ -435,6 +435,7 @@ class lastfmApiUser extends lastfmApiBase {
 					$this->recommendedartists['perPage'] = (string) $call->recommendations['perPage'];
 					$this->recommendedartists['totalPages'] = (string) $call->recommendations['totalPages'];
 					$this->recommendedartists['total'] = (string) $call->recommendations['total'];
+					
 					$i = 0;
 					foreach ( $call->recommendations->artist as $artist ) {
 						$this->recommendedartists['artists'][$i]['name'] = (string) $artist->name;
@@ -448,6 +449,81 @@ class lastfmApiUser extends lastfmApiBase {
 					}
 				
 					return $this->recommendedartists;
+				}
+				else {
+					$this->handleError(90, 'This user has no recommendations');
+					return FALSE;
+				}
+			}
+			else {
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 92 error if not fully authed
+			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
+			return FALSE;
+		}
+	}
+	
+	public function getRecommendedEvents($methodVars = '') {
+		// Only allow full authed calls
+		if ( $this->fullAuth == TRUE ) {
+			$vars = array(
+				'method' => 'user.getrecommendedevents',
+				'api_key' => $this->auth->apiKey,
+				'sk' => $this->auth->sessionKey
+			);
+			if ( !empty($methodVars['page']) ) {
+				$vars['page'] = $methodVars['page'];
+			}
+			if ( !empty($methodVars['limit']) ) {
+				$vars['limit'] = $methodVars['limit'];
+			}
+			$apiSig = $this->apiSig($this->auth->secret, $vars);
+			$vars['api_sig'] = $apiSig;
+			
+			if ( $call = $this->apiGetCall($vars) ) {
+				if ( count($call->events->event) > 0 ) {
+					$this->recommendedevents['user'] = (string) $call->events['user'];
+					$this->recommendedevents['page'] = (string) $call->events['page'];
+					$this->recommendedevents['perPage'] = (string) $call->events['perPage'];
+					$this->recommendedevents['totalPages'] = (string) $call->events['totalPages'];
+					$this->recommendedevents['total'] = (string) $call->events['total'];
+					
+					$i = 0;
+					foreach ( $call->events->event as $event ) {
+						$this->recommendedevents['events'][$i]['id'] = (string) $event->id;
+						$this->recommendedevents['events'][$i]['title'] = (string) $event->title;
+						$ii = 0;
+						foreach ( $event->artists->artist as $artist ) {
+							$this->recommendedevents['events'][$i]['artists'][$ii] = (string) $artist;
+							$ii++;
+						}
+						$this->recommendedevents['events'][$i]['headliner'] = (string) $event->artists->headliner;
+						$this->recommendedevents['events'][$i]['venue']['name'] = (string) $event->venue->name;
+						$this->recommendedevents['events'][$i]['venue']['location']['city'] = (string) $event->venue->location->city;
+						$this->recommendedevents['events'][$i]['venue']['location']['country'] = (string) $event->venue->location->country;
+						$this->recommendedevents['events'][$i]['venue']['location']['street'] = (string) $event->venue->location->street;
+						$this->recommendedevents['events'][$i]['venue']['location']['postcode'] = (string) $event->venue->location->postalcode;
+						$geopoint =  $event->venue->location->children('http://www.w3.org/2003/01/geo/wgs84_pos#');
+						$this->recommendedevents['events'][$i]['venue']['location']['geopoint']['lat'] = (string) $geopoint->point->lat;
+						$this->recommendedevents['events'][$i]['venue']['location']['geopoint']['long'] = (string) $geopoint->point->long;
+						$this->recommendedevents['events'][$i]['venue']['location']['timezone'] = (string) $event->venue->location->timezone;
+						$this->recommendedevents['events'][$i]['venue']['url'] = (string) $call->venue->url;
+						$this->recommendedevents['events'][$i]['startdate'] = strtotime(trim((string) $event->startDate));
+						$this->recommendedevents['events'][$i]['description'] = (string) $event->description;
+						$this->recommendedevents['events'][$i]['image']['small'] = (string) $event->image[0];
+						$this->recommendedevents['events'][$i]['image']['medium'] = (string) $event->image[1];
+						$this->recommendedevents['events'][$i]['image']['large'] = (string) $event->image[2];
+						$this->recommendedevents['events'][$i]['attendance'] = (string) $event->attendance;
+						$this->recommendedevents['events'][$i]['reviews'] = (string) $event->reviews;
+						$this->recommendedevents['events'][$i]['tag'] = (string) $event->tag;
+						$this->recommendedevents['events'][$i]['url'] = (string) $event->url;
+						$i++;
+					}
+				
+					return $this->recommendedevents;
 				}
 				else {
 					$this->handleError(90, 'This user has no recommendations');
