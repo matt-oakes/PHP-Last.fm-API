@@ -190,6 +190,59 @@ class lastfmApiAlbum extends lastfmApiBase {
 			return FALSE;
 		}
 	}
+	
+	public function search($methodVars) {
+		// Check for required variables
+		if ( !empty($methodVars['album']) ) {
+			$vars = array(
+				'method' => 'album.search',
+				'api_key' => $this->auth->apiKey,
+				'album' => $methodVars['album']
+			);
+			if ( !empty($methodVars['limit']) ) {
+				$vars['limit'] = $methodVars['limit'];
+			}
+			if ( !empty($methodVars['page']) ) {
+				$vars['page'] = $methodVars['page'];
+			}
+			
+			if ( $call = $this->apiGetCall($vars) ) {
+				$opensearch = $call->results->children('http://a9.com/-/spec/opensearch/1.1/');
+				if ( $opensearch->totalResults > 0 ) {
+					$this->searchResults['totalResults'] = (string) $opensearch->totalResults;
+					$this->searchResults['startIndex'] = (string) $opensearch->startIndex;
+					$this->searchResults['itemsPerPage'] = (string) $opensearch->itemsPerPage;
+					$i = 0;
+					foreach ( $call->results->albummatches->album as $album ) {
+						$this->searchResults['results'][$i]['name'] = (string) $album->name;
+						$this->searchResults['results'][$i]['artist'] = (string) $album->artist;
+						$this->searchResults['results'][$i]['id'] = (string) $album->id;
+						$this->searchResults['results'][$i]['url'] = (string) $album->url;
+						$this->searchResults['results'][$i]['streamable'] = (string) $album->streamable;
+						$this->searchResults['results'][$i]['image']['small'] = (string) $album->image[0];
+						$this->searchResults['results'][$i]['image']['medium'] = (string) $album->image[1];
+						$this->searchResults['results'][$i]['image']['large'] = (string) $album->image[2];
+						$i++;
+					}
+					
+					return $this->searchResults;
+				}
+				else {
+					// No tagsare found
+					$this->handleError(90, 'No results');
+					return FALSE;
+				}
+			}
+			else {
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 91 error if incorrect variables are used
+			$this->handleError(91, 'You must include album varialbe in the call for this method');
+			return FALSE;
+		}
+	}
 }
 
 ?>
