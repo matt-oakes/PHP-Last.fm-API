@@ -10,6 +10,7 @@ class lastfmApiUser extends lastfmApiBase {
 	public $topalbums;
 	public $topartists;
 	public $toptags;
+	public $recommendedartists;
 	public $weeklyalbums;
 	public $weeklyartists;
 	public $weeklychartlist;
@@ -406,6 +407,60 @@ class lastfmApiUser extends lastfmApiBase {
 		else {
 			// Give a 91 error if incorrect variables are used
 			$this->handleError(91, 'You must include artist variable in the call for this method');
+			return FALSE;
+		}
+	}
+	
+	public function getRecommendedArtists($methodVars = '') {
+		// Only allow full authed calls
+		if ( $this->fullAuth == TRUE ) {
+			$vars = array(
+				'method' => 'user.getrecommendedartists',
+				'api_key' => $this->auth->apiKey,
+				'sk' => $this->auth->sessionKey
+			);
+			if ( !empty($methodVars['page']) ) {
+				$vars['page'] = $methodVars['page'];
+			}
+			if ( !empty($methodVars['limit']) ) {
+				$vars['limit'] = $methodVars['limit'];
+			}
+			$apiSig = $this->apiSig($this->auth->secret, $vars);
+			$vars['api_sig'] = $apiSig;
+			
+			if ( $call = $this->apiGetCall($vars) ) {
+				if ( count($call->recommendations->artist) > 0 ) {
+					$this->recommendedartists['user'] = (string) $call->recommendations['user'];
+					$this->recommendedartists['page'] = (string) $call->recommendations['page'];
+					$this->recommendedartists['perPage'] = (string) $call->recommendations['perPage'];
+					$this->recommendedartists['totalPages'] = (string) $call->recommendations['totalPages'];
+					$this->recommendedartists['total'] = (string) $call->recommendations['total'];
+					$i = 0;
+					foreach ( $call->recommendations->artist as $artist ) {
+						$this->recommendedartists['artists'][$i]['name'] = (string) $artist->name;
+						$this->recommendedartists['artists'][$i]['mbid'] = (string) $artist->mbid;
+						$this->recommendedartists['artists'][$i]['url'] = (string) $artist->url;
+						$this->recommendedartists['artists'][$i]['streamable'] = (string) $artist->streamable;
+						$this->recommendedartists['artists'][$i]['image']['small'] = (string) $artist->image[0];
+						$this->recommendedartists['artists'][$i]['image']['medium'] = (string) $artist->image[1];
+						$this->recommendedartists['artists'][$i]['image']['large'] = (string) $artist->image[2];
+						$i++;
+					}
+				
+					return $this->recommendedartists;
+				}
+				else {
+					$this->handleError(90, 'This user has no recommendations');
+					return FALSE;
+				}
+			}
+			else {
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 92 error if not fully authed
+			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 			return FALSE;
 		}
 	}
