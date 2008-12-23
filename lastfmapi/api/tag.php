@@ -215,6 +215,36 @@ class lastfmApiTag extends lastfmApiBase {
 		}
 	}
 	
+	public function getWeeklyChartList($methodVars) {
+		// Check for required variables
+		if ( !empty($methodVars['tag']) ) {
+			$vars = array(
+				'method' => 'tag.getweeklychartlist',
+				'api_key' => $this->auth->apiKey,
+				'tag' => $methodVars['tag']
+			);
+			
+			if ( $call = $this->apiGetCall($vars) ) {
+				$i = 0;
+				foreach ( $call->weeklychartlist->chart as $chart ) {
+					$this->weeklychartlist[$i]['from'] = (string) $chart['from'];
+					$this->weeklychartlist[$i]['to'] = (string) $chart['to'];
+					$i++;
+				}
+				
+				return $this->weeklychartlist;
+			}
+			else {
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 91 error if incorrect variables are used
+			$this->handleError(91, 'You must include artist variable in the call for this method');
+			return FALSE;
+		}
+	}
+	
 	public function search($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['tag']) ) {
