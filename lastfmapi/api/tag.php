@@ -176,6 +176,45 @@ class lastfmApiTag extends lastfmApiBase {
 		}
 	}
 	
+	public function getWeeklyArtistChart($methodVars) {
+		// Check for required variables
+		if ( !empty($methodVars['tag']) ) {
+			$vars = array(
+				'method' => 'tag.getweeklyartistchart',
+				'api_key' => $this->auth->apiKey,
+				'tag' => $methodVars['tag']
+			);
+			if ( !empty($methodVars['from']) ) {
+				$vars['from'] = $methodVars['from'];
+			}
+			if ( !empty($methodVars['to']) ) {
+				$vars['to'] = $methodVars['to'];
+			}
+			
+			if ( $call = $this->apiGetCall($vars) ) {
+				$i = 0;
+				foreach ( $call->weeklyartistchart->artist as $artist ) {
+					$this->weeklyartists[$i]['name'] = (string) $artist->name;
+					$this->weeklyartists[$i]['rank'] = (string) $artist['rank'];
+					$this->weeklyartists[$i]['mbid'] = (string) $artist->mbid;
+					$this->weeklyartists[$i]['weight'] = (string) $artist->weight;
+					$this->weeklyartists[$i]['url'] = (string) $artist->url;
+					$i++;
+				}
+				
+				return $this->weeklyartists;
+			}
+			else {
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 91 error if incorrect variables are used
+			$this->handleError(91, 'You must include artist variable in the call for this method');
+			return FALSE;
+		}
+	}
+	
 	public function search($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['tag']) ) {
