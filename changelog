@@ -1,3 +1,16 @@
+== VERSION 0.2.1 TO VERSION 0.3 ==
++ Added new methods:
+	+ album.search
+	+ group.getMembers
+	+ library.addAlbum
+	+ library.addArtist
+	+ library.addTrack
+	+ playlist.create
+	+ tag.getWeeklyArtistChart
+	+ tag.getWeeklyChartList
+	+ user.getRecommendedArtists
+	+ user.getRecommendedEvents
+
 == VERSION 0.1 TO VERSION 0.2.1 ==
 * Fixed minor bug with variables not being correctly encoded before being sent, causing &'s and ?'s to create errors
 * Minor update to the user.getFriends example to show how the recent tracks parameter works
