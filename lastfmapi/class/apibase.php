@@ -51,7 +51,7 @@ class lastfmApiBase {
 		}
 	}
 	
-	function apiPostCall($vars) {
+	function apiPostCall($vars, $return = 'bool') {
 		$host = 'ws.audioscrobbler.com';
 		$port = 80;
 		
@@ -89,8 +89,13 @@ class lastfmApiBase {
 		$xml = new SimpleXMLElement($xmlstr);
 		
 		if ( $xml['status'] == 'ok' ) {
-			// All is well :)
-			return TRUE;
+			if ( $return == 'bool' ) {
+				// All is well :)
+				return TRUE;
+			}
+			else if ($return == 'xml' ) {
+				return $xml;
+			}
 		}
 		elseif ( $xml['status'] == 'failed' ) {
 			// Woops - error has been returned
