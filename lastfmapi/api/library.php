@@ -48,6 +48,40 @@ class lastfmApiLibrary extends lastfmApiBase {
 		}
 	}
 	
+	public function addArtist($methodVars) {
+		// Only allow full authed calls
+		if ( $this->fullAuth == TRUE ) {
+			// Check for required variables
+			if ( !empty($methodVars['artist']) ) {
+				$vars = array(
+					'method' => 'library.addartist',
+					'api_key' => $this->auth->apiKey,
+					'artist' => $methodVars['artist'],
+					'sk' => $this->auth->sessionKey
+				);
+				$sig = $this->apiSig($this->auth->secret, $vars);
+				$vars['api_sig'] = $sig;
+				
+				if ( $call = $this->apiPostCall($vars) ) {
+					return TRUE;
+				}
+				else {
+					return FALSE;
+				}
+			}
+			else {
+				// Give a 91 error if incorrect variables are used
+				$this->handleError(91, 'You must include artist and album varialbes in the call for this method');
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 92 error if not fully authed
+			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
+			return FALSE;
+		}
+	}
+	
 	public function getAlbums($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['user']) ) {
