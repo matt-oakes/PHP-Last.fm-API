@@ -25,7 +25,7 @@ class lastfmApiAuth extends lastfmApiBase {
 		elseif ( $method == 'setsession' ) {
 			if ( !empty($vars['apiKey']) ) {
 				$this->apiKey = $vars['apiKey'];
-				if ( !empty($vars['secret']) && !empty($vars['username']) && !empty($vars['sessionKey']) && !empty($vars['subscriber']) ) {
+				if ( !empty($vars['secret']) && !empty($vars['username']) && !empty($vars['sessionKey']) && isset($vars['subscriber']) ) {
 					$this->secret = $vars['secret'];
 					$this->username = $vars['username'];
 					$this->sessionKey = $vars['sessionKey'];
