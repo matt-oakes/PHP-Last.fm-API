@@ -178,10 +178,14 @@ class lastfmApiArtist extends lastfmApiBase {
 	public function getInfo($methodVars) {
 		$vars = array(
 			'method' => 'artist.getinfo',
-			'api_key' => $this->auth->apiKey,
-			'mbid' => $methodVars['mbid'],
-			'artist' => $methodVars['artist']
+			'api_key' => $this->auth->apiKey
 		);
+		if ( !empty($methodVars['mbid']) ) {
+			$vars['mbid'] = $methodVars['mbid'];
+		}
+		if ( !empty($methodVars['artist']) ) {
+			$vars['artist'] = $methodVars['artist'];
+		}
 		
 		if ( $call = $this->apiGetCall($vars) ) {
 			$this->info['name'] = (string) $call->artist->name;
