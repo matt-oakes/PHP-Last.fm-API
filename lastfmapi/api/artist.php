@@ -129,6 +129,52 @@ class lastfmApiArtist extends lastfmApiBase {
 		}
 	}
 	
+	public function getImages($methodVars) {
+		// Check for required variables
+		if ( !empty($methodVars['artist']) ) {
+			$vars = array(
+				'method' => 'artist.getimages',
+				'api_key' => $this->auth->apiKey,
+				'artist' => $methodVars['artist']
+			);
+			
+			if ( $call = $this->apiGetCall($vars) ) {
+				$this->images = array();
+				$i = 0;
+				foreach ( $call->images->image as $image ) {
+					$this->images[$i]['title'] = (string) $image->title;
+					$this->images[$i]['url'] = (string) $image->url;
+					$this->images[$i]['dateadded'] = (string) $image->dateadded;
+					$this->images[$i]['format'] = (string) $image->format;
+					$this->images[$i]['sizes'] = array();
+					$official = isset($image['official']) ? (string) $image['official'] : false;
+					$this->images[$i]['official'] = $official == 'yes';
+					foreach( $image->sizes->size as $size ) {
+						$this->images[$i]['sizes'][(string)$size['name']] = array(
+							'width' => (string) $size['width'],
+							'height' => (string) $size['height'],
+							'url' => (string) $size,
+						);
+					}
+					$this->images[$i]['votes'] = array(
+						'thumbsup' => (string) $image->votes->thumbsup,
+						'thumbsdown' => (string) $image->votes->thumbsdown,
+					);
+					$i++;
+				}
+				return $this->images;
+			}
+			else {
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 91 error if incorrect variables are used
+			$this->handleError(91, 'You must include artist variable in the call for this method');
+			return FALSE;
+		}
+	}
+	
 	public function getInfo($methodVars) {
 		$vars = array(
 			'method' => 'artist.getinfo',
