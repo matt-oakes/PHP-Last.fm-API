@@ -4,6 +4,8 @@ class lastfmApiBase {
 	public $error;
 	
 	private $socket;
+	private $cache;
+	private $config;
 	
 	function apiGetCall($vars) {
 		$host = 'ws.audioscrobbler.com';

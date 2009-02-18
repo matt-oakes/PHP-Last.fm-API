@@ -4,6 +4,7 @@
 require 'class/apibase.php';
 require 'class/mainclass.php';
 require 'class/socket.php';
+require 'class/cache.php';
 
 // Include all files of the API
 // TODO: Allow some to be missing
