@@ -1,33 +1,38 @@
 <?php
 
 class lastfmApiCache {
-	private $config;
 	private $db;
 	private $error;
+	private $path;
+	private $cache_length;
 	
-	public $enabled;
-	
-	function __construct($config) {
-		$this->config = $config;
-		$this->check_if_enabled();
+	function __construct() {
+		/***********************************/
+		/* USE THIS VARIABLE TO SET A CUSTOM PATH FOR THE CACHE DATABASE
+		/*
+		/*   It is important you make sure it's in a secure location or the data
+		/*   will be readable by anyone. Which is a security risk.
+		/* 
+		/*   It is currently setup to put it in the root lastfmapi directory relative
+		/*   to the examples. It is recommended you keep it there as the .htaccess file
+		/*   stops people accessing it's contents
+		/***********************************/
+		$this->path = '../../lastfmapi/';
+		/* END EDIT */
 		
-		if ( $this->enabled == true ) {
-			$this->db = sqlite_open('phplastfmapi', 0666, $this->error);
-			$this->check_table_exists();
-			//$this->show_all();
-		}
-	}
-	
-	private function check_if_enabled() {
-		if ( $this->config['enable_cache'] == FALSE ) {
-			$this->enabled = false;
-		}
-		elseif ( !function_exists('sqlite_open') ) {
-			$this->enabled = false;
-		}
-		else {
-			$this->enabled = true;
-		}
+		/***********************************/
+		/* USE THIS VARIABLE TO SET THE TIME A CACHE IS HELD BEFORE A NEW COPY IS FETCHED
+		/*   
+		/*   This value is in seconds (1 minute = 60 seconds)
+		/*   
+		/*   The default value is 30 minutes.
+		/***********************************/
+		$this->cache_length = 1800;
+		/* END EDIT */
+		
+		$this->db = sqlite_open($this->path.'phplastfmapi', 0666, $this->error);
+		$this->check_table_exists();
+		//$this->show_all();
 	}
 	
 	private function check_table_exists() {
@@ -41,7 +46,7 @@ class lastfmApiCache {
 	}
 	
 	private function create_table() {
-		$query = "CREATE TABLE cache (cache_id INTEGER PRIMARY KEY, plugin_id VARCHAR(100), unique_vars VARCHAR, expires DATE, body TEXT)";
+		$query = "CREATE TABLE cache (cache_id INTEGER PRIMARY KEY, unique_vars TEXT, expires DATE, body TEXT)";
 		if ( sqlite_query($this->db, $query, null, $this->error) ) {
 			// Ok
 		}
@@ -51,52 +56,43 @@ class lastfmApiCache {
 		}
 	}
 	
-	public function get($plugin_id, $unique_vars) {
-		if ( $this->enabled == true ) {
-			$query = "SELECT expires, body FROM cache WHERE plugin_id='".$plugin_id."' AND unique_vars='".$unique_vars."' LIMIT 1";
-			if ( $result = sqlite_query($this->db, $query, null, $this->error) ) {
-				if ( sqlite_num_rows($result) > 0 ) {
-					$result = sqlite_fetch_array($result);
-					if ( $result['expires'] < time() ) {
-						$this->del($plugin_id, $unique_vars);
-						return false;
-					}
-					else {
-						return unserialize(html_entity_decode($result['body']));
-					}
-				}
-				else {
+	public function get($unique_vars) {
+		$query = "SELECT expires, body FROM cache WHERE unique_vars='".htmlentities(serialize($unique_vars))."' LIMIT 1";
+		if ( $result = sqlite_query($this->db, $query, null, $this->error) ) {
+			if ( sqlite_num_rows($result) > 0 ) {
+				$result = sqlite_fetch_array($result);
+				if ( $result['expires'] < time() ) {
+					$this->del($unique_vars);
 					return false;
 				}
+				else {
+					//print_r(unserialize(html_entity_decode($result['body'])));
+					return unserialize(html_entity_decode($result['body']));
+				}
 			}
 			else {
-				// TODO: Handle error
 				return false;
 			}
 		}
 		else {
+			// TODO: Handle error
 			return false;
 		}
 	}
 	
-	public function set($plugin_id, $unique_vars, $expire, $body) {
-		if ( $this->enabled == true ) {
-			$query = "INSERT INTO cache (plugin_id, unique_vars, expires, body) VALUES ('".$plugin_id."', '".htmlentities($unique_vars)."', '".$expire."', \"".htmlentities(serialize($body))."\")";
-			if ( $result = sqlite_query($this->db, $query, null, $this->error) ) {
-				return true;
-			}
-			else {
-				// TODO: Handle error
-				return false;
-			}
+	public function set($unique_vars,  $body) {
+		$query = "INSERT INTO cache (unique_vars, expires, body) VALUES ('".htmlentities(serialize($unique_vars))."', '".( time() + $this->cache_length )."', \"".htmlentities(serialize($body))."\")";
+		if ( $result = sqlite_query($this->db, $query, null, $this->error) ) {
+			return true;
 		}
 		else {
+			// TODO: Handle error
 			return false;
 		}
 	}
 	
-	private function del($plugin_id, $unique_vars) {
-		$query = "DELETE FROM cache WHERE plugin_id='".$plugin_id."' AND unique_vars='".$unique_vars."'";
+	private function del($unique_vars) {
+		$query = "DELETE FROM cache WHERE unique_vars='".htmlentities(serialize($unique_vars))."'";
 		if ( $result = sqlite_query($this->db, $query, null, $this->error) ) {
 			return true;
 		}
