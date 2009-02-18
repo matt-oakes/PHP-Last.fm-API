@@ -1,3 +1,8 @@
+== VERSION 0.3.1 TO VERSION 0.4 ==
++ Added automatic caching using sqlite (config variable are in the cahce.php file)
++ Added new method artist.getImages (Thanks to lastfm staff member Steve Gravell for
+	giving me the code before the method was even released. Cheers Steve!)
+
 == VERSION 0.3 TO VERSION 0.3.1 ==
 * Fixed error with non-subscribers not being able to auth (Thanks to methhhp for the bug report)
 
