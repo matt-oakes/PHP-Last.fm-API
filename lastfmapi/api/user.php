@@ -601,7 +601,7 @@ class lastfmApiUser extends lastfmApiBase {
 				'api_key' => $this->auth->apiKey,
 				'user' => $methodVars['user']
 			);
-			if ( $methodVars['period'] == 3 || $methodVars['period'] == 6 || $methodVars['period'] == 12 ) {
+			if ( !empty($methodVars['period']) && ( $methodVars['period'] == 3 || $methodVars['period'] == 6 || $methodVars['period'] == 12 ) ) {
 				$vars['period'] = $methodVars['period'].'month';
 			}
 			else {
