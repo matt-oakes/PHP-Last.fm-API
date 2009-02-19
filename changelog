@@ -1,5 +1,5 @@
 == VERSION 0.3.1 TO VERSION 0.4 ==
-+ Added automatic caching using sqlite (config variable are in the cahce.php file)
++ Added automatic caching using sqlite (config variables are passed as the 3rd parameter of the getPackage method)
 + Added new method artist.getImages (Thanks to lastfm staff member Steve Gravell for
 	giving me the code before the method was even released. Cheers Steve!)
 
