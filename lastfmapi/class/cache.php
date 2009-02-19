@@ -6,12 +6,28 @@ class lastfmApiCache {
 	private $path;
 	private $cache_length;
 	private $config;
+	private $enabled;
 	
 	function __construct($config) {
 		$this->config = $config;
-		$this->db = sqlite_open($this->config['path'].'phplastfmapi', 0666, $this->error);
-		$this->check_table_exists();
-		//$this->show_all();
+		
+		$this->check_if_enabled();
+		
+		if ( $this->enabled == true ) {
+			$this->db = sqlite_open($this->config['path'].'phplastfmapi', 0666, $this->error);
+			$this->check_table_exists();
+			//$this->show_all();
+		}
+	}
+	
+	private function check_if_enabled() {
+		echo $this->config['enabled'];
+		if ( $this->config['enabled'] == true && function_exists('sqlite_open') ) {
+			$this->enabled = true;
+		}
+		else {
+			$this->enabled = false;
+		}
 	}
 	
 	private function check_table_exists() {
@@ -36,36 +52,46 @@ class lastfmApiCache {
 	}
 	
 	public function get($unique_vars) {
-		$query = "SELECT expires, body FROM cache WHERE unique_vars='".htmlentities(serialize($unique_vars))."' LIMIT 1";
-		if ( $result = sqlite_query($this->db, $query, null, $this->error) ) {
-			if ( sqlite_num_rows($result) > 0 ) {
-				$result = sqlite_fetch_array($result);
-				if ( $result['expires'] < time() ) {
-					$this->del($unique_vars);
-					return false;
+		if ( $this->enabled == true ) {
+			$query = "SELECT expires, body FROM cache WHERE unique_vars='".htmlentities(serialize($unique_vars))."' LIMIT 1";
+			if ( $result = sqlite_query($this->db, $query, null, $this->error) ) {
+				if ( sqlite_num_rows($result) > 0 ) {
+					$result = sqlite_fetch_array($result);
+					if ( $result['expires'] < time() ) {
+						$this->del($unique_vars);
+						return false;
+					}
+					else {
+						//print_r(unserialize(html_entity_decode($result['body'])));
+						return unserialize(html_entity_decode($result['body']));
+					}
 				}
 				else {
-					//print_r(unserialize(html_entity_decode($result['body'])));
-					return unserialize(html_entity_decode($result['body']));
+					return false;
 				}
 			}
 			else {
+				// TODO: Handle error
 				return false;
 			}
 		}
 		else {
-			// TODO: Handle error
 			return false;
 		}
 	}
 	
 	public function set($unique_vars,  $body) {
-		$query = "INSERT INTO cache (unique_vars, expires, body) VALUES ('".htmlentities(serialize($unique_vars))."', '".( time() + $this->config['cache_length'] )."', \"".htmlentities(serialize($body))."\")";
-		if ( $result = sqlite_query($this->db, $query, null, $this->error) ) {
-			return true;
+		if ( $this->enabled == true ) {
+			$query = "INSERT INTO cache (unique_vars, expires, body) VALUES ('".htmlentities(serialize($unique_vars))."', '".( time() + $this->config['cache_length'] )."', \"".htmlentities(serialize($body))."\")";
+			if ( $result = sqlite_query($this->db, $query, null, $this->error) ) {
+				return true;
+			}
+			else {
+				// TODO: Handle error
+				return false;
+			}
 		}
 		else {
-			// TODO: Handle error
 			return false;
 		}
 	}
