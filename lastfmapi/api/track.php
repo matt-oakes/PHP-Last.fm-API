@@ -6,13 +6,15 @@ class lastfmApiTrack extends lastfmApiBase {
 	public $topFans;
 	public $topTags;
 	public $searchResults;
+	public $config;
 	
 	private $auth;
 	private $fullAuth;
 	
-	function __construct($auth, $fullAuth) {
+	function __construct($auth, $fullAuth, $config) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
+		$this->config = $config;
 	}
 	
 	public function addTags($methodVars) {

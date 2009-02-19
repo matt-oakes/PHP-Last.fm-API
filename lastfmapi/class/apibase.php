@@ -9,7 +9,6 @@ class lastfmApiBase {
 	private $response;
 	private $socket;
 	private $cache;
-	private $config;
 	
 	function setup() {
 		$this->host = 'ws.audioscrobbler.com';
@@ -51,28 +50,33 @@ class lastfmApiBase {
 	function apiGetCall($vars) {
 		$this->setup();
 		
-		$this->cache = new lastfmApiCache();
-		if ( $cache = $this->cache->get($vars) ) {
-			// Cache exists
-			$this->response = $cache;
+		if ( $this->config['enabled'] == true ) {
+			$this->cache = new lastfmApiCache($this->config);
+			if ( $cache = $this->cache->get($vars) ) {
+				// Cache exists
+				$this->response = $cache;
+			}
+			else {
+				// Cache doesnt exist
+				$url = '/2.0/?';
+				foreach ( $vars as $name => $value ) {
+					$url .= trim(urlencode($name)).'='.trim(urlencode($value)).'&';
+				}
+				$url = substr($url, 0, -1);
+				$url = str_replace(' ', '%20', $url);
+				
+				$out = "GET ".$url." HTTP/1.0\r\n";
+				$out .= "Host: ".$this->host."\r\n";
+				$out .= "\r\n";
+				$this->response = $this->socket->send($out, 'array');
+				$this->cache->set($vars, $this->response);
+			}
+			
+			return $this->process_response();
 		}
 		else {
-			// Cache doesnt exist
-			$url = '/2.0/?';
-			foreach ( $vars as $name => $value ) {
-				$url .= trim(urlencode($name)).'='.trim(urlencode($value)).'&';
-			}
-			$url = substr($url, 0, -1);
-			$url = str_replace(' ', '%20', $url);
-			
-			$out = "GET ".$url." HTTP/1.0\r\n";
-			$out .= "Host: ".$this->host."\r\n";
-			$out .= "\r\n";
-			$this->response = $this->socket->send($out, 'array');
-			$this->cache->set($vars, $this->response);
+			return false;
 		}
-		
-		return $this->process_response();
 	}
 	
 	function apiPostCall($vars, $return = 'bool') {

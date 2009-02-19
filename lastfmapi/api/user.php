@@ -15,13 +15,15 @@ class lastfmApiUser extends lastfmApiBase {
 	public $weeklyartists;
 	public $weeklychartlist;
 	public $weeklytracks;
+	public $config;
 	
 	private $auth;
 	private $fullAuth;
 	
-	function __construct($auth, $fullAuth) {
+	function __construct($auth, $fullAuth, $config) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
+		$this->config = $config;
 	}
 	
 	public function getEvents($methodVars) {

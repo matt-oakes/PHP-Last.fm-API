@@ -13,12 +13,17 @@ $authVars = array(
 	'sessionKey' => trim(fgets($file)),
 	'subscriber' => trim(fgets($file))
 );
+$config = array(
+	'enabled' => true,
+	'path' => '../../lastfmapi/',
+	'cache_length' => 1800
+);
 // Pass the array to the auth class to eturn a valid auth
 $auth = new lastfmApiAuth('setsession', $authVars);
 
 // Call for the album package class with auth data
 $apiClass = new lastfmApi();
-$artistClass = $apiClass->getPackage($auth, 'artist');
+$artistClass = $apiClass->getPackage($auth, 'artist', $config;);
 
 // Setup the variables
 $methodVars = array(

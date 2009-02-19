@@ -2,7 +2,13 @@
 
 class lastfmApi extends lastfmApiBase {
 	
-	function getPackage($auth, $package) {
+	function getPackage($auth, $package, $config = '') {
+		if ( empty($config) ) {
+			$config = array(
+				'enabled' => false
+			);
+		}
+		
 		if ( is_object($auth) ) {
 			if ( !empty($auth->apiKey) && !empty($auth->secret) && !empty($auth->username) && !empty($auth->sessionKey) && !empty($auth->subscriber) ) {
 				$fullAuth = 1;
@@ -22,7 +28,7 @@ class lastfmApi extends lastfmApiBase {
 		
 		if ( $package == 'album' || $package == 'artist' || $package == 'event' || $package == 'geo' || $package == 'group' || $package == 'library' || $package == 'playlist' || $package == 'tag' || $package == 'tasteometer' || $package == 'track' || $package == 'user' ) {
 			$className = 'lastfmApi'.ucfirst($package);
-			return new $className($auth, $fullAuth);
+			return new $className($auth, $fullAuth, $config);
 		}
 		else {
 			$this->handleError(91, 'The package name you past was invalid');

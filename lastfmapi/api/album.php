@@ -3,13 +3,15 @@
 class lastfmApiAlbum extends lastfmApiBase {
 	public $info;
 	public $tags;
+	public $config;
 	
 	private $auth;
 	private $fullAuth;
 	
-	function __construct($auth, $fullAuth) {
+	function __construct($auth, $fullAuth, $config) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
+		$this->config = $config;
 	}
 	
 	public function addTags($methodVars) {

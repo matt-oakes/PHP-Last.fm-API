@@ -5,32 +5,11 @@ class lastfmApiCache {
 	private $error;
 	private $path;
 	private $cache_length;
+	private $config;
 	
-	function __construct() {
-		/***********************************/
-		/* USE THIS VARIABLE TO SET A CUSTOM PATH FOR THE CACHE DATABASE
-		/*
-		/*   It is important you make sure it's in a secure location or the data
-		/*   will be readable by anyone. Which is a security risk.
-		/* 
-		/*   It is currently setup to put it in the root lastfmapi directory relative
-		/*   to the examples. It is recommended you keep it there as the .htaccess file
-		/*   stops people accessing it's contents
-		/***********************************/
-		$this->path = '../../lastfmapi/';
-		/* END EDIT */
-		
-		/***********************************/
-		/* USE THIS VARIABLE TO SET THE TIME A CACHE IS HELD BEFORE A NEW COPY IS FETCHED
-		/*   
-		/*   This value is in seconds (1 minute = 60 seconds)
-		/*   
-		/*   The default value is 30 minutes.
-		/***********************************/
-		$this->cache_length = 1800;
-		/* END EDIT */
-		
-		$this->db = sqlite_open($this->path.'phplastfmapi', 0666, $this->error);
+	function __construct($config) {
+		$this->config = $config;
+		$this->db = sqlite_open($this->config['path'].'phplastfmapi', 0666, $this->error);
 		$this->check_table_exists();
 		//$this->show_all();
 	}
@@ -81,7 +60,7 @@ class lastfmApiCache {
 	}
 	
 	public function set($unique_vars,  $body) {
-		$query = "INSERT INTO cache (unique_vars, expires, body) VALUES ('".htmlentities(serialize($unique_vars))."', '".( time() + $this->cache_length )."', \"".htmlentities(serialize($body))."\")";
+		$query = "INSERT INTO cache (unique_vars, expires, body) VALUES ('".htmlentities(serialize($unique_vars))."', '".( time() + $this->config['cache_length'] )."', \"".htmlentities(serialize($body))."\")";
 		if ( $result = sqlite_query($this->db, $query, null, $this->error) ) {
 			return true;
 		}

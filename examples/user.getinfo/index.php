@@ -13,11 +13,16 @@ $authVars = array(
 	'sessionKey' => trim(fgets($file)),
 	'subscriber' => trim(fgets($file))
 );
+$config = array(
+	'enabled' => true,
+	'path' => '../../lastfmapi/',
+	'cache_length' => 1800
+);
 // Pass the array to the auth class to eturn a valid auth
 $auth = new lastfmApiAuth('setsession', $authVars);
 
 $apiClass = new lastfmApi();
-$userClass = $apiClass->getPackage($auth, 'user');
+$userClass = $apiClass->getPackage($auth, 'user', $config);
 
 if ( $info = $userClass->getInfo() ) {
 	echo '<b>Data Returned</b>';

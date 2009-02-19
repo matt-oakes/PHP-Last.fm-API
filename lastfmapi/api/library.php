@@ -4,13 +4,15 @@ class lastfmApiLibrary extends lastfmApiBase {
 	public $albums;
 	public $artists;
 	public $tracks;
+	public $config;
 	
 	private $auth;
 	private $fullAuth;
 	
-	function __construct($auth, $fullAuth) {
+	function __construct($auth, $fullAuth, $config) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
+		$this->config = $config;
 	}
 	
 	public function addAlbum($methodVars) {

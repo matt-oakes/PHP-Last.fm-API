@@ -2,13 +2,15 @@
 
 class lastfmApiTasteometer extends lastfmApiBase {
 	public $results;
+	public $config;
 	
 	private $auth;
 	private $fullAuth;
 	
-	function __construct($auth, $fullAuth) {
+	function __construct($auth, $fullAuth, $config) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
+		$this->config = $config;
 	}
 	
 	public function compare($methodVars) {
