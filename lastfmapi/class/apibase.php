@@ -91,15 +91,13 @@ class lastfmApiBase {
 		$data = substr($data, 0, -1);
 		$data = str_replace(' ', '%20', $data);
 		
-		$this->socket = new lastfmApiSocket($host, $port);
-		
 		$out = "POST ".$url." HTTP/1.1\r\n";
    		$out .= "Host: ".$this->host."\r\n";
    		$out .= "Content-Length: ".strlen($data)."\r\n";
    		$out .= "Content-Type: application/x-www-form-urlencoded\r\n";
    		$out .= "\r\n";
    		$out .= $data."\r\n";
-		$response = $this->socket->send($out, 'array');
+		$this->response = $this->socket->send($out, 'array');
 		
 		return $this->process_response();
 	}
