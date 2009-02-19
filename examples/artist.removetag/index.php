@@ -23,7 +23,7 @@ $auth = new lastfmApiAuth('setsession', $authVars);
 
 // Call for the album package class with auth data
 $apiClass = new lastfmApi();
-$artistClass = $apiClass->getPackage($auth, 'artist', $config;);
+$artistClass = $apiClass->getPackage($auth, 'artist', $config);
 
 // Setup the variables
 $methodVars = array(
