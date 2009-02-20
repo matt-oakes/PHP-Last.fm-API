@@ -3,7 +3,7 @@
 class lastfmApi extends lastfmApiBase {
 	
 	function getPackage($auth, $package, $config = '') {
-		if ( empty($config) ) {
+		if ( $config == '' ) {
 			$config = array(
 				'enabled' => false
 			);

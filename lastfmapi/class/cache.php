@@ -21,7 +21,6 @@ class lastfmApiCache {
 	}
 	
 	private function check_if_enabled() {
-		echo $this->config['enabled'];
 		if ( $this->config['enabled'] == true && function_exists('sqlite_open') ) {
 			$this->enabled = true;
 		}
