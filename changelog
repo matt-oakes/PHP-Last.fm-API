@@ -2,6 +2,7 @@
 + Added automatic caching using sqlite (config variables are passed as the 3rd parameter of the getPackage method)
 + Added new method artist.getImages (Thanks to lastfm staff member Steve Gravell for
 	giving me the code before the method was even released. Cheers Steve!)
++ Added error handling to the "Which staff member am I?" sample application
 
 == VERSION 0.3 TO VERSION 0.3.1 ==
 * Fixed error with non-subscribers not being able to auth (Thanks to methhhp for the bug report)
