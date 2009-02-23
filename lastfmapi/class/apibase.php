@@ -29,7 +29,6 @@ class lastfmApiBase {
 			}
 		}
 		
-		echo $xmlstr;
 		if ( $xml = new SimpleXMLElement($xmlstr) ) {
 			
 			if ( $xml['status'] == 'ok' ) {
