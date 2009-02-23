@@ -126,6 +126,9 @@ if ( !empty($_GET['username']) ) {
 			$key = $result['score'] * 1000000;
 			$results[$key] = $result;
 		}
+		else {
+			die('<b>Error '.$tasteometerClass->error['code'].' - </b><i>'.$tasteometerClass->error['desc'].'</i>');
+		}
 	}
 	
 	// Sort the array with higest match first
