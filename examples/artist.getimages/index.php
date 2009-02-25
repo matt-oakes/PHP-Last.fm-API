@@ -27,7 +27,8 @@ $artistClass = $apiClass->getPackage($auth, 'artist', $config);
 
 // Setup the variables
 $methodVars = array(
-	'artist' => 'Athlete',
+	'artist' => 'Green Day',
+	'page' => 2
 );
 
 if ( $images = $artistClass->getImages($methodVars) ) {
