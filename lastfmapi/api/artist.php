@@ -139,26 +139,40 @@ class lastfmApiArtist extends lastfmApiBase {
 				'api_key' => $this->auth->apiKey,
 				'artist' => $methodVars['artist']
 			);
+			if ( !empty($methodVars['page']) ) {
+				$vars['page'] = $methodVars['page'];
+			}
+			if ( !empty($methodVars['limit']) ) {
+				$vars['limit'] = $methodVars['limit'];
+			}
+			if ( !empty($methodVars['order']) && ( $methodVars['order'] == 'popularity' || $methodVars['order'] == 'dateadded' ) ) {
+				$vars['order'] = $methodVars['order'];
+			}
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$this->images = array();
 				$i = 0;
+				$this->images['artist'] = (string)$call->images['artist'];
+				$this->images['page'] = (string)$call->images['page'];
+				$this->images['totalpages'] = (string)$call->images['totalpages'];
+				$this->images['total'] = (string)$call->images['total'];
+				
 				foreach ( $call->images->image as $image ) {
-					$this->images[$i]['title'] = (string) $image->title;
-					$this->images[$i]['url'] = (string) $image->url;
-					$this->images[$i]['dateadded'] = (string) $image->dateadded;
-					$this->images[$i]['format'] = (string) $image->format;
-					$this->images[$i]['sizes'] = array();
+					$this->images['images'][$i]['title'] = (string) $image->title;
+					$this->images['images'][$i]['url'] = (string) $image->url;
+					$this->images['images'][$i]['dateadded'] = (string) $image->dateadded;
+					$this->images['images'][$i]['format'] = (string) $image->format;
+					$this->images['images'][$i]['sizes'] = array();
 					$official = isset($image['official']) ? (string) $image['official'] : false;
-					$this->images[$i]['official'] = $official == 'yes';
+					$this->images['images'][$i]['official'] = $official == 'yes';
 					foreach( $image->sizes->size as $size ) {
-						$this->images[$i]['sizes'][(string)$size['name']] = array(
+						$this->images['images'][$i]['sizes'][(string)$size['name']] = array(
 							'width' => (string) $size['width'],
 							'height' => (string) $size['height'],
 							'url' => (string) $size,
 						);
 					}
-					$this->images[$i]['votes'] = array(
+					$this->images['images'][$i]['votes'] = array(
 						'thumbsup' => (string) $image->votes->thumbsup,
 						'thumbsdown' => (string) $image->votes->thumbsdown,
 					);
