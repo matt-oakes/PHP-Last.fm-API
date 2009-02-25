@@ -29,26 +29,21 @@ class lastfmApiBase {
 			}
 		}
 		
-		if ( $xml = new SimpleXMLElement($xmlstr) ) {
+		$xml = new SimpleXMLElement($xmlstr);
 			
-			if ( $xml['status'] == 'ok' ) {
-				// All is well :)
-				return $xml;
-			}
-			elseif ( $xml['status'] == 'failed' ) {
-				// Woops - error has been returned
-				$this->handleError($xml->error);
-				return FALSE;
-			}
-			else {
-				// I put this in just in case but this really shouldn't happen. Pays to be safe
-				$this->handleError();
-				return FALSE;
-			}
+		if ( $xml['status'] == 'ok' ) {
+			// All is well :)
+			return $xml;
+		}
+		elseif ( $xml['status'] == 'failed' ) {
+			// Woops - error has been returned
+			$this->handleError($xml->error);
+			return FALSE;
 		}
 		else {
+			// I put this in just in case but this really shouldn't happen. Pays to be safe
 			$this->handleError();
-			return false;
+			return FALSE;
 		}
 	}
 	
