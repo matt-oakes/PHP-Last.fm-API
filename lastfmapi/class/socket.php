@@ -6,13 +6,17 @@ class lastfmApiSocket {
 	var $host;
 	var $port;
 	
+	public $error_string;
+	public $error_number;
+	
 	function lastfmApiSocket ($host, $port) {
 		// Set class variables
 		$this->host = $host;
 		$this->port = $port;
 		
 		// Open a connection in the class variable
-		if ( $this->handle = fsockopen($this->host, $this->port) ) {
+		$this->handle = fsockopen($this->host, $this->port, $this->error_number, $this->error_string);
+		if ( $this->handle ) {
 			return TRUE;
 		}
 		else {
