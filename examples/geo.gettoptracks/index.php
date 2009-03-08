@@ -1,5 +1,3 @@
-<h1>Currently broken on lastfm's end. Nothing we can do about it :-(</h1>
-
 <?php
 
 // Include the API
@@ -29,7 +27,7 @@ $geoClass = $apiClass->getPackage($auth, 'geo', $config);
 
 // Setup the variables
 $methodVars = array(
-	'country' => 'gb'
+	'country' => 'united kingdom'
 );
 
 if ( $tracks = $geoClass->getTopTracks($methodVars) ) {
