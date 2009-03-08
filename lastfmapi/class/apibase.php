@@ -59,27 +59,33 @@ class lastfmApiBase {
 		$this->setup();
 		if ( $this->connected == 1 ) {
 			$this->cache = new lastfmApiCache($this->config);
-			if ( $cache = $this->cache->get($vars) ) {
-				// Cache exists
-				$this->response = $cache;
+			if ( !empty($this->cache->error) ) {
+				$this->handleError(96, $this->cache->error);
+				return false;
 			}
 			else {
-				// Cache doesnt exist
-				$url = '/2.0/?';
-				foreach ( $vars as $name => $value ) {
-					$url .= trim(urlencode($name)).'='.trim(urlencode($value)).'&';
+				if ( $cache = $this->cache->get($vars) ) {
+					// Cache exists
+					$this->response = $cache;
 				}
-				$url = substr($url, 0, -1);
-				$url = str_replace(' ', '%20', $url);
+				else {
+					// Cache doesnt exist
+					$url = '/2.0/?';
+					foreach ( $vars as $name => $value ) {
+						$url .= trim(urlencode($name)).'='.trim(urlencode($value)).'&';
+					}
+					$url = substr($url, 0, -1);
+					$url = str_replace(' ', '%20', $url);
+					
+					$out = "GET ".$url." HTTP/1.0\r\n";
+					$out .= "Host: ".$this->host."\r\n";
+					$out .= "\r\n";
+					$this->response = $this->socket->send($out, 'array');
+					$this->cache->set($vars, $this->response);
+				}
 				
-				$out = "GET ".$url." HTTP/1.0\r\n";
-				$out .= "Host: ".$this->host."\r\n";
-				$out .= "\r\n";
-				$this->response = $this->socket->send($out, 'array');
-				$this->cache->set($vars, $this->response);
+				return $this->process_response();
 			}
-			
-			return $this->process_response();
 		}
 		else {
 			return false;
