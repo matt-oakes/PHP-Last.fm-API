@@ -38,21 +38,20 @@ class lastfmApiBase {
 			}
 		}
 		
-		$xml = new SimpleXMLElement($xmlstr);
-			
-		if ( $xml['status'] == 'ok' ) {
+		try {
+			libxml_use_internal_errors(true);
+			$xml = new SimpleXMLElement($xmlstr);
+		} 
+		catch (Exception $e) {
+			// Crap! We got errors!!!
+			$errors = libxml_get_errors();
+			$error = $errors[0];
+			$this->handleError(95, 'SimpleXMLElement error: '.$e->getMessage().': '.$error->message);
+		}
+		
+		if ( !isset($e) ) {
 			// All is well :)
 			return $xml;
-		}
-		elseif ( $xml['status'] == 'failed' ) {
-			// Woops - error has been returned
-			$this->handleError($xml->error);
-			return FALSE;
-		}
-		else {
-			// I put this in just in case but this really shouldn't happen. Pays to be safe
-			$this->handleError();
-			return FALSE;
 		}
 	}
 	
