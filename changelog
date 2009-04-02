@@ -7,6 +7,7 @@
 	+ event.getShouts
 	+ event.shout
 	+ user.getShouts
+	+ user.shout
 * Fixed badly formed XML errors appearing. Will return error 95 when it happens. It is up to the application to
 	decide how to handle the error. Thank you to her035 for the advice on how to fix it and the nice example
 	that was made for me (http://her035.de/lastfm/test/xml.php). Much appreciated!
