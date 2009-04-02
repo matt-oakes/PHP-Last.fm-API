@@ -48,6 +48,42 @@ class lastfmApiEvent extends lastfmApiBase {
 		}
 	}
 	
+	public function getAttendees($methodVars) {
+		// Check for required variables
+		if ( !empty($methodVars['eventId']) ) {
+			$vars = array(
+				'method' => 'event.getattendees',
+				'api_key' => $this->auth->apiKey,
+				'event' => $methodVars['eventId']
+			);
+			
+			if ( $call = $this->apiGetCall($vars) ) {
+				$this->attendees['id'] = (string) $call->attendees['event'];
+				$this->attendees['total'] = (string) $call->attendees['total'];
+				$i = 0;
+				foreach ( $call->attendees->user as $user ) {
+					$this->attendees['attendees'][$i]['name'] = (string) $user->name;
+					$this->attendees['attendees'][$i]['realname'] = (string) $user->realname;
+					$this->attendees['attendees'][$i]['images']['small'] = (string) $user->image[0];
+					$this->attendees['attendees'][$i]['images']['medium'] = (string) $user->image[1];
+					$this->attendees['attendees'][$i]['images']['large'] = (string) $user->image[2];
+					$this->attendees['attendees'][$i]['url'] = (string) $user->url;
+					$i++;
+				}
+				
+				return $this->attendees;
+			}
+			else {
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 91 error if incorrect variables are used
+			$this->handleError(91, 'You must include eventId and status varialbes in the call for this method');
+			return FALSE;
+		}
+	}
+	
 	public function getInfo($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['eventId']) ) {
