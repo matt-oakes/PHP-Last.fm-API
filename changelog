@@ -1,9 +1,11 @@
 == VERSION 0.4 TO VERSION 0.5 ==
++ Added mysql support for the caching system (it still defaults to sqlite as it's lighter and easier to setup)
++ Added new methods:
+	+ artist.getShouts
 * Fixed badly formed XML errors appearing. Will return error 95 when it happens. It is up to the application to
 	decide how to handle the error. Thank you to her035 for the advice on how to fix it and the nice example
 	that was made for me (http://her035.de/lastfm/test/xml.php). Much appreciated!
 * Fixed geo.getTopTracks example so it now works
-+ Added mysql support for the caching system (it still defaults to sqlite as it's lighter and easier to setup)
 
 == VERSION 0.3.1 TO VERSION 0.4 ==
 + Added automatic caching using sqlite (config variables are passed as the 3rd parameter of the getPackage method)
