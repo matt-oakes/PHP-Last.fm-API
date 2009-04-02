@@ -543,6 +543,38 @@ class lastfmApiUser extends lastfmApiBase {
 		}
 	}
 	
+	public function getShouts($methodVars) {
+		if ( !empty($methodVars['user']) ) {
+			$vars = array(
+				'method' => 'user.getshouts',
+				'api_key' => $this->auth->apiKey,
+				'user' => $methodVars['user']
+			);
+			
+			if ( $call = $this->apiGetCall($vars) ) {
+				$this->shouts['user'] = (string)$call->shouts['user'];
+				$this->shouts['total'] = (string)$call->shouts['total'];
+				$i = 0;
+				foreach ( $call->shouts->shout as $shout ) {
+					$this->shouts['shouts'][$i]['body'] = (string)$shout->body;
+					$this->shouts['shouts'][$i]['author'] = (string)$shout->author;
+					$this->shouts['shouts'][$i]['date'] = strtotime((string)$shout->date);
+					$i++;
+				}
+				
+				return $this->shouts;
+			}
+			else {
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 91 error if incorrect variables are used
+			$this->handleError(91, 'You must include artist variable in the call for this method');
+			return FALSE;
+		}
+	}
+	
 	public function getTopAlbums($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['user']) ) {
