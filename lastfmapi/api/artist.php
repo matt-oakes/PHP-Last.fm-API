@@ -1,6 +1,6 @@
 <?php
 
-class lastfmApiArtist extends lastfmApiBase {
+class lastfmApiArtist extends lastfmApi {
 	public $events;
 	public $info;
 	public $similar;

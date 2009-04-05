@@ -1,6 +1,6 @@
 <?php
 
-class lastfmApiGeo extends lastfmApiBase {
+class lastfmApiGeo extends lastfmApi {
 	public $events;
 	public $artists;
 	public $tracks;

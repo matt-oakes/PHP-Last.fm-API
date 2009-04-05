@@ -1,6 +1,6 @@
 <?php
 
-class lastfmApiPlaylist extends lastfmApiBase {
+class lastfmApiPlaylist extends lastfmApi {
 	public $playlist;
 	public $config;
 	

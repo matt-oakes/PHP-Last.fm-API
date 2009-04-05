@@ -1,6 +1,6 @@
 <?php
 
-class lastfmApiEvent extends lastfmApiBase {
+class lastfmApiEvent extends lastfmApi {
 	public $info;
 	public $config;
 	

@@ -1,6 +1,6 @@
 <?php
 
-class lastfmApiTag extends lastfmApiBase {
+class lastfmApiTag extends lastfmApi {
 	public $similar;
 	public $topAlbums;
 	public $topArtists;

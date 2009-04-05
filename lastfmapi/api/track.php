@@ -1,6 +1,6 @@
 <?php
 
-class lastfmApiTrack extends lastfmApiBase {
+class lastfmApiTrack extends lastfmApi {
 	public $info;
 	public $similar;
 	public $topFans;

@@ -1,6 +1,6 @@
 <?php
 
-class lastfmApiTasteometer extends lastfmApiBase {
+class lastfmApiTasteometer extends lastfmApi {
 	public $results;
 	public $config;
 	

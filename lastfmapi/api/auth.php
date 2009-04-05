@@ -1,6 +1,6 @@
 <?php
 
-class lastfmApiAuth extends lastfmApiBase {
+class lastfmApiAuth extends lastfmApi {
 	public $apiKey;
 	public $secret;
 	public $username;

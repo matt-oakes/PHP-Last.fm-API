@@ -1,6 +1,6 @@
 <?php
 
-class lastfmApiUser extends lastfmApiBase {
+class lastfmApiUser extends lastfmApi {
 	public $events;
 	public $friends;
 	public $info;

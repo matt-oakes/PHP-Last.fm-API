@@ -1,6 +1,6 @@
 <?php
 
-class lastfmApiGroup extends lastfmApiBase {
+class lastfmApiGroup extends lastfmApi {
 	public $artists;
 	public $members;
 	public $albums;
