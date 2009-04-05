@@ -1,25 +1,48 @@
 <?php
-
+/**
+ * File that stores api calls for artist api calls
+ * @package apicalls
+ */
+/**
+ * Allows access to the api requests relating to artists
+ * @package apicalls
+ */
 class lastfmApiArtist extends lastfmApi {
-	public $events;
-	public $info;
-	public $similar;
-	public $tags;
-	public $topAlbums;
-	public $topFans;
-	public $topTags;
-	public $topTracks;
+	/**
+	 * Stores the config values set in the call
+	 * @access public
+	 * @var array
+	 */
 	public $config;
-	
+	/**
+	 * Stores the auth variables used in all api calls
+	 * @access private
+	 * @var array
+	 */
 	private $auth;
+	/**
+	 * States if the user has full authentication to use api requests that modify data
+	 * @access private
+	 * @var boolean
+	 */
 	private $fullAuth;
 	
+	/**
+	 * @param array $auth Passes the authentication variables
+	 * @param array $fullAuth A boolean value stating if the user has full authentication or not
+	 * @param array $config An array of config variables related to caching and other features
+	 */
 	function __construct($auth, $fullAuth, $config) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
 		$this->config = $config;
 	}
 	
+	/**
+	 * Tag an artist using a list of user supplied tags. (Requires full auth)
+	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>tags</i>
+	 * @return boolean
+	 */
 	public function addTags($methodVars) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
@@ -68,6 +91,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get a list of upcoming events for this artist.
+	 * @param array $methodVars An array with the following required values: <i>artist</i>
+	 * @return array
+	 */
 	public function getEvents($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['artist']) ) {
@@ -81,38 +109,38 @@ class lastfmApiArtist extends lastfmApi {
 				if ( $call->events['total'] != 0 ) {
 					$i = 0;
 					foreach ( $call->events->event as $event ) {
-						$this->events[$i]['id'] = (string) $event->id;
-						$this->events[$i]['title'] = (string) $event->title;
+						$events[$i]['id'] = (string) $event->id;
+						$events[$i]['title'] = (string) $event->title;
 						$ii = 0;
 						foreach ( $event->artists->artist as $artist ) {
-							$this->events[$i]['artists'][$ii] = (string) $artist;
+							$events[$i]['artists'][$ii] = (string) $artist;
 							$ii++;
 						}
-						$this->events[$i]['headliner'] = (string) $event->artists->headliner;
-						$this->events[$i]['venue']['name'] = (string) $event->venue->name;
-						$this->events[$i]['venue']['location']['city'] = (string) $event->venue->location->city;
-						$this->events[$i]['venue']['location']['country'] = (string) $event->venue->location->country;
-						$this->events[$i]['venue']['location']['street'] = (string) $event->venue->location->street;
-						$this->events[$i]['venue']['location']['postcode'] = (string) $event->venue->location->postalcode;
+						$events[$i]['headliner'] = (string) $event->artists->headliner;
+						$events[$i]['venue']['name'] = (string) $event->venue->name;
+						$events[$i]['venue']['location']['city'] = (string) $event->venue->location->city;
+						$events[$i]['venue']['location']['country'] = (string) $event->venue->location->country;
+						$events[$i]['venue']['location']['street'] = (string) $event->venue->location->street;
+						$events[$i]['venue']['location']['postcode'] = (string) $event->venue->location->postalcode;
 						$geopoint =  $event->venue->location->children('http://www.w3.org/2003/01/geo/wgs84_pos#');
-						$this->events[$i]['venue']['location']['geopoint']['lat'] = (string) $geopoint->point->lat;
-						$this->events[$i]['venue']['location']['geopoint']['long'] = (string) $geopoint->point->long;
-						$this->events[$i]['venue']['location']['timezone'] = (string) $event->venue->location->timezone;
-						$this->events[$i]['venue']['url'] = (string) $call->venue->url;
-						$this->events[$i]['startdate'] = strtotime(trim((string) $event->startDate));
-						$this->events[$i]['description'] = (string) $event->description;
-						$this->events[$i]['image']['small'] = (string) $event->image[0];
-						$this->events[$i]['image']['mendium'] = (string) $event->image[1];
-						$this->events[$i]['image']['large'] = (string) $event->image[2];
-						$this->events[$i]['attendance'] = (string) $event->attendance;
-						$this->events[$i]['reviews'] = (string) $event->reviews;
-						$this->events[$i]['tag'] = (string) $event->tag;
-						$this->events[$i]['url'] = (string) $event->url;
+						$events[$i]['venue']['location']['geopoint']['lat'] = (string) $geopoint->point->lat;
+						$events[$i]['venue']['location']['geopoint']['long'] = (string) $geopoint->point->long;
+						$events[$i]['venue']['location']['timezone'] = (string) $event->venue->location->timezone;
+						$events[$i]['venue']['url'] = (string) $call->venue->url;
+						$events[$i]['startdate'] = strtotime(trim((string) $event->startDate));
+						$events[$i]['description'] = (string) $event->description;
+						$events[$i]['image']['small'] = (string) $event->image[0];
+						$events[$i]['image']['mendium'] = (string) $event->image[1];
+						$events[$i]['image']['large'] = (string) $event->image[2];
+						$events[$i]['attendance'] = (string) $event->attendance;
+						$events[$i]['reviews'] = (string) $event->reviews;
+						$events[$i]['tag'] = (string) $event->tag;
+						$events[$i]['url'] = (string) $event->url;
 						
 						$i++;
 					}
 					
-					return $this->events;
+					return $events;
 				}
 				else {
 					// No events are found
@@ -131,6 +159,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get Images for this artist in a variety of sizes.
+	 * @param array $methodVars An array with the following required values: <i>artist</i> and optional values: <i>page</i>, <i>limit</i>, <i>order</i>
+	 * @return array
+	 */
 	public function getImages($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['artist']) ) {
@@ -150,35 +183,35 @@ class lastfmApiArtist extends lastfmApi {
 			}
 			
 			if ( $call = $this->apiGetCall($vars) ) {
-				$this->images = array();
+				$images = array();
 				$i = 0;
-				$this->images['artist'] = (string)$call->images['artist'];
-				$this->images['page'] = (string)$call->images['page'];
-				$this->images['totalpages'] = (string)$call->images['totalpages'];
-				$this->images['total'] = (string)$call->images['total'];
+				$images['artist'] = (string)$call->images['artist'];
+				$images['page'] = (string)$call->images['page'];
+				$images['totalpages'] = (string)$call->images['totalpages'];
+				$images['total'] = (string)$call->images['total'];
 				
 				foreach ( $call->images->image as $image ) {
-					$this->images['images'][$i]['title'] = (string) $image->title;
-					$this->images['images'][$i]['url'] = (string) $image->url;
-					$this->images['images'][$i]['dateadded'] = (string) $image->dateadded;
-					$this->images['images'][$i]['format'] = (string) $image->format;
-					$this->images['images'][$i]['sizes'] = array();
+					$images['images'][$i]['title'] = (string) $image->title;
+					$images['images'][$i]['url'] = (string) $image->url;
+					$images['images'][$i]['dateadded'] = (string) $image->dateadded;
+					$images['images'][$i]['format'] = (string) $image->format;
+					$images['images'][$i]['sizes'] = array();
 					$official = isset($image['official']) ? (string) $image['official'] : false;
-					$this->images['images'][$i]['official'] = $official == 'yes';
+					$images['images'][$i]['official'] = $official == 'yes';
 					foreach( $image->sizes->size as $size ) {
-						$this->images['images'][$i]['sizes'][(string)$size['name']] = array(
+						$images['images'][$i]['sizes'][(string)$size['name']] = array(
 							'width' => (string) $size['width'],
 							'height' => (string) $size['height'],
 							'url' => (string) $size,
 						);
 					}
-					$this->images['images'][$i]['votes'] = array(
+					$images['images'][$i]['votes'] = array(
 						'thumbsup' => (string) $image->votes->thumbsup,
 						'thumbsdown' => (string) $image->votes->thumbsdown,
 					);
 					$i++;
 				}
-				return $this->images;
+				return $images;
 			}
 			else {
 				return FALSE;
@@ -191,6 +224,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get the metadata for an artist on Last.fm. Includes biography.
+	 * @param array $methodVars An array with the following values: <i>artist</i> or <i>mbid</i>
+	 * @return array
+	 */
 	public function getInfo($methodVars) {
 		$vars = array(
 			'method' => 'artist.getinfo',
@@ -204,46 +242,51 @@ class lastfmApiArtist extends lastfmApi {
 		}
 		
 		if ( $call = $this->apiGetCall($vars) ) {
-			$this->info['name'] = (string) $call->artist->name;
-			$this->info['mbid'] = (string) $call->artist->mbid;
-			$this->info['url'] = (string) $call->artist->url;
-			$this->info['image']['small'] = (string) $call->artist->image;
-			$this->info['image']['medium'] = (string) $call->artist->image[1];
-			$this->info['image']['large'] = (string) $call->artist->image[2];
-			$this->info['streamable'] = (string) $call->artist->streamable;
-			$this->info['stats']['listeners'] = (string) $call->artist->stats->listeners;
-			$this->info['stats']['playcount'] = (string) $call->artist->stats->plays;
+			$info['name'] = (string) $call->artist->name;
+			$info['mbid'] = (string) $call->artist->mbid;
+			$info['url'] = (string) $call->artist->url;
+			$info['image']['small'] = (string) $call->artist->image;
+			$info['image']['medium'] = (string) $call->artist->image[1];
+			$info['image']['large'] = (string) $call->artist->image[2];
+			$info['streamable'] = (string) $call->artist->streamable;
+			$info['stats']['listeners'] = (string) $call->artist->stats->listeners;
+			$info['stats']['playcount'] = (string) $call->artist->stats->plays;
 			$i = 0;
 			foreach ( $call->artist->similar->artist as $artist ) {
-				$this->info['similar'][$i]['name'] = (string) $artist->name;
-				$this->info['similar'][$i]['url'] = (string) $artist->url;
-				$this->info['similar'][$i]['image']['small'] = (string) $artist->image;
-				$this->info['similar'][$i]['image']['medium'] = (string) $artist->image[1];
-				$this->info['similar'][$i]['image']['large'] = (string) $artist->image[2];
+				$info['similar'][$i]['name'] = (string) $artist->name;
+				$info['similar'][$i]['url'] = (string) $artist->url;
+				$info['similar'][$i]['image']['small'] = (string) $artist->image;
+				$info['similar'][$i]['image']['medium'] = (string) $artist->image[1];
+				$info['similar'][$i]['image']['large'] = (string) $artist->image[2];
 				$i++;
 			}
 			if ( count($call->artist->tags->tag) > 0 ) {
 				$i = 0;
 				foreach ( $call->artist->tags->tag as $tag ) {
-					$this->info['tags'][$i]['name'] = (string) $tag->name;
-					$this->info['tags'][$i]['url'] = (string) $tag->url;
+					$info['tags'][$i]['name'] = (string) $tag->name;
+					$info['tags'][$i]['url'] = (string) $tag->url;
 					$i++;
 				}
 			}
 			else {
-				$this->info['tags'] = FALSE;
+				$info['tags'] = FALSE;
 			}
-			$this->info['bio']['published'] = (string) $call->artist->bio->published;
-			$this->info['bio']['summary'] = (string) $call->artist->bio->summary;
-			$this->info['bio']['content'] = (string) $call->artist->bio->content;
+			$info['bio']['published'] = (string) $call->artist->bio->published;
+			$info['bio']['summary'] = (string) $call->artist->bio->summary;
+			$info['bio']['content'] = (string) $call->artist->bio->content;
 			
-			return $this->info;
+			return $info;
 		}
 		else {
 			return FALSE;
 		}
 	}
 	
+	/**
+	 * Get shouts for this artist.
+	 * @param array $methodVars An array with the following required values: <i>artist</i>
+	 * @return array
+	 */
 	public function getShouts($methodVars) {
 		if ( !empty($methodVars['artist']) ) {
 			$vars = array(
@@ -253,17 +296,17 @@ class lastfmApiArtist extends lastfmApi {
 			);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
-				$this->shouts['artist'] = (string)$call->shouts['artist'];
-				$this->shouts['total'] = (string)$call->shouts['total'];
+				$shouts['artist'] = (string)$call->shouts['artist'];
+				$shouts['total'] = (string)$call->shouts['total'];
 				$i = 0;
 				foreach ( $call->shouts->shout as $shout ) {
-					$this->shouts['shouts'][$i]['body'] = (string)$shout->body;
-					$this->shouts['shouts'][$i]['author'] = (string)$shout->author;
-					$this->shouts['shouts'][$i]['date'] = strtotime((string)$shout->date);
+					$shouts['shouts'][$i]['body'] = (string)$shout->body;
+					$shouts['shouts'][$i]['author'] = (string)$shout->author;
+					$shouts['shouts'][$i]['date'] = strtotime((string)$shout->date);
 					$i++;
 				}
 				
-				return $this->shouts;
+				return $shouts;
 			}
 			else {
 				return FALSE;
@@ -276,6 +319,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get all the artists similar to this artist
+	 * @param array $methodVars An array with the following required value: <i>artist</i> and optional value: <i>limit</i>, <i></i>
+	 * @return array
+	 */
 	public function getSimilar($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['artist']) ) {
@@ -289,18 +337,18 @@ class lastfmApiArtist extends lastfmApi {
 			}
 			
 			if ( $call = $this->apiGetCall($vars) ) {
-				$this->similar = '';
+				$similar = '';
 				$i = 0;
 				foreach ( $call->similarartists->artist as $artist ) {
-					$this->similar[$i]['name'] = (string) $artist->name;
-					$this->similar[$i]['mbid'] = (string) $artist->mbid;
-					$this->similar[$i]['match'] = (string) $artist->match;
-					$this->similar[$i]['url'] = (string) $artist->url;
-					$this->similar[$i]['image'] = (string) $artist->image;
+					$similar[$i]['name'] = (string) $artist->name;
+					$similar[$i]['mbid'] = (string) $artist->mbid;
+					$similar[$i]['match'] = (string) $artist->match;
+					$similar[$i]['url'] = (string) $artist->url;
+					$similar[$i]['image'] = (string) $artist->image;
 					$i++;
 				}
 				
-				return $this->similar;
+				return $similar;
 			}
 			else {
 				return FALSE;
@@ -313,6 +361,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get the tags applied by an individual user to an artist on Last.fm. (Requires full auth)
+	 * @param array $methodVars An array with the following required values: <i>artist</i>
+	 * @return array
+	 */
 	public function getTags($methodVars) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
@@ -331,12 +384,12 @@ class lastfmApiArtist extends lastfmApi {
 					if ( count($call->tags->tag) > 0 ) {
 						$i = 0;
 						foreach ( $call->tags[0]->tag as $tag ) {
-							$this->tags[$i]['name'] = (string) $tag->name;
-							$this->tags[$i]['url'] = (string) $tag->url;
+							$tags[$i]['name'] = (string) $tag->name;
+							$tags[$i]['url'] = (string) $tag->url;
 							$i++;
 						}
 						
-						return $this->tags;
+						return $tags;
 					}
 					else {
 						// No tagsare found
@@ -361,6 +414,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get the top albums for an artist on Last.fm, ordered by popularity
+	 * @param array $methodVars An array with the following required values: <i>artist</i>
+	 * @return array
+	 */
 	public function getTopAlbums($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['artist']) ) {
@@ -374,18 +432,18 @@ class lastfmApiArtist extends lastfmApi {
 				if ( count($call->topalbums->album) > 0 ) {
 					$i = 0;
 					foreach ( $call->topalbums->album as $album ) {
-						$this->topAlbums[$i]['rank'] = (string) $album['rank'];
-						$this->topAlbums[$i]['name'] = (string) $album->name;
-						$this->topAlbums[$i]['mbid'] = (string) $album->mbid;
-						$this->topAlbums[$i]['playcount'] = (string) $album->playcount;
-						$this->topAlbums[$i]['url'] = (string) $album->url;
-						$this->topAlbums[$i]['image']['small'] = (string) $album->image[0];
-						$this->topAlbums[$i]['image']['medium'] = (string) $album->image[1];
-						$this->topAlbums[$i]['image']['large'] = (string) $album->image[2];
+						$topAlbums[$i]['rank'] = (string) $album['rank'];
+						$topAlbums[$i]['name'] = (string) $album->name;
+						$topAlbums[$i]['mbid'] = (string) $album->mbid;
+						$topAlbums[$i]['playcount'] = (string) $album->playcount;
+						$topAlbums[$i]['url'] = (string) $album->url;
+						$topAlbums[$i]['image']['small'] = (string) $album->image[0];
+						$topAlbums[$i]['image']['medium'] = (string) $album->image[1];
+						$topAlbums[$i]['image']['large'] = (string) $album->image[2];
 						$i++;
 					}
 					
-					return $this->topAlbums;
+					return $topAlbums;
 				}
 				else {
 					// No tagsare found
@@ -404,6 +462,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get the top fans for an artist on Last.fm, based on listening data
+	 * @param array $methodVars An array with the following required values: <i>artist</i>
+	 * @return array
+	 */
 	public function getTopFans($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['artist']) ) {
@@ -417,16 +480,16 @@ class lastfmApiArtist extends lastfmApi {
 				if ( count($call->topfans->user) > 0 ) {
 					$i = 0;
 					foreach ( $call->topfans->user as $user ) {
-						$this->topFans[$i]['name'] = (string) $user->name;
-						$this->topFans[$i]['url'] = (string) $user->url;
-						$this->topFans[$i]['image']['small'] = (string) $user->image[0];
-						$this->topFans[$i]['image']['medium'] = (string) $user->image[1];
-						$this->topFans[$i]['image']['large'] = (string) $user->image[2];
-						$this->topFans[$i]['weight'] = (string) $user->weight;
+						$topFans[$i]['name'] = (string) $user->name;
+						$topFans[$i]['url'] = (string) $user->url;
+						$topFans[$i]['image']['small'] = (string) $user->image[0];
+						$topFans[$i]['image']['medium'] = (string) $user->image[1];
+						$topFans[$i]['image']['large'] = (string) $user->image[2];
+						$topFans[$i]['weight'] = (string) $user->weight;
 						$i++;
 					}
 					
-					return $this->topFans;
+					return $topFans;
 				}
 				else {
 					// No tagsare found
@@ -445,6 +508,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get the top tags for an artist on Last.fm, ordered by popularity
+	 * @param array $methodVars An array with the following required values: <i>artist</i>
+	 * @return array
+	 */
 	public function getTopTags($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['artist']) ) {
@@ -458,12 +526,12 @@ class lastfmApiArtist extends lastfmApi {
 				if ( count($call->toptags->tag) > 0 ) {
 					$i = 0;
 					foreach ( $call->toptags->tag as $tag ) {
-						$this->topTags[$i]['name'] = (string) $tag->name;
-						$this->topTags[$i]['url'] = (string) $tag->url;
+						$topTags[$i]['name'] = (string) $tag->name;
+						$topTags[$i]['url'] = (string) $tag->url;
 						$i++;
 					}
 					
-					return $this->topTags;
+					return $topTags;
 				}
 				else {
 					// No tagsare found
@@ -482,6 +550,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get the top tracks by an artist on Last.fm, ordered by popularity
+	 * @param array $methodVars An array with the following required values: <i>artist</i>
+	 * @return array
+	 */
 	public function getTopTracks($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['artist']) ) {
@@ -495,18 +568,18 @@ class lastfmApiArtist extends lastfmApi {
 				if ( count($call->toptracks->track) > 0 ) {
 					$i = 0;
 					foreach ( $call->toptracks->track as $tracks ) {
-						$this->topTracks[$i]['rank'] = (string) $tracks['rank'];
-						$this->topTracks[$i]['name'] = (string) $tracks->name;
-						$this->topTracks[$i]['playcount'] = (string) $tracks->playcount;
-						$this->topTracks[$i]['streamable'] = (string) $tracks->streamable;
-						$this->topTracks[$i]['url'] = (string) $tracks->url;
-						$this->topTracks[$i]['image']['small'] = (string) $tracks->image[0];
-						$this->topTracks[$i]['image']['medium'] = (string) $tracks->image[1];
-						$this->topTracks[$i]['image']['large'] = (string) $tracks->image[2];
+						$topTracks[$i]['rank'] = (string) $tracks['rank'];
+						$topTracks[$i]['name'] = (string) $tracks->name;
+						$topTracks[$i]['playcount'] = (string) $tracks->playcount;
+						$topTracks[$i]['streamable'] = (string) $tracks->streamable;
+						$topTracks[$i]['url'] = (string) $tracks->url;
+						$topTracks[$i]['image']['small'] = (string) $tracks->image[0];
+						$topTracks[$i]['image']['medium'] = (string) $tracks->image[1];
+						$topTracks[$i]['image']['large'] = (string) $tracks->image[2];
 						$i++;
 					}
 					
-					return $this->topTracks;
+					return $topTracks;
 				}
 				else {
 					// No tagsare found
@@ -525,6 +598,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Remove a user's tag from an artist. (Requires full auth)
+	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>tag</i>
+	 * @return boolean
+	 */
 	public function removeTag($methodVars) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
@@ -560,6 +638,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Search for an artist by name. Returns artist matches sorted by relevance
+	 * @param array $methodVars An array with the following required value: <i>artist</i> and optional values: <i>limite</i>, <i>page</i>
+	 * @return array
+	 */
 	public function search($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['artist']) ) {
@@ -578,21 +661,21 @@ class lastfmApiArtist extends lastfmApi {
 			if ( $call = $this->apiGetCall($vars) ) {
 				$opensearch = $call->results->children('http://a9.com/-/spec/opensearch/1.1/');
 				if ( $opensearch->totalResults > 0 ) {
-					$this->searchResults['totalResults'] = (string) $opensearch->totalResults;
-					$this->searchResults['startIndex'] = (string) $opensearch->startIndex;
-					$this->searchResults['itemsPerPage'] = (string) $opensearch->itemsPerPage;
+					$searchResults['totalResults'] = (string) $opensearch->totalResults;
+					$searchResults['startIndex'] = (string) $opensearch->startIndex;
+					$searchResults['itemsPerPage'] = (string) $opensearch->itemsPerPage;
 					$i = 0;
 					foreach ( $call->results->artistmatches->artist as $artist ) {
-						$this->searchResults['results'][$i]['name'] = (string) $artist->name;
-						$this->searchResults['results'][$i]['mbid'] = (string) $artist->mbid;
-						$this->searchResults['results'][$i]['url'] = (string) $artist->url;
-						$this->searchResults['results'][$i]['streamable'] = (string) $artist->streamable;
-						$this->searchResults['results'][$i]['image']['small'] = (string) $artist->image_small;
-						$this->searchResults['results'][$i]['image']['large'] = (string) $artist->image;
+						$searchResults['results'][$i]['name'] = (string) $artist->name;
+						$searchResults['results'][$i]['mbid'] = (string) $artist->mbid;
+						$searchResults['results'][$i]['url'] = (string) $artist->url;
+						$searchResults['results'][$i]['streamable'] = (string) $artist->streamable;
+						$searchResults['results'][$i]['image']['small'] = (string) $artist->image_small;
+						$searchResults['results'][$i]['image']['large'] = (string) $artist->image;
 						$i++;
 					}
 					
-					return $this->searchResults;
+					return $searchResults;
 				}
 				else {
 					// No tagsare found
@@ -611,6 +694,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Share an artist with Last.fm users or other friends. (Requires full auth)
+	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>recipient</i> and optional values: <i>message</i>
+	 * @return boolean
+	 */
 	public function share($methodVars) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
@@ -649,6 +737,11 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Shout in this artist's shoutbox
+	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>message</i>
+	 * @return boolean
+	 */
 	public function shout($methodVars) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
