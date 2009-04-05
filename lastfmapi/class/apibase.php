@@ -1,17 +1,59 @@
 <?php
-
-class lastfmApiBase {
+/**
+ * Stores the methods used by all api calls
+ * @package base
+ */
+class lastfmApi {
+	/*
+	 * Stores error details
+	 * @access public
+	 * @var array has two elements: <i>code</i> and <i>desc</i> which stores the error code and description respectivly
+	 */
 	public $error;
+	/*
+	 * Stores the connection status
+	 * @access public
+	 * @var boolean
+	 */
 	public $connected;
 	
+	/*
+	 * Stores the host name
+	 * @access private
+	 * @var string
+	 */
 	private $host;
+	/*
+	 * Stores the port number
+	 * @access private
+	 * @var string
+	 */
 	private $port;
-	private $url;
+	/*
+	 * Stores the raw api call response
+	 * @access private
+	 * @var string
+	 */
 	private $response;
+	/*
+	 * Stores the socket class
+	 * @access private
+	 * @var class
+	 */
 	private $socket;
+	/*
+	 * Stores the cache class
+	 * @access private
+	 * @var class
+	 */
 	private $cache;
 	
-	function setup() {
+	/*
+	 * Setup the socket to get the raw api call return
+	 * @access private
+	 * @return boolean
+	 */
+	private function setup() {
 		$this->host = 'ws.audioscrobbler.com';
 		$this->port = 80;
 		$this->connected = 0;
@@ -26,7 +68,12 @@ class lastfmApiBase {
 		}
 	}
 	
-	function process_response() {
+	/*
+	 * Turns the raw response into an xml object
+	 * @access private
+	 * @return object
+	 */
+	private function process_response() {
 		$xmlstr = '';
 		$record = 0;
 		foreach ( $this->response as $line ) {
@@ -55,7 +102,12 @@ class lastfmApiBase {
 		}
 	}
 	
-	function apiGetCall($vars) {
+	/*
+	 * Used in api calls that do not require write access. Returns an xml object
+	 * @access protected
+	 * @return object
+	 */
+	protected function apiGetCall($vars) {
 		$this->setup();
 		if ( $this->connected == 1 ) {
 			$this->cache = new lastfmApiCache($this->config);
@@ -92,7 +144,12 @@ class lastfmApiBase {
 		}
 	}
 	
-	function apiPostCall($vars, $return = 'bool') {
+	/*
+	 * Used in api calls that require write access. Returns an xml object
+	 * @access protected
+	 * @return object
+	 */
+	protected function apiPostCall($vars, $return = 'bool') {
 		$this->setup();
 		if ( $this->connected == 1 ) {
 			$url = '/2.0/';
@@ -119,7 +176,12 @@ class lastfmApiBase {
 		}
 	}
 	
-	function handleError($error = '', $customDesc = '') {
+	/*
+	 * Processes and error and writes to the public variable $error
+	 * @access protected
+	 * @return void
+	 */
+	protected function handleError($error = '', $customDesc = '') {
 		if ( !empty($error) && is_object($error) ) {
 			// Fail with error code
 			$this->error['code'] = $error['code'];
@@ -137,7 +199,12 @@ class lastfmApiBase {
 		}
 	}
 	
-	function apiSig($secret, $vars) {
+	/*
+	 * Generates the api signature for use in api calls that require write access
+	 * @access protected
+	 * @return string
+	 */
+	protected function apiSig($secret, $vars) {
 		ksort($vars);
 		
 		$sig = '';
@@ -150,7 +217,12 @@ class lastfmApiBase {
 		return $sig;
 	}
 	
-	function getPackage($auth, $package, $config = '') {
+	/*
+	 * Used to return the correct package to allow access to the api calls for that package
+	 * @access public
+	 * @return class
+	 */
+	public function getPackage($auth, $package, $config = '') {
 		if ( $config == '' ) {
 			$config = array(
 				'enabled' => false
