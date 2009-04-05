@@ -1,20 +1,48 @@
 <?php
-
+/**
+ * File that stores api calls for geographical api calls
+ * @package apicalls
+ */
+/**
+ * Allows access to the api requests relating to geographical date
+ * @package apicalls
+ */
 class lastfmApiGeo extends lastfmApi {
-	public $events;
-	public $artists;
-	public $tracks;
+	/**
+	 * Stores the config values set in the call
+	 * @access public
+	 * @var array
+	 */
 	public $config;
-	
+	/**
+	 * Stores the auth variables used in all api calls
+	 * @access private
+	 * @var array
+	 */
 	private $auth;
+	/**
+	 * States if the user has full authentication to use api requests that modify data
+	 * @access private
+	 * @var boolean
+	 */
 	private $fullAuth;
 	
+	/**
+	 * @param array $auth Passes the authentication variables
+	 * @param array $fullAuth A boolean value stating if the user has full authentication or not
+	 * @param array $config An array of config variables related to caching and other features
+	 */
 	function __construct($auth, $fullAuth, $config) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
 		$this->config = $config;
 	}
 	
+	/**
+	 * Get all events in a specific location by country or city name.
+	 * @param array $methodVars An array with the following required values: <i>location</i> and optional values: <i>distance</i>, <i>page</i>
+	 * @return array
+	 */
 	public function getEvents($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['location']) ) {
@@ -77,6 +105,11 @@ class lastfmApiGeo extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get the most popular artists on Last.fm by country
+	 * @param array $methodVars An array with the following required values: <i>country</i>
+	 * @return array
+	 */
 	public function getTopArtists($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['country']) ) {
@@ -114,6 +147,11 @@ class lastfmApiGeo extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get the most popular tracks on Last.fm last week by country
+	 * @param array $methodVars An array with the following required values: <i>country</i>
+	 * @return array
+	 */
 	public function getTopTracks($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['country']) ) {
