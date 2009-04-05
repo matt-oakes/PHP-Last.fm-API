@@ -1,11 +1,11 @@
 <?php
 /**
  * File that stores api calls for album api calls
- * @package album
+ * @package apicalls
  */
 /**
  * Allows access to the api requests relating to albums
- * @package album
+ * @package apicalls
  */
 class lastfmApiAlbum extends lastfmApi {
 	/**
