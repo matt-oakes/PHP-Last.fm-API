@@ -1,18 +1,48 @@
 <?php
-
+/**
+ * File that stores api calls for tasteometer api calls
+ * @package apicalls
+ */
+/**
+ * Allows access to the api requests relating to the tasteometer
+ * @package apicalls
+ */
 class lastfmApiTasteometer extends lastfmApi {
-	public $results;
+	/**
+	 * Stores the config values set in the call
+	 * @access public
+	 * @var array
+	 */
 	public $config;
-	
+	/**
+	 * Stores the auth variables used in all api calls
+	 * @access private
+	 * @var array
+	 */
 	private $auth;
+	/**
+	 * States if the user has full authentication to use api requests that modify data
+	 * @access private
+	 * @var boolean
+	 */
 	private $fullAuth;
 	
+	/**
+	 * @param array $auth Passes the authentication variables
+	 * @param array $fullAuth A boolean value stating if the user has full authentication or not
+	 * @param array $config An array of config variables related to caching and other features
+	 */
 	function __construct($auth, $fullAuth, $config) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
 		$this->config = $config;
 	}
 	
+	/**
+	 * Get a Tasteometer score from two inputs, along with a list of shared artists. If the input is a User or a Myspace URL, some additional information is returned
+	 * @param array $methodVars An array with two sub arrays <i>(1 and 2) both containing the required variables: <i>type ('user' | 'artists' | 'myspace')</i> and <i>value ([Last.fm username] | [Comma-separated artist names] | [MySpace profile URL])</i>
+	 * @return array
+	 */
 	public function compare($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars[1]['type']) && !empty($methodVars[1]['value']) &&  !empty($methodVars[2]['type']) && !empty($methodVars[2]['value']) ) {	
@@ -48,17 +78,17 @@ class lastfmApiTasteometer extends lastfmApi {
 			);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
-				$this->result = '';
+				$result = '';
 				
-				$this->result['score'] = (string) $call->comparison->result->score;
-				$this->result['matches'] = (string) $call->comparison->result->artists['matches'];
+				$result['score'] = (string) $call->comparison->result->score;
+				$result['matches'] = (string) $call->comparison->result->artists['matches'];
 				$i = 0;
 				foreach ( $call->comparison->result->artists->artist as $artist ) {
-					$this->result['artists'][$i]['name'] = (string) $artist->name;
-					$this->result['artists'][$i]['url'] = (string) $artist->url;
-					$this->result['artists'][$i]['image']['small'] = (string) $artist->image[2];
-					$this->result['artists'][$i]['image']['medium'] = (string) $artist->image[1];
-					$this->result['artists'][$i]['image']['large'] = (string) $artist->image[0];
+					$result['artists'][$i]['name'] = (string) $artist->name;
+					$result['artists'][$i]['url'] = (string) $artist->url;
+					$result['artists'][$i]['image']['small'] = (string) $artist->image[2];
+					$result['artists'][$i]['image']['medium'] = (string) $artist->image[1];
+					$result['artists'][$i]['image']['large'] = (string) $artist->image[0];
 					$i++;
 				}
 				
@@ -66,47 +96,47 @@ class lastfmApiTasteometer extends lastfmApi {
 				$countMyspace = 0;
 				switch ( $methodVars[1]['type'] ) {
 					case 'user':
-						$this->result['inputOne']['type'] = 'user';
-						$this->result['inputOne']['name'] = (string) $call->comparison->input->user[$countUser]->name;
-						$this->result['inputOne']['url'] = (string) $call->comparison->input->user[$countUser]->url;
-						$this->result['inputOne']['image']['small'] = (string) $call->comparison->input->user[$countUser]->image[2];
-						$this->result['inputOne']['image']['medium'] = (string) $call->comparison->input->user[$countUser]->image[1];
-						$this->result['inputOne']['image']['large'] = (string) $call->comparison->input->user[$countUser]->image[0];
+						$result['inputOne']['type'] = 'user';
+						$result['inputOne']['name'] = (string) $call->comparison->input->user[$countUser]->name;
+						$result['inputOne']['url'] = (string) $call->comparison->input->user[$countUser]->url;
+						$result['inputOne']['image']['small'] = (string) $call->comparison->input->user[$countUser]->image[2];
+						$result['inputOne']['image']['medium'] = (string) $call->comparison->input->user[$countUser]->image[1];
+						$result['inputOne']['image']['large'] = (string) $call->comparison->input->user[$countUser]->image[0];
 						$countUser++;
 					break;
 					case 'artists':
-						$this->result['inputOne']['type'] = 'artists';
+						$result['inputOne']['type'] = 'artists';
 					break;
 					case 'myspace':
-						$this->result['inputOne']['type'] = 'myspace';
-						$this->result['inputOne']['url'] = (string) $call->comparison->input->myspace[$countMyspace]->url;
-						$this->result['inputOne']['image'] = (string) $call->comparison->input->myspace[$countMyspace]->image;
+						$result['inputOne']['type'] = 'myspace';
+						$result['inputOne']['url'] = (string) $call->comparison->input->myspace[$countMyspace]->url;
+						$result['inputOne']['image'] = (string) $call->comparison->input->myspace[$countMyspace]->image;
 						$countMyspace++;
 					break;
 				}
 				
 				switch ( $methodVars[2]['type'] ) {
 					case 'user':
-						$this->result['inputTwo']['type'] = 'user';
-						$this->result['inputTwo']['name'] = (string) $call->comparison->input->user[$countUser]->name;
-						$this->result['inputTwo']['url'] = (string) $call->comparison->input->user[$countUser]->url;
-						$this->result['inputTwo']['image']['small'] = (string) $call->comparison->input->user[$countUser]->image[2];
-						$this->result['inputTwo']['image']['medium'] = (string) $call->comparison->input->user[$countUser]->image[1];
-						$this->result['inputTwo']['image']['large'] = (string) $call->comparison->input->user[$countUser]->image[0];
+						$result['inputTwo']['type'] = 'user';
+						$result['inputTwo']['name'] = (string) $call->comparison->input->user[$countUser]->name;
+						$result['inputTwo']['url'] = (string) $call->comparison->input->user[$countUser]->url;
+						$result['inputTwo']['image']['small'] = (string) $call->comparison->input->user[$countUser]->image[2];
+						$result['inputTwo']['image']['medium'] = (string) $call->comparison->input->user[$countUser]->image[1];
+						$result['inputTwo']['image']['large'] = (string) $call->comparison->input->user[$countUser]->image[0];
 						$countUser++;
 					break;
 					case 'artists':
-						$this->result['inputTwo']['type'] = 'artists';
+						$result['inputTwo']['type'] = 'artists';
 					break;
 					case 'myspace':
-						$this->result['inputTwo']['type'] = 'myspace';
-						$this->result['inputTwo']['url'] = (string) $call->comparison->input->myspace[$countMyspace]->url;
-						$this->result['inputTwo']['image'] = (string) $call->comparison->input->myspace[$countMyspace]->image;
+						$result['inputTwo']['type'] = 'myspace';
+						$result['inputTwo']['url'] = (string) $call->comparison->input->myspace[$countMyspace]->url;
+						$result['inputTwo']['image'] = (string) $call->comparison->input->myspace[$countMyspace]->image;
 						$countMyspace++;
 					break;
 				}
 				
-				return $this->result;
+				return $result;
 			}
 			else {
 				return FALSE;

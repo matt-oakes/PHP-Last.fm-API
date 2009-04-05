@@ -1,18 +1,48 @@
 <?php
-
+/**
+ * File that stores api calls for user playlists api calls
+ * @package apicalls
+ */
+/**
+ * Allows access to the api requests relating to user playlists
+ * @package apicalls
+ */
 class lastfmApiPlaylist extends lastfmApi {
-	public $playlist;
+	/**
+	 * Stores the config values set in the call
+	 * @access public
+	 * @var array
+	 */
 	public $config;
-	
+	/**
+	 * Stores the auth variables used in all api calls
+	 * @access private
+	 * @var array
+	 */
 	private $auth;
+	/**
+	 * States if the user has full authentication to use api requests that modify data
+	 * @access private
+	 * @var boolean
+	 */
 	private $fullAuth;
 	
+	/**
+	 * @param array $auth Passes the authentication variables
+	 * @param array $fullAuth A boolean value stating if the user has full authentication or not
+	 * @param array $config An array of config variables related to caching and other features
+	 */
 	function __construct($auth, $fullAuth, $config) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
 		$this->config = $config;
 	}
 	
+	/**
+	 * Add a track to a Last.fm user's playlist (Requires full auth)
+	 * @param array $methodVars An array with the following required values: <i>playlistId</i>, <i>artist</i>, <i>track</i>
+	 * @return boolean
+	 */
 	public function addTrack($methodVars) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
@@ -49,6 +79,11 @@ class lastfmApiPlaylist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Create a Last.fm playlist on behalf of a user (Requires full auth)
+	 * @param array $methodVars An array with the following optional values: <i>title</i>, <i>description</i>
+	 * @return array
+	 */
 	public function create($methodVars) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
@@ -93,6 +128,11 @@ class lastfmApiPlaylist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Fetch XSPF playlists using a lastfm playlist url
+	 * @param array $methodVars An array with the following required values: <i>playlistUrl</i>
+	 * @return array
+	 */
 	public function fetch($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['playlistUrl']) ) {
@@ -103,25 +143,25 @@ class lastfmApiPlaylist extends lastfmApi {
 			);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
-				$this->playlist['title'] = (string) $call->playlist->title;
-				$this->playlist['annotation'] = (string) $call->playlist->annotation;
-				$this->playlist['creator'] = (string) $call->playlist->creator;
-				$this->playlist['date'] = strtotime(trim((string) $call->playlist->date));
-				$this->playlist['version'] = (string) $call->playlist['version'];
+				$playlist['title'] = (string) $call->playlist->title;
+				$playlist['annotation'] = (string) $call->playlist->annotation;
+				$playlist['creator'] = (string) $call->playlist->creator;
+				$playlist['date'] = strtotime(trim((string) $call->playlist->date));
+				$playlist['version'] = (string) $call->playlist['version'];
 				$i = 0;
 				foreach ( $call->playlist->trackList->track as $track ) {
-					$this->playlist['tracklisting'][$i]['title'] = (string) $track->title;
-					$this->playlist['tracklisting'][$i]['url'] = (string) $track->extension->trackpage;
-					$this->playlist['tracklisting'][$i]['duration'] = (string) $track->duration;
-					$this->playlist['tracklisting'][$i]['info'] = (string) $track->info;
-					$this->playlist['tracklisting'][$i]['image'] = (string) $track->image;
-					$this->playlist['tracklisting'][$i]['artist']['name'] = (string) $track->creator;
-					$this->playlist['tracklisting'][$i]['artist']['url'] = (string) $track->extension->artistpage;
-					$this->playlist['tracklisting'][$i]['album']['name'] = (string) $track->album;
-					$this->playlist['tracklisting'][$i]['album']['url'] = (string) $track->extension->albumpage;
+					$playlist['tracklisting'][$i]['title'] = (string) $track->title;
+					$playlist['tracklisting'][$i]['url'] = (string) $track->extension->trackpage;
+					$playlist['tracklisting'][$i]['duration'] = (string) $track->duration;
+					$playlist['tracklisting'][$i]['info'] = (string) $track->info;
+					$playlist['tracklisting'][$i]['image'] = (string) $track->image;
+					$playlist['tracklisting'][$i]['artist']['name'] = (string) $track->creator;
+					$playlist['tracklisting'][$i]['artist']['url'] = (string) $track->extension->artistpage;
+					$playlist['tracklisting'][$i]['album']['name'] = (string) $track->album;
+					$playlist['tracklisting'][$i]['album']['url'] = (string) $track->extension->albumpage;
 					$i++;
 				}
-				return $this->playlist;
+				return $playlist;
 			}
 			else {
 				return FALSE;

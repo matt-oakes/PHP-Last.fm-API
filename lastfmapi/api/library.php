@@ -1,20 +1,48 @@
 <?php
-
+/**
+ * File that stores api calls for user library api calls
+ * @package apicalls
+ */
+/**
+ * Allows access to the api requests relating to user libraries
+ * @package apicalls
+ */
 class lastfmApiLibrary extends lastfmApi {
-	public $albums;
-	public $artists;
-	public $tracks;
+	/**
+	 * Stores the config values set in the call
+	 * @access public
+	 * @var array
+	 */
 	public $config;
-	
+	/**
+	 * Stores the auth variables used in all api calls
+	 * @access private
+	 * @var array
+	 */
 	private $auth;
+	/**
+	 * States if the user has full authentication to use api requests that modify data
+	 * @access private
+	 * @var boolean
+	 */
 	private $fullAuth;
 	
+	/**
+	 * @param array $auth Passes the authentication variables
+	 * @param array $fullAuth A boolean value stating if the user has full authentication or not
+	 * @param array $config An array of config variables related to caching and other features
+	 */
 	function __construct($auth, $fullAuth, $config) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
 		$this->config = $config;
 	}
 	
+	/**
+	 * Add an album to a user's Last.fm library (Requires full auth)
+	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>album</i>
+	 * @return boolean
+	 */
 	public function addAlbum($methodVars) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
@@ -50,6 +78,11 @@ class lastfmApiLibrary extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Add an artist to a user's Last.fm library (Requires full auth)
+	 * @param array $methodVars An array with the following required values: <i>artist</i>
+	 * @return boolean
+	 */
 	public function addArtist($methodVars) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
@@ -84,6 +117,11 @@ class lastfmApiLibrary extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Add a track to a user's Last.fm library (Requires full auth)
+	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>
+	 * @return boolean
+	 */
 	public function addTrack($methodVars) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
@@ -119,6 +157,11 @@ class lastfmApiLibrary extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * A paginated list of all the albums in a user's library, with play counts and tag counts
+	 * @param array $methodVars An array with the following required values: <i>user</i> and optional values: <i>page</i>, <i>limit</i>
+	 * @return array
+	 */
 	public function getAlbums($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['user']) ) {
@@ -135,26 +178,26 @@ class lastfmApiLibrary extends lastfmApi {
 			}
 			
 			if ( $call = $this->apiGetCall($vars) ) {
-				$this->albums['page'] = (string) $call->albums['page'];
-				$this->albums['perPage'] = (string) $call->albums['perPage'];
-				$this->albums['totalPages'] = (string) $call->albums['totalPages'];
+				$albums['page'] = (string) $call->albums['page'];
+				$albums['perPage'] = (string) $call->albums['perPage'];
+				$albums['totalPages'] = (string) $call->albums['totalPages'];
 				$i = 0;
 				foreach ( $call->albums->album as $album ) {
-					$this->albums['results'][$i]['name'] = (string) $album->name;
-					// THIS DOESN'T WORK AS DOCUMENTED  --- $this->albums['results'][$i]['rank'] = (string) $album['rank'];
-					$this->albums['results'][$i]['playcount'] = (string) $album->playcount;
-					$this->albums['results'][$i]['tagcount'] = (string) $album->tagcount;
-					$this->albums['results'][$i]['mbid'] = (string) $album->mbid;
-					$this->albums['results'][$i]['url'] = (string) $album->url;
-					$this->albums['results'][$i]['artist']['name'] = (string) $album->artist->name;
-					$this->albums['results'][$i]['artist']['mbid'] = (string) $album->artist->mbid;
-					$this->albums['results'][$i]['artist']['url'] = (string) $album->artist->url;
-					$this->albums['results'][$i]['image']['small'] = (string) $album->image[0];
-					$this->albums['results'][$i]['image']['medium'] = (string) $album->image[1];
-					$this->albums['results'][$i]['image']['large'] = (string) $album->image[2];
+					$albums['results'][$i]['name'] = (string) $album->name;
+					// THIS DOESN'T WORK AS DOCUMENTED  --- $albums['results'][$i]['rank'] = (string) $album['rank'];
+					$albums['results'][$i]['playcount'] = (string) $album->playcount;
+					$albums['results'][$i]['tagcount'] = (string) $album->tagcount;
+					$albums['results'][$i]['mbid'] = (string) $album->mbid;
+					$albums['results'][$i]['url'] = (string) $album->url;
+					$albums['results'][$i]['artist']['name'] = (string) $album->artist->name;
+					$albums['results'][$i]['artist']['mbid'] = (string) $album->artist->mbid;
+					$albums['results'][$i]['artist']['url'] = (string) $album->artist->url;
+					$albums['results'][$i]['image']['small'] = (string) $album->image[0];
+					$albums['results'][$i]['image']['medium'] = (string) $album->image[1];
+					$albums['results'][$i]['image']['large'] = (string) $album->image[2];
 					$i++;
 				}
-				return $this->albums;
+				return $albums;
 			}
 			else {
 				return FALSE;
@@ -167,6 +210,11 @@ class lastfmApiLibrary extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * A paginated list of all the artists in a user's library, with play counts and tag counts
+	 * @param array $methodVars An array with the following required values: <i>user</i> and optional values: <i>page</i>, <i>limit</i>
+	 * @return array
+	 */
 	public function getArtists($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['user']) ) {
@@ -183,24 +231,24 @@ class lastfmApiLibrary extends lastfmApi {
 			}
 			
 			if ( $call = $this->apiGetCall($vars) ) {
-				$this->artists['page'] = (string) $call->artists['page'];
-				$this->artists['perPage'] = (string) $call->artists['perPage'];
-				$this->artists['totalPages'] = (string) $call->artists['totalPages'];
+				$artists['page'] = (string) $call->artists['page'];
+				$artists['perPage'] = (string) $call->artists['perPage'];
+				$artists['totalPages'] = (string) $call->artists['totalPages'];
 				$i = 0;
 				foreach ( $call->artists->artist as $artist ) {
-					$this->artists['results'][$i]['name'] = (string) $artist->name;
-					// THIS DOESN'T WORK AS DOCUMENTED  --- $this->artists['results'][$i]['rank'] = (string) $artist['rank'];
-					$this->artists['results'][$i]['playcount'] = (string) $artist->playcount;
-					$this->artists['results'][$i]['tagcount'] = (string) $artist->tagcount;
-					$this->artists['results'][$i]['mbid'] = (string) $artist->mbid;
-					$this->artists['results'][$i]['url'] = (string) $artist->url;
-					$this->artists['results'][$i]['streamable'] = (string) $artist->streamable;
-					$this->artists['results'][$i]['image']['small'] = (string) $artist->image[0];
-					$this->artists['results'][$i]['image']['medium'] = (string) $artist->image[1];
-					$this->artists['results'][$i]['image']['large'] = (string) $artist->image[2];
+					$artists['results'][$i]['name'] = (string) $artist->name;
+					// THIS DOESN'T WORK AS DOCUMENTED  --- $artists['results'][$i]['rank'] = (string) $artist['rank'];
+					$artists['results'][$i]['playcount'] = (string) $artist->playcount;
+					$artists['results'][$i]['tagcount'] = (string) $artist->tagcount;
+					$artists['results'][$i]['mbid'] = (string) $artist->mbid;
+					$artists['results'][$i]['url'] = (string) $artist->url;
+					$artists['results'][$i]['streamable'] = (string) $artist->streamable;
+					$artists['results'][$i]['image']['small'] = (string) $artist->image[0];
+					$artists['results'][$i]['image']['medium'] = (string) $artist->image[1];
+					$artists['results'][$i]['image']['large'] = (string) $artist->image[2];
 					$i++;
 				}
-				return $this->artists;
+				return $artists;
 			}
 			else {
 				return FALSE;
@@ -213,6 +261,11 @@ class lastfmApiLibrary extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * A paginated list of all the tracks in a user's library, with play counts and tag counts
+	 * @param array $methodVars An array with the following required values: <i>user</i> and optional values: <i>page</i>, <i>limit</i>
+	 * @return array
+	 */
 	public function getTracks($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['user']) ) {
@@ -229,27 +282,27 @@ class lastfmApiLibrary extends lastfmApi {
 			}
 			
 			if ( $call = $this->apiGetCall($vars) ) {
-				$this->tracks['page'] = (string) $call->tracks['page'];
-				$this->tracks['perPage'] = (string) $call->tracks['perPage'];
-				$this->tracks['totalPages'] = (string) $call->tracks['totalPages'];
+				$tracks['page'] = (string) $call->tracks['page'];
+				$tracks['perPage'] = (string) $call->tracks['perPage'];
+				$tracks['totalPages'] = (string) $call->tracks['totalPages'];
 				$i = 0;
 				foreach ( $call->tracks->track as $track ) {
-					$this->tracks['results'][$i]['name'] = (string) $track->name;
-					// THIS DOESN'T WORK AS DOCUMENTED  --- $this->tracks['results'][$i]['rank'] = (string) $track['rank'];
-					$this->tracks['results'][$i]['playcount'] = (string) $track->playcount;
-					$this->tracks['results'][$i]['tagcount'] = (string) $track->tagcount;
-					$this->tracks['results'][$i]['url'] = (string) $track->url;
-					$this->tracks['results'][$i]['streamable'] = (string) $track->streamable;
-					$this->tracks['results'][$i]['fulltrack'] = (string) $track->streamable['fulltrack'];
-					$this->tracks['results'][$i]['artist']['name'] = (string) $track->artist->name;
-					$this->tracks['results'][$i]['artist']['mbid'] = (string) $track->artist->mbid;
-					$this->tracks['results'][$i]['artist']['url'] = (string) $track->artist->url;
-					$this->tracks['results'][$i]['image']['small'] = (string) $track->image[0];
-					$this->tracks['results'][$i]['image']['medium'] = (string) $track->image[1];
-					$this->tracks['results'][$i]['image']['large'] = (string) $track->image[2];
+					$tracks['results'][$i]['name'] = (string) $track->name;
+					// THIS DOESN'T WORK AS DOCUMENTED  --- $tracks['results'][$i]['rank'] = (string) $track['rank'];
+					$tracks['results'][$i]['playcount'] = (string) $track->playcount;
+					$tracks['results'][$i]['tagcount'] = (string) $track->tagcount;
+					$tracks['results'][$i]['url'] = (string) $track->url;
+					$tracks['results'][$i]['streamable'] = (string) $track->streamable;
+					$tracks['results'][$i]['fulltrack'] = (string) $track->streamable['fulltrack'];
+					$tracks['results'][$i]['artist']['name'] = (string) $track->artist->name;
+					$tracks['results'][$i]['artist']['mbid'] = (string) $track->artist->mbid;
+					$tracks['results'][$i]['artist']['url'] = (string) $track->artist->url;
+					$tracks['results'][$i]['image']['small'] = (string) $track->image[0];
+					$tracks['results'][$i]['image']['medium'] = (string) $track->image[1];
+					$tracks['results'][$i]['image']['large'] = (string) $track->image[2];
 					$i++;
 				}
-				return $this->tracks;
+				return $tracks;
 			}
 			else {
 				return FALSE;
