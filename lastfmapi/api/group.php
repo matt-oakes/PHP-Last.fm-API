@@ -1,22 +1,48 @@
 <?php
-
+/**
+ * File that stores api calls for group api calls
+ * @package apicalls
+ */
+/**
+ * Allows access to the api requests relating to groups
+ * @package apicalls
+ */
 class lastfmApiGroup extends lastfmApi {
-	public $artists;
-	public $members;
-	public $albums;
-	public $tracks;
-	public $chartList;
+	/**
+	 * Stores the config values set in the call
+	 * @access public
+	 * @var array
+	 */
 	public $config;
-	
+	/**
+	 * Stores the auth variables used in all api calls
+	 * @access private
+	 * @var array
+	 */
 	private $auth;
+	/**
+	 * States if the user has full authentication to use api requests that modify data
+	 * @access private
+	 * @var boolean
+	 */
 	private $fullAuth;
 	
+	/**
+	 * @param array $auth Passes the authentication variables
+	 * @param array $fullAuth A boolean value stating if the user has full authentication or not
+	 * @param array $config An array of config variables related to caching and other features
+	 */
 	function __construct($auth, $fullAuth, $config) {
 		$this->auth = $auth;
 		$this->fullAuth = $fullAuth;
 		$this->config = $config;
 	}
 	
+	/**
+	 * Get a list of members for this group
+	 * @param array $methodVars An array with the following required values: <i>group</i>
+	 * @return array
+	 */
 	public function getMembers($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['group']) ) {
@@ -34,20 +60,20 @@ class lastfmApiGroup extends lastfmApi {
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
-				$this->members['for'] = (string) $call->members['for'];
-				$this->members['page'] = (string) $call->members['page'];
-				$this->members['perPage'] = (string) $call->members['perPage'];
-				$this->members['totalPages'] = (string) $call->members['totalPages'];
+				$members['for'] = (string) $call->members['for'];
+				$members['page'] = (string) $call->members['page'];
+				$members['perPage'] = (string) $call->members['perPage'];
+				$members['totalPages'] = (string) $call->members['totalPages'];
 				foreach ( $call->members->user as $user ) {
-					$this->members['members'][$i]['name'] = (string) $user->name;
-					$this->members['members'][$i]['realname'] = (string) $user->realname;
-					$this->members['members'][$i]['url'] = (string) $user->url;
-					$this->members['members'][$i]['image']['small'] = (string) $user->image[0];
-					$this->members['members'][$i]['image']['medium'] = (string) $user->image[1];
-					$this->members['members'][$i]['image']['large'] = (string) $user->image[2];
+					$members['members'][$i]['name'] = (string) $user->name;
+					$members['members'][$i]['realname'] = (string) $user->realname;
+					$members['members'][$i]['url'] = (string) $user->url;
+					$members['members'][$i]['image']['small'] = (string) $user->image[0];
+					$members['members'][$i]['image']['medium'] = (string) $user->image[1];
+					$members['members'][$i]['image']['large'] = (string) $user->image[2];
 					$i++;
 				}
-				return $this->members;
+				return $members;
 			}
 			else {
 				return FALSE;
@@ -60,6 +86,11 @@ class lastfmApiGroup extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get an album chart for a group, for a given date range. If no date range is supplied, it will return the most recent album chart for this group
+	 * @param array $methodVars An array with the following required values: <i>group</i> and optional values: <i>from</i>, <i>to</i>
+	 * @return array
+	 */
 	public function getWeeklyAlbumChart($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['group']) ) {
@@ -78,15 +109,15 @@ class lastfmApiGroup extends lastfmApi {
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
 				foreach ( $call->weeklyalbumchart->album as $album ) {
-					$this->albums[$i]['name'] = (string) $album->name;
-					$this->albums[$i]['rank'] = (string) $album['rank'];
-					$this->albums[$i]['artist']['name'] = (string) $album->artist;
-					$this->albums[$i]['artist']['mbid'] = (string) $album->artist['mbid'];
-					$this->albums[$i]['playcount'] = (string) $album->playcount;
-					$this->albums[$i]['url'] = (string) $album->url;
+					$albums[$i]['name'] = (string) $album->name;
+					$albums[$i]['rank'] = (string) $album['rank'];
+					$albums[$i]['artist']['name'] = (string) $album->artist;
+					$albums[$i]['artist']['mbid'] = (string) $album->artist['mbid'];
+					$albums[$i]['playcount'] = (string) $album->playcount;
+					$albums[$i]['url'] = (string) $album->url;
 					$i++;
 				}
-				return $this->albums;
+				return $albums;
 			}
 			else {
 				return FALSE;
@@ -99,6 +130,11 @@ class lastfmApiGroup extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get an artist chart for a group, for a given date range. If no date range is supplied, it will return the most recent album chart for this group
+	 * @param array $methodVars An array with the following required values: <i>group</i> and optional values: <i>from</i>, <i>to</i>
+	 * @return array
+	 */
 	public function getWeeklyArtistChart($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['group']) ) {
@@ -117,14 +153,14 @@ class lastfmApiGroup extends lastfmApi {
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
 				foreach ( $call->weeklyartistchart->artist as $artist ) {
-					$this->artists[$i]['name'] = (string) $artist->name;
-					$this->artists[$i]['rank'] = (string) $artist['rank'];
-					$this->artists[$i]['mbid'] = (string) $artist->mbid;
-					$this->artists[$i]['playcount'] = (string) $artist->playcount;
-					$this->artists[$i]['url'] = (string) $artist->url;
+					$artists[$i]['name'] = (string) $artist->name;
+					$artists[$i]['rank'] = (string) $artist['rank'];
+					$artists[$i]['mbid'] = (string) $artist->mbid;
+					$artists[$i]['playcount'] = (string) $artist->playcount;
+					$artists[$i]['url'] = (string) $artist->url;
 					$i++;
 				}
-				return $this->artists;
+				return $artists;
 			}
 			else {
 				return FALSE;
@@ -137,6 +173,11 @@ class lastfmApiGroup extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get a list of available charts for this group, expressed as date ranges which can be sent to the chart services
+	 * @param array $methodVars An array with the following required values: <i>group</i>
+	 * @return array
+	 */
 	public function getWeeklyChartList($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['group']) ) {
@@ -149,11 +190,11 @@ class lastfmApiGroup extends lastfmApi {
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
 				foreach ( $call->weeklychartlist->chart as $chart ) {
-					$this->chartList[$i]['from'] = (string) $chart['from'];
-					$this->chartList[$i]['to'] = (string) $chart['to'];
+					$chartList[$i]['from'] = (string) $chart['from'];
+					$chartList[$i]['to'] = (string) $chart['to'];
 					$i++;
 				}
-				return $this->chartList;
+				return $chartList;
 			}
 			else {
 				return FALSE;
@@ -166,6 +207,11 @@ class lastfmApiGroup extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get a track chart for a group, for a given date range. If no date range is supplied, it will return the most recent album chart for this group
+	 * @param array $methodVars An array with the following required values: <i>group</i> and optional values: <i>from</i>, <i>to</i>
+	 * @return array
+	 */
 	public function getWeeklyTrackChart($methodVars) {
 		// Check for required variables
 		if ( !empty($methodVars['group']) ) {
@@ -184,15 +230,15 @@ class lastfmApiGroup extends lastfmApi {
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
 				foreach ( $call->weeklytrackchart->track as $track ) {
-					$this->tracks[$i]['name'] = (string) $track->name;
-					$this->tracks[$i]['rank'] = (string) $track['rank'];
-					$this->tracks[$i]['artist']['name'] = (string) $track->artist;
-					$this->tracks[$i]['artist']['mbid'] = (string) $track->artist['mbid'];
-					$this->tracks[$i]['playcount'] = (string) $track->playcount;
-					$this->tracks[$i]['url'] = (string) $track->url;
+					$tracks[$i]['name'] = (string) $track->name;
+					$tracks[$i]['rank'] = (string) $track['rank'];
+					$tracks[$i]['artist']['name'] = (string) $track->artist;
+					$tracks[$i]['artist']['mbid'] = (string) $track->artist['mbid'];
+					$tracks[$i]['playcount'] = (string) $track->playcount;
+					$tracks[$i]['url'] = (string) $track->url;
 					$i++;
 				}
-				return $this->tracks;
+				return $tracks;
 			}
 			else {
 				return FALSE;
