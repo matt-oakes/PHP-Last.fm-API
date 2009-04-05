@@ -2,7 +2,6 @@
 
 // Include helper classes
 require 'class/apibase.php';
-require 'class/mainclass.php';
 require 'class/socket.php';
 require 'class/cache.php';
 
