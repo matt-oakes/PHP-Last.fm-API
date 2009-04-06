@@ -1,14 +1,54 @@
 <?php
-
+/**
+ * Stores the caching methods
+ * @package base
+ */
+/**
+ * Allows access to the caching methods to cache data when api calls are made
+ * @package base
+ */
 class lastfmApiCache {
+	/**
+	 * Stores the batabase class
+	 * @var class
+	 */
 	private $db;
+	/**
+	 * Stores the batabase type
+	 * @var string
+	 */
 	private $type;
+	/**
+	 * Stores the error details
+	 * @var array
+	 */
 	public $error;
+	/**
+	 * Stores the path to the sqlite database
+	 * @var string
+	 */
 	private $path;
+	/**
+	 * Stores the amount of time to cahce for
+	 * @var integer
+	 */
 	private $cache_length;
+	/**
+	 * Stores the config array
+	 * @var array
+	 */
 	private $config;
+	/**
+	 * States if caching is enabled or not
+	 * @var boolean
+	 */
 	private $enabled;
 	
+	/**
+	 * Run when the class is created
+	 * @param array $config The config array
+	 * @uses lastfmApiDatabase
+	 */
 	function __construct($config) {
 		$this->config = $config;
 		
@@ -47,6 +87,11 @@ class lastfmApiCache {
 		}
 	}
 	
+	/**
+	 * Internal method to chack if caching is enabled
+	 * @access private
+	 * @return void
+	 */
 	private function check_if_enabled() {
 		if ( $this->config['enabled'] == true && function_exists('sqlite_open') ) {
 			$this->enabled = true;
@@ -56,6 +101,11 @@ class lastfmApiCache {
 		}
 	}
 	
+	/**
+	 * Internal method to check if the table exists
+	 * @access private
+	 * @return void
+	 */
 	private function check_table_exists() {
 		if ( $this->type == 'sqlite' ) {
 			$query = "SELECT count(*) FROM sqlite_master WHERE name='cache'";
@@ -80,6 +130,11 @@ class lastfmApiCache {
 		}
 	}
 	
+	/**
+	 * Internal method to create the table if it doesn't exist
+	 * @access private
+	 * @return void
+	 */
 	private function create_table() {
 		if ( $this->type == 'sqlite' ) {
 			$auto_increase = '';
@@ -97,6 +152,12 @@ class lastfmApiCache {
 		}
 	}
 	
+	/**
+	 * Searches the database for the cahce date. Returns an array if it exists or false if it doesn't 
+	 * @access public
+	 * @param array $unique_vars Array of variables that are unique to this piece of cached data
+	 * @return string
+	 */
 	public function get($unique_vars) {
 		if ( $this->enabled == true ) {
 			$query = "SELECT expires, body FROM cache WHERE unique_vars='".htmlentities(serialize($unique_vars))."' LIMIT 1";
@@ -126,6 +187,13 @@ class lastfmApiCache {
 		}
 	}
 	
+	/**
+	 * Adds new cache data to the database
+	 * @access public
+	 * @param array $unique_vars Array of variables that are unique to this piece of cached data
+	 * @param string $body The contents of the cache to put into the database
+	 * @return boolean
+	 */
 	public function set($unique_vars,  $body) {
 		if ( $this->enabled == true ) {
 			if ( $this->type == 'sqlite' ) {
@@ -148,6 +216,12 @@ class lastfmApiCache {
 		}
 	}
 	
+	/**
+	 * Internal method to delete unneeded cache data
+	 * @access private
+	 * @param array $unique_vars Array of variables that are unique to this piece of cached data
+	 * @return boolean
+	 */
 	private function del($unique_vars) {
 		$query = "DELETE FROM cache WHERE unique_vars='".htmlentities(serialize($unique_vars))."'";
 		if ( $this->db->query($query) ) {
@@ -159,6 +233,11 @@ class lastfmApiCache {
 		}
 	}
 	
+	/**
+	 * Internal method to show all cached data (used for debugging)
+	 * @access private
+	 * @return boolean
+	 */
 	private function show_all() {
 		$query = "SELECT expires, body FROM cache";
 		if ( $result = $this->db->query($query) ) {

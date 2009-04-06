@@ -1,5 +1,9 @@
 <?php
 /**
+ * File that contains all base methods used by all api calls
+ * @package base
+ */
+/**
  * Stores the methods used by all api calls
  * @package base
  */

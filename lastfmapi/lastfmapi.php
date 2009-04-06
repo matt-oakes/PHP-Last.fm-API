@@ -1,5 +1,4 @@
 <?php
-
 // Include helper classes
 require 'class/apibase.php';
 require 'class/socket.php';

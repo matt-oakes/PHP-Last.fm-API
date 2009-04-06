@@ -1,13 +1,52 @@
 <?php
-
+/**
+ * Stores the mysql database methods
+ * @package base
+ */
+/**
+ * Allows access to the mysql database using a standard database class
+ * @package base
+ */
 class lastfmApiDatabase {
-	var $host;
-	var $dbUser;
-	var $dbPass;
-	var $dbName;
-	var $dbConn;
-	var $error;
+	/**
+	 * Stores the host name
+	 * @var string
+	 */
+	private $host;
+	/**
+	 * Stores the username
+	 * @var string
+	 */
+	private $dbUser;
+	/**
+	 * Stores the password
+	 * @var string
+	 */
+	private $dbPass;
+	/**
+	 * Stores the database name
+	 * @var string
+	 */
+	private $dbName;
+	/**
+	 * Stores the connection status
+	 * @var boolean
+	 */
+	public $dbConn;
+	/**
+	 * Stores the error details
+	 * @var array
+	 */
+	public $error;
 	
+	/**
+	 * Run when the class is created. Sets up the variables
+	 * @param string $host Database host address
+	 * @param string $dbUser Database username
+	 * @param string $dbPass Database password
+	 * @param string $dbName Database name
+	 * @return void
+	 */
 	function __construct($host,$dbUser,$dbPass,$dbName) {
 		$this->host = $host;
 		$this->dbUser = $dbUser;
@@ -17,7 +56,11 @@ class lastfmApiDatabase {
 		$this->connectToDb();
 	}
 	
-	function connectToDb () {
+	/**
+	 * Internal command to connect to the database
+	 * @return void
+	 */
+	private function connectToDb () {
 		if (!$this->dbConn = @mysql_connect($this->host, $this->dbUser, $this->dbPass)) {
 			$this->handleError();
 			return false;
@@ -28,11 +71,21 @@ class lastfmApiDatabase {
 		}
 	}
 	
-	function handleError () {
+	/**
+	 * Internal command to handle errors and populate the error variable
+	 * @return void
+	 */
+	private function handleError () {
 		$this->error = mysql_error($this->dbConn);
 	}
 	
-	function query($sql) {
+	/**
+	 * Command which runs queries. Returns a class on success and flase on error
+	 * @param string $sql The SQL query to run
+	 * @return class
+	 * @uses lastfmApiDatabase_result
+	 */
+	public function query($sql) {
 		if ( !$queryResource = mysql_query($sql, $this->dbConn) ) {
 			echo mysql_error();
 			$this->handleError();
@@ -45,16 +98,38 @@ class lastfmApiDatabase {
 	}
 }
 
+/**
+ * A class which allows interaction with results when a query is run by lastfmApiDatabase
+ * @package base
+ */
 class lastfmApiDatabase_result {
+	/**
+	 * Stores the mysql class
+	 * @var class
+	 */
 	var $mysql;
+	/**
+	 * Stores the query
+	 * @var class
+	 */
 	var $query;
 	
+	/**
+	 * Run when the class is created. Sets up the variables
+	 * @param class $mysql The mysql class
+	 * @param class $query The query
+	 * @return void
+	 */
 	function lastfmApiDatabase_result(&$mysql,$query) {
 		$this->mysql = &$mysql;
 		$this->query = $query;
 	}
 	
-	function fetch () {
+	/**
+	 * Fetches the next result
+	 * @return array
+	 */
+	public function fetch () {
 		if ( $row = mysql_fetch_array($this->query) ) {
 			return $row;
 		}
@@ -67,6 +142,10 @@ class lastfmApiDatabase_result {
 		}
 	}
 	
+	/**
+	 * Fetches all the results
+	 * @return array
+	 */
 	function fetchAll() {
 		$result = array();
 		while ( $row = mysql_fetch_array($this->query) ) {
@@ -75,6 +154,10 @@ class lastfmApiDatabase_result {
 		return $result;
 	}
 	
+	/**
+	 * Shows the number of results
+	 * @return integer
+	 */
 	function size () {
 		return mysql_num_rows($this->query);
 	}

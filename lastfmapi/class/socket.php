@@ -1,14 +1,46 @@
 <?php
-
+/**
+ * Stores the socket methods
+ * @package base
+ */
+/**
+ * Allows access to the socket methods using a standard class
+ * @package base
+ */
 class lastfmApiSocket {
-	var $handle;
-	var $connection;
-	var $host;
-	var $port;
+	/**
+	 * Stores the socket handler
+	 * @var class
+	 */
+	private $handle;
+	/**
+	 * Stores the host name
+	 * @var string
+	 */
+	private $host;
+	/**
+	 * Stores the port number
+	 * @var integer
+	 */
+	private $port;
 	
+	/**
+	 * Stores the error string
+	 * @var string
+	 */
 	public $error_string;
+	/**
+	 * Stores the error number
+	 * @var integer
+	 */
 	public $error_number;
 	
+	/**
+	 * Run when the class is created. Sets the variables
+	 * @param string $host The host name
+	 * @param integer $port The port number
+	 * @return boolean
+	 */
 	function lastfmApiSocket ($host, $port) {
 		// Set class variables
 		$this->host = $host;
@@ -25,6 +57,12 @@ class lastfmApiSocket {
 		}
 	}
 	
+	/**
+	 * Send data through the socket and listen for a return
+	 * @param string $msg Data to send
+	 * @param string $type The type of data to return (array or string)
+	 * @return string|array
+	 */
 	function send ($msg, $type = '') {
 		// Send message over connection
 		fwrite($this->handle, $msg);
@@ -57,6 +95,10 @@ class lastfmApiSocket {
 		
 	}
 	
+	/**
+	 * Closes the connection
+	 * @return boolean
+	 */
 	function close () {
 		// Close connection
 		fclose($this->handle);
