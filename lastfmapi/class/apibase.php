@@ -250,7 +250,7 @@ class lastfmApi {
 			return FALSE;
 		}
 		
-		if ( $package == 'album' || $package == 'artist' || $package == 'event' || $package == 'geo' || $package == 'group' || $package == 'library' || $package == 'playlist' || $package == 'tag' || $package == 'tasteometer' || $package == 'track' || $package == 'user' ) {
+		if ( $package == 'album' || $package == 'artist' || $package == 'event' || $package == 'geo' || $package == 'group' || $package == 'library' || $package == 'playlist' || $package == 'tag' || $package == 'tasteometer' || $package == 'track' || $package == 'user' || $package == 'venue' ) {
 			$className = 'lastfmApi'.ucfirst($package);
 			return new $className($auth, $fullAuth, $config);
 		}

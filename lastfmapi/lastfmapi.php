@@ -18,5 +18,6 @@ require 'api/tag.php';
 require 'api/tasteometer.php';
 require 'api/track.php';
 require 'api/user.php';
+require 'api/venue.php';
 
 ?>

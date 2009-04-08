@@ -1,3 +1,9 @@
+== VERSION 0.5 TO VERSION 0.6 ==
++ Added new methods:
+	+ venue.getEvents
+	+ venue.getPastEvents
+	+ venue.search
+
 == VERSION 0.4 TO VERSION 0.5 ==
 + Added mysql support for the caching system (it still defaults to sqlite as it's lighter and easier to setup)
 + Added new methods:
