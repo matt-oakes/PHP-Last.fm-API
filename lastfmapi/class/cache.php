@@ -142,7 +142,7 @@ class lastfmApiCache {
 		else {
 			$auto_increase = ' AUTO_INCREMENT';
 		}
-		$query = "CREATE TABLE cache (cache_id INTEGER PRIMARY KEY".$auto_increase.", unique_vars TEXT, expires DATE, body TEXT)";
+		$query = "CREATE TABLE cache (cache_id INTEGER PRIMARY KEY".$auto_increase.", unique_vars TEXT, expires INT, body TEXT)";
 		if ( $this->db->query($query) ) {
 			// Ok
 		}
@@ -196,12 +196,7 @@ class lastfmApiCache {
 	 */
 	public function set($unique_vars,  $body) {
 		if ( $this->enabled == true ) {
-			if ( $this->type == 'sqlite' ) {
-				$expire = time() + $this->config['cache_length'];
-			}
-			else {
-				$expire = date('Y-m-d H:i:s', time() + $this->config['cache_length']);
-			}
+			$expire = time() + $this->config['cache_length'];
 			$query = "INSERT INTO cache (unique_vars, expires, body) VALUES ('".htmlentities(serialize($unique_vars))."', '".$expire."', \"".htmlentities(serialize($body))."\")";
 			if ( $this->db->query($query) ) {
 				return true;

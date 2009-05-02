@@ -7,6 +7,8 @@
 	+ venue.search
 + Added lang parameter to album.getInfo and artist.getInfo. Cheers to Christian Grlica
 	(heavenseven, http://www.last.fm/user/heavenseven) for adding the code needed in and send it to me.
+* Fixed the caching so it works a bit better. Thanks to Alex Schmacks (schmaecky, http://www.last.fm/user/schmaecky)
+	for the pimped cache.php he made. You will need to delete your previous cache file to stop errors showing up.
 
 == VERSION 0.4 TO VERSION 0.5 ==
 + Added mysql support for the caching system (it still defaults to sqlite as it's lighter and easier to setup)
