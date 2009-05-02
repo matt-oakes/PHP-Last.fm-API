@@ -14,6 +14,7 @@ require 'api/geo.php';
 require 'api/group.php';
 require 'api/library.php';
 require 'api/playlist.php';
+require 'api/radio.php';
 require 'api/tag.php';
 require 'api/tasteometer.php';
 require 'api/track.php';

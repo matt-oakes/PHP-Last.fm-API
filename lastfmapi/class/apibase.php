@@ -103,6 +103,13 @@ class lastfmApi {
 		if ( !isset($e) ) {
 			// All is well :)
 			return $xml;
+			/* return filter_var_array(
+				(array) $xml,
+				array(
+					'filter' => FILTER_SANITIZE_STRING,
+					'flags' => FILTER_FLAG_STRIP_HIGH
+				)
+			); */
 		}
 	}
 	
@@ -250,7 +257,7 @@ class lastfmApi {
 			return FALSE;
 		}
 		
-		if ( $package == 'album' || $package == 'artist' || $package == 'event' || $package == 'geo' || $package == 'group' || $package == 'library' || $package == 'playlist' || $package == 'tag' || $package == 'tasteometer' || $package == 'track' || $package == 'user' || $package == 'venue' ) {
+		if ( $package == 'album' || $package == 'artist' || $package == 'event' || $package == 'geo' || $package == 'group' || $package == 'library' || $package == 'playlist' || $package == 'radio' || $package == 'tag' || $package == 'tasteometer' || $package == 'track' || $package == 'user' || $package == 'venue' ) {
 			$className = 'lastfmApi'.ucfirst($package);
 			return new $className($auth, $fullAuth, $config);
 		}

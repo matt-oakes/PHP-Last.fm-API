@@ -1,5 +1,7 @@
 == VERSION 0.5 TO VERSION 0.6 ==
 + Added new methods:
+	+ radio.getPlaylist
+	+ radio.tune
 	+ venue.getEvents
 	+ venue.getPastEvents
 	+ venue.search
