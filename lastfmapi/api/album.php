@@ -108,7 +108,8 @@ class lastfmApiAlbum extends lastfmApi {
 			'api_key' => $this->auth->apiKey,
 			'album' => @$methodVars['album'],
 			'artist' => @$methodVars['artist'],
-			'mbid' => @$methodVars['mbid']
+			'mbid' => @$methodVars['mbid'],
+			'lang' => @$methodVars['lang']
 		);
 		$info = array();
 		

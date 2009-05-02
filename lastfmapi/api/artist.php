@@ -240,6 +240,9 @@ class lastfmApiArtist extends lastfmApi {
 		if ( !empty($methodVars['artist']) ) {
 			$vars['artist'] = $methodVars['artist'];
 		}
+		if ( !empty($methodVars['lang']) ) {
+			$vars['lang'] = $methodVars['lang'];
+		}
 		
 		if ( $call = $this->apiGetCall($vars) ) {
 			$info['name'] = (string) $call->artist->name;
