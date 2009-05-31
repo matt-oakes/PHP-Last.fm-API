@@ -26,7 +26,7 @@ $playlistClass = $apiClass->getPackage($auth, 'playlist', $config);
 
 // Setup the variables
 $methodVars = array(
-	'playlistUrl' => 'lastfm://playlist/25168'
+	'playlistURL' => 'lastfm://playlist/25168'
 );
 
 if ( $tracks = $playlistClass->fetch($methodVars) ) {

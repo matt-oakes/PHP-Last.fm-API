@@ -48,15 +48,9 @@ class lastfmApiGroup extends lastfmApi {
 		if ( !empty($methodVars['group']) ) {
 			$vars = array(
 				'method' => 'group.getmembers',
-				'api_key' => $this->auth->apiKey,
-				'group' => $methodVars['group']
+				'api_key' => $this->auth->apiKey
 			);
-			if ( !empty($methodVars['page']) ) {
-				$vars['page'] = $methodVars['page'];
-			}
-			if ( !empty($methodVars['limit']) ) {
-				$vars['limit'] = $methodVars['limit'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
@@ -96,15 +90,9 @@ class lastfmApiGroup extends lastfmApi {
 		if ( !empty($methodVars['group']) ) {
 			$vars = array(
 				'method' => 'group.getweeklyalbumchart',
-				'api_key' => $this->auth->apiKey,
-				'group' => $methodVars['group']
+				'api_key' => $this->auth->apiKey
 			);
-			if ( !empty($methodVars['from']) ) {
-				$vars['from'] = $methodVars['from'];
-			}
-			if ( !empty($methodVars['to']) ) {
-				$vars['to'] = $methodVars['to'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
@@ -140,15 +128,9 @@ class lastfmApiGroup extends lastfmApi {
 		if ( !empty($methodVars['group']) ) {
 			$vars = array(
 				'method' => 'group.getweeklyartistchart',
-				'api_key' => $this->auth->apiKey,
-				'group' => $methodVars['group']
+				'api_key' => $this->auth->apiKey
 			);
-			if ( !empty($methodVars['from']) ) {
-				$vars['from'] = $methodVars['from'];
-			}
-			if ( !empty($methodVars['to']) ) {
-				$vars['to'] = $methodVars['to'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
@@ -183,9 +165,9 @@ class lastfmApiGroup extends lastfmApi {
 		if ( !empty($methodVars['group']) ) {
 			$vars = array(
 				'method' => 'group.getweeklychartlist',
-				'api_key' => $this->auth->apiKey,
-				'group' => $methodVars['group']
+				'api_key' => $this->auth->apiKey
 			);
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
@@ -217,15 +199,9 @@ class lastfmApiGroup extends lastfmApi {
 		if ( !empty($methodVars['group']) ) {
 			$vars = array(
 				'method' => 'group.getweeklytrackchart',
-				'api_key' => $this->auth->apiKey,
-				'group' => $methodVars['group']
+				'api_key' => $this->auth->apiKey
 			);
-			if ( !empty($methodVars['from']) ) {
-				$vars['from'] = $methodVars['from'];
-			}
-			if ( !empty($methodVars['to']) ) {
-				$vars['to'] = $methodVars['to'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;

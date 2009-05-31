@@ -48,15 +48,9 @@ class lastfmApiGeo extends lastfmApi {
 		if ( !empty($methodVars['location']) ) {
 			$vars = array(
 				'method' => 'geo.getevents',
-				'api_key' => $this->auth->apiKey,
-				'location' => $methodVars['location']
+				'api_key' => $this->auth->apiKey
 			);
-			if ( !empty($methodVars['distance']) ) {
-				$vars['distance'] = $methodVars['distance'];
-			}
-			if ( !empty($methodVars['page']) ) {
-				$vars['page'] = $methodVars['page'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$events['location'] = (string) $call->events['location'];
@@ -115,9 +109,9 @@ class lastfmApiGeo extends lastfmApi {
 		if ( !empty($methodVars['country']) ) {
 			$vars = array(
 				'method' => 'geo.gettopartists',
-				'api_key' => $this->auth->apiKey,
-				'country' => $methodVars['country']
+				'api_key' => $this->auth->apiKey
 			);
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
@@ -157,9 +151,9 @@ class lastfmApiGeo extends lastfmApi {
 		if ( !empty($methodVars['country']) ) {
 			$vars = array(
 				'method' => 'geo.gettoptracks',
-				'api_key' => $this->auth->apiKey,
-				'country' => $methodVars['country']
+				'api_key' => $this->auth->apiKey
 			);
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;

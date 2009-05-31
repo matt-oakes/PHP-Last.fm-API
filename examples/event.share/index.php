@@ -27,7 +27,7 @@ $eventClass = $apiClass->getPackage($auth, 'event', $config);
 
 // Setup the variables
 $methodVars = array(
-	'eventId' => '666379',
+	'event' => '666379',
 	'recipient' => '', // Either a lastfm username or an email
 	'message' => 'Something you might like :)'
 );

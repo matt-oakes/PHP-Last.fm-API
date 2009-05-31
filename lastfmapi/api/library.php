@@ -51,10 +51,9 @@ class lastfmApiLibrary extends lastfmApi {
 				$vars = array(
 					'method' => 'library.addalbum',
 					'api_key' => $this->auth->apiKey,
-					'artist' => $methodVars['artist'],
-					'album' => $methodVars['album'],
 					'sk' => $this->auth->sessionKey
 				);
+				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
 				
@@ -91,9 +90,9 @@ class lastfmApiLibrary extends lastfmApi {
 				$vars = array(
 					'method' => 'library.addartist',
 					'api_key' => $this->auth->apiKey,
-					'artist' => $methodVars['artist'],
 					'sk' => $this->auth->sessionKey
 				);
+				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
 				
@@ -130,10 +129,9 @@ class lastfmApiLibrary extends lastfmApi {
 				$vars = array(
 					'method' => 'library.addtrack',
 					'api_key' => $this->auth->apiKey,
-					'artist' => $methodVars['artist'],
-					'track' => $methodVars['track'],
 					'sk' => $this->auth->sessionKey
 				);
+				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
 				
@@ -167,15 +165,9 @@ class lastfmApiLibrary extends lastfmApi {
 		if ( !empty($methodVars['user']) ) {
 			$vars = array(
 				'method' => 'library.getalbums',
-				'api_key' => $this->auth->apiKey,
-				'user' => $methodVars['user']
+				'api_key' => $this->auth->apiKey
 			);
-			if ( !empty($methodVars['page']) ) {
-				$vars['page'] = $methodVars['page'];
-			}
-			if ( !empty($methodVars['limit']) ) {
-				$vars['limit'] = $methodVars['limit'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$albums['page'] = (string) $call->albums['page'];
@@ -220,15 +212,9 @@ class lastfmApiLibrary extends lastfmApi {
 		if ( !empty($methodVars['user']) ) {
 			$vars = array(
 				'method' => 'library.getartists',
-				'api_key' => $this->auth->apiKey,
-				'user' => $methodVars['user']
+				'api_key' => $this->auth->apiKey
 			);
-			if ( !empty($methodVars['page']) ) {
-				$vars['page'] = $methodVars['page'];
-			}
-			if ( !empty($methodVars['limit']) ) {
-				$vars['limit'] = $methodVars['limit'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$artists['page'] = (string) $call->artists['page'];
@@ -271,15 +257,9 @@ class lastfmApiLibrary extends lastfmApi {
 		if ( !empty($methodVars['user']) ) {
 			$vars = array(
 				'method' => 'library.gettracks',
-				'api_key' => $this->auth->apiKey,
-				'user' => $methodVars['user']
+				'api_key' => $this->auth->apiKey
 			);
-			if ( !empty($methodVars['page']) ) {
-				$vars['page'] = $methodVars['page'];
-			}
-			if ( !empty($methodVars['limit']) ) {
-				$vars['limit'] = $methodVars['limit'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$tracks['page'] = (string) $call->tracks['page'];

@@ -47,15 +47,13 @@ class lastfmApiPlaylist extends lastfmApi {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
 			// Check for required variables
-			if ( !empty($methodVars['playlistId']) && !empty($methodVars['artist']) && !empty($methodVars['track']) ) {
+			if ( !empty($methodVars['playlistID']) && !empty($methodVars['artist']) && !empty($methodVars['track']) ) {
 				$vars = array(
 					'method' => 'playlist.addtrack',
 					'api_key' => $this->auth->apiKey,
-					'artist' => $methodVars['artist'],
-					'track' => $methodVars['track'],
-					'playlistID' => $methodVars['playlistId'],
 					'sk' => $this->auth->sessionKey
 				);
+				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
 				
@@ -92,12 +90,7 @@ class lastfmApiPlaylist extends lastfmApi {
 				'api_key' => $this->auth->apiKey,
 				'sk' => $this->auth->sessionKey
 			);
-			if ( !empty($methodVars['title']) ) {
-				$vars['title'] = $methodVars['title'];
-			}
-			if ( !empty($methodVars['description']) ) {
-				$vars['description'] = $methodVars['description'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			$sig = $this->apiSig($this->auth->secret, $vars);
 			$vars['api_sig'] = $sig;
 			
@@ -135,12 +128,12 @@ class lastfmApiPlaylist extends lastfmApi {
 	 */
 	public function fetch($methodVars) {
 		// Check for required variables
-		if ( !empty($methodVars['playlistUrl']) ) {
+		if ( !empty($methodVars['playlistURL']) ) {
 			$vars = array(
 				'method' => 'playlist.fetch',
-				'api_key' => $this->auth->apiKey,
-				'playlistURL' => $methodVars['playlistUrl']
+				'api_key' => $this->auth->apiKey
 			);
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$playlist['title'] = (string) $call->playlist->title;

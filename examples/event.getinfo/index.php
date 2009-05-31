@@ -27,7 +27,7 @@ $eventClass = $apiClass->getPackage($auth, 'event', $config);
 
 // Setup the variables
 $methodVars = array(
-	'eventId' => '666379'
+	'event' => '666379'
 );
 
 if ( $event = $eventClass->getInfo($methodVars) ) {

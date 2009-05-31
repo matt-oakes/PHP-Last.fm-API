@@ -51,12 +51,9 @@ class lastfmApiRadio extends lastfmApi {
 				$vars = array(
 					'method' => 'radio.tune',
 					'api_key' => $this->auth->apiKey,
-					'station' => $methodVars['station'],
 					'sk' => $this->auth->sessionKey
 				);
-				if ( !empty($methodVars['lang']) ) {
-					$vars['lang'] = $methodVars['lang'];
-				}
+				$vars = array_merge($vars, $methodVars);
 				
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
@@ -91,7 +88,7 @@ class lastfmApiRadio extends lastfmApi {
 	 * @param array $methodVars An array with the following optional values: <i>discovery</i> and <i>rtp</i>
 	 * @return array
 	 */
-	public function getPlaylist($methodVars = '') {
+	public function getPlaylist($methodVars = Array()) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
 			$vars = array(
@@ -99,12 +96,7 @@ class lastfmApiRadio extends lastfmApi {
 				'api_key' => $this->auth->apiKey,
 				'sk' => $this->auth->sessionKey
 			);
-			if ( !empty($methodVars['rtp']) ) {
-				$vars['rtp'] = $methodVars['rtp'];
-			}
-			if ( !empty($methodVars['discovery']) ) {
-				$vars['discovery'] = $methodVars['discovery'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			
 			$sig = $this->apiSig($this->auth->secret, $vars);
 			$vars['api_sig'] = $sig;

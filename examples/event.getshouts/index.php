@@ -27,7 +27,7 @@ $eventClass = $apiClass->getPackage($auth, 'event', $config);
 
 // Setup the variables
 $methodVars = array(
-	'eventId' => '1000541'
+	'event' => '1000541'
 );
 
 if ( $shouts = $eventClass->getShouts($methodVars) ) {

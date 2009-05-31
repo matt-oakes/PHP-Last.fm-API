@@ -59,16 +59,16 @@ class lastfmApiAlbum extends lastfmApi {
 				else {
 					$tags = $methodVars['tags'];
 				}
+				$methodVars['tags'] = $tags;
 				
 				// Set the call variables
 				$vars = array(
 					'method' => 'album.addtags',
 					'api_key' => $this->auth->apiKey,
-					'album' => $methodVars['album'],
-					'artist' => $methodVars['artist'],
-					'tags' => $tags,
 					'sk' => $this->auth->sessionKey
 				);
+				$vars = array_merge($vars, $methodVars);
+				
 				// Generate a call signiture
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
@@ -105,14 +105,11 @@ class lastfmApiAlbum extends lastfmApi {
 		// Set the call variables
 		$vars = array(
 			'method' => 'album.getinfo',
-			'api_key' => $this->auth->apiKey,
-			'album' => @$methodVars['album'],
-			'artist' => @$methodVars['artist'],
-			'mbid' => @$methodVars['mbid'],
-			'lang' => @$methodVars['lang']
+			'api_key' => $this->auth->apiKey
 		);
-		$info = array();
+		$vars = array_merge($vars, $methodVars);
 		
+		$info = array();
 		if ( $call = $this->apiGetCall($vars) ) {
 			$info['name'] = (string) $call->album->name;
 			$info['artist'] = (string) $call->album->artist;
@@ -153,15 +150,15 @@ class lastfmApiAlbum extends lastfmApi {
 				$vars = array(
 					'method' => 'album.gettags',
 					'api_key' => $this->auth->apiKey,
-					'sk' => $this->auth->sessionKey,
-					'album' => $methodVars['album'],
-					'artist' => $methodVars['artist']
+					'sk' => $this->auth->sessionKey
 				);
+				$vars = array_merge($vars, $methodVars);
+				
 				// Generate a call signiture
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
-				$tags = array();
 				
+				$tags = array();
 				// Make the call
 				if ( $call = $this->apiGetCall($vars) ) {
 					if ( count($call->tags->tag) > 0 ) {
@@ -210,11 +207,10 @@ class lastfmApiAlbum extends lastfmApi {
 				$vars = array(
 					'method' => 'album.removetag',
 					'api_key' => $this->auth->apiKey,
-					'album' => $methodVars['album'],
-					'artist' => $methodVars['artist'],
-					'tag' => $methodVars['tag'],
 					'sk' => $this->auth->sessionKey
 				);
+				$vars = array_merge($vars, $methodVars);
+				
 				// Generate a call signature
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
@@ -250,17 +246,11 @@ class lastfmApiAlbum extends lastfmApi {
 		if ( !empty($methodVars['album']) ) {
 			$vars = array(
 				'method' => 'album.search',
-				'api_key' => $this->auth->apiKey,
-				'album' => $methodVars['album']
+				'api_key' => $this->auth->apiKey
 			);
-			if ( !empty($methodVars['limit']) ) {
-				$vars['limit'] = $methodVars['limit'];
-			}
-			if ( !empty($methodVars['page']) ) {
-				$vars['page'] = $methodVars['page'];
-			}
-			$searchresults = array();
+			$vars = array_merge($vars, $methodVars);
 			
+			$searchresults = array();
 			if ( $call = $this->apiGetCall($vars) ) {
 				$opensearch = $call->results->children('http://a9.com/-/spec/opensearch/1.1/');
 				if ( $opensearch->totalResults > 0 ) {

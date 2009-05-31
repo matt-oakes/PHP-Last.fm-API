@@ -1,3 +1,17 @@
+== VERSION 0.6 TO VERSION 0.7 ==
++ Added some parameters that were muissing from existing methods (thanks to comentator (http://www.last.fm/user/comentator) for resporting it on the
+	user.getRecentTracks method)
+* Fixed some of the case's in the parameters of some methods. You may need to change your casing for the following
+	methods to work again:
+		* event.attend
+		* event.getattendees
+		* event.getinfo
+		* event.getshouts
+		* event.share
+		* event.shout
+		* playlist.addtrack
+		* playlist.fetch
+
 == VERSION 0.5 TO VERSION 0.6 ==
 + Added new methods:
 	+ radio.getPlaylist

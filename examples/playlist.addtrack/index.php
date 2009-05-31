@@ -26,7 +26,7 @@ $playlistClass = $apiClass->getPackage($auth, 'playlist', $config);
 
 // Setup the variables
 $methodVars = array(
-	'playlistId' => '25168',
+	'playlistID' => '25168',
 	'artist' => 'Green Day',
 	'track' => 'American Idiot'
 );

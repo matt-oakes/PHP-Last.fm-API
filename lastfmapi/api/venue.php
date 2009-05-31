@@ -47,9 +47,9 @@ class lastfmApiVenue extends lastfmApi {
 		if ( !empty($methodVars['venue']) ) {
 			$vars = array(
 				'method' => 'venue.getEvents',
-				'api_key' => $this->auth->apiKey,
-				'venue' => $methodVars['venue']
+				'api_key' => $this->auth->apiKey
 			);
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				if ( count($call->events->event) > 0 ) {
@@ -115,15 +115,9 @@ class lastfmApiVenue extends lastfmApi {
 		if ( !empty($methodVars['venue']) ) {
 			$vars = array(
 				'method' => 'venue.getPastEvents',
-				'api_key' => $this->auth->apiKey,
-				'venue' => $methodVars['venue']
+				'api_key' => $this->auth->apiKey
 			);
-			if ( !empty($methodVars['limit']) ) {
-				$vars['limit'] = $methodVars['limit'];
-			}
-			if ( !empty($methodVars['page']) ) {
-				$vars['page'] = $methodVars['page'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				if ( count($call->events->event) > 0 ) {
@@ -194,18 +188,9 @@ class lastfmApiVenue extends lastfmApi {
 		if ( !empty($methodVars['venue']) ) {
 			$vars = array(
 				'method' => 'venue.search',
-				'api_key' => $this->auth->apiKey,
-				'venue' => $methodVars['venue']
+				'api_key' => $this->auth->apiKey
 			);
-			if ( !empty($methodVars['limit']) ) {
-				$vars['limit'] = $methodVars['limit'];
-			}
-			if ( !empty($methodVars['page']) ) {
-				$vars['page'] = $methodVars['page'];
-			}
-			if ( !empty($methodVars['country']) ) {
-				$vars['country'] = $methodVars['country'];
-			}
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$opensearch = $call->results->children('http://a9.com/-/spec/opensearch/1.1/');

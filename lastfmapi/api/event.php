@@ -47,14 +47,13 @@ class lastfmApiEvent extends lastfmApi {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
 			// Check for required variables
-			if ( !empty($methodVars['eventId']) && !empty($methodVars['status']) ) {
+			if ( !empty($methodVars['event']) && !empty($methodVars['status']) ) {
 				$vars = array(
 					'method' => 'event.attend',
 					'api_key' => $this->auth->apiKey,
-					'event' => $methodVars['eventId'],
-					'status' => $methodVars['status'],
 					'sk' => $this->auth->sessionKey
 				);
+				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
 				
@@ -85,12 +84,12 @@ class lastfmApiEvent extends lastfmApi {
 	 */
 	public function getAttendees($methodVars) {
 		// Check for required variables
-		if ( !empty($methodVars['eventId']) ) {
+		if ( !empty($methodVars['event']) ) {
 			$vars = array(
 				'method' => 'event.getattendees',
-				'api_key' => $this->auth->apiKey,
-				'event' => $methodVars['eventId']
+				'api_key' => $this->auth->apiKey
 			);
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$attendees['id'] = (string) $call->attendees['event'];
@@ -126,12 +125,12 @@ class lastfmApiEvent extends lastfmApi {
 	 */
 	public function getInfo($methodVars) {
 		// Check for required variables
-		if ( !empty($methodVars['eventId']) ) {
+		if ( !empty($methodVars['event']) ) {
 			$vars = array(
 				'method' => 'event.getinfo',
-				'api_key' => $this->auth->apiKey,
-				'event' => $methodVars['eventId']
+				'api_key' => $this->auth->apiKey
 			);
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$info['id'] = (string) $call->event->id;
@@ -182,12 +181,12 @@ class lastfmApiEvent extends lastfmApi {
 	 */
 	public function getShouts($methodVars) {
 		// Check for required variables
-		if ( !empty($methodVars['eventId']) ) {
+		if ( !empty($methodVars['event']) ) {
 			$vars = array(
 				'method' => 'event.getshouts',
-				'api_key' => $this->auth->apiKey,
-				'event' => $methodVars['eventId']
+				'api_key' => $this->auth->apiKey
 			);
+			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$shouts['id'] = (string) $call->shouts['event'];
@@ -222,17 +221,13 @@ class lastfmApiEvent extends lastfmApi {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
 			// Check for required variables
-			if ( !empty($methodVars['eventId']) && !empty($methodVars['recipient']) ) {
+			if ( !empty($methodVars['event']) && !empty($methodVars['recipient']) ) {
 				$vars = array(
 					'method' => 'event.share',
 					'api_key' => $this->auth->apiKey,
-					'event' => $methodVars['eventId'],
-					'recipient' => $methodVars['recipient'],
 					'sk' => $this->auth->sessionKey
 				);
-				if ( !empty($methodVars['message']) ) {
-					$vars['message'] = $methodVars['message'];
-				}
+				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
 				
@@ -265,14 +260,13 @@ class lastfmApiEvent extends lastfmApi {
 		// Only allow full authed calls
 		if ( $this->fullAuth == TRUE ) {
 			// Check for required variables
-			if ( !empty($methodVars['eventId']) && !empty($methodVars['message']) ) {
+			if ( !empty($methodVars['event']) && !empty($methodVars['message']) ) {
 				$vars = array(
 					'method' => 'event.shout',
 					'api_key' => $this->auth->apiKey,
-					'event' => $methodVars['eventId'],
-					'message' => $methodVars['message'],
 					'sk' => $this->auth->sessionKey
 				);
+				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
 				
