@@ -241,7 +241,7 @@ class lastfmApi {
 		}
 		
 		if ( is_object($auth) ) {
-			if ( !empty($auth->apiKey) && !empty($auth->secret) && !empty($auth->username) && !empty($auth->sessionKey) && !empty($auth->subscriber) ) {
+			if ( !empty($auth->apiKey) && !empty($auth->secret) && !empty($auth->username) && !empty($auth->sessionKey) && ($auth->subscriber == 0 || $auth->subscriber == 1) ) {
 				$fullAuth = 1;
 			}
 			elseif ( !empty($auth->apiKey) ) {

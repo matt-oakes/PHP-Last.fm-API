@@ -1,16 +1,20 @@
+== VERSION 0.7 TO VERSION 0.8 ==
+* Fixed error with non subscribers not being able to use full authed methods. Thanks to all the reported this one to me.
+It took me way too long to fix that one... sorry!
+
 == VERSION 0.6 TO VERSION 0.7 ==
 + Added some parameters that were muissing from existing methods (thanks to comentator (http://www.last.fm/user/comentator) for resporting it on the
-	user.getRecentTracks method)
+user.getRecentTracks method)
 * Fixed some of the case's in the parameters of some methods. You may need to change your casing for the following
-	methods to work again:
-		* event.attend
-		* event.getattendees
-		* event.getinfo
-		* event.getshouts
-		* event.share
-		* event.shout
-		* playlist.addtrack
-		* playlist.fetch
+methods to work again:
+	* event.attend
+	* event.getattendees
+	* event.getinfo
+	* event.getshouts
+	* event.share
+	* event.shout
+	* playlist.addtrack
+	* playlist.fetch
 
 == VERSION 0.5 TO VERSION 0.6 ==
 + Added new methods:
@@ -20,9 +24,9 @@
 	+ venue.getPastEvents
 	+ venue.search
 + Added lang parameter to album.getInfo and artist.getInfo. Cheers to Christian Grlica
-	(heavenseven, http://www.last.fm/user/heavenseven) for adding the code needed in and send it to me.
+(heavenseven, http://www.last.fm/user/heavenseven) for adding the code needed in and send it to me.
 * Fixed the caching so it works a bit better. Thanks to Alex Schmacks (schmaecky, http://www.last.fm/user/schmaecky)
-	for the pimped cache.php he made. You will need to delete your previous cache file to stop errors showing up.
+for the pimped cache.php he made. You will need to delete your previous cache file to stop errors showing up.
 
 == VERSION 0.4 TO VERSION 0.5 ==
 + Added mysql support for the caching system (it still defaults to sqlite as it's lighter and easier to setup)
@@ -36,14 +40,14 @@
 	+ user.shout
 + Added PHPDocumentor comments to all methods to allow automatic documentation generation
 * Fixed badly formed XML errors appearing. Will return error 95 when it happens. It is up to the application to
-	decide how to handle the error. Thank you to her035 for the advice on how to fix it and the nice example
-	that was made for me (http://her035.de/lastfm/test/xml.php). Much appreciated!
+decide how to handle the error. Thank you to her035 for the advice on how to fix it and the nice example
+that was made for me (http://her035.de/lastfm/test/xml.php). Much appreciated!
 * Fixed geo.getTopTracks example so it now works
 
 == VERSION 0.3.1 TO VERSION 0.4 ==
 + Added automatic caching using sqlite (config variables are passed as the 3rd parameter of the getPackage method)
 + Added new method artist.getImages (Thanks to lastfm staff member Steve Gravell for
-	giving me the code before the method was even released. Cheers Steve!)
+giving me the code before the method was even released. Cheers Steve!)
 + Added error handling to the "Which staff member am I?" sample application
 
 == VERSION 0.3 TO VERSION 0.3.1 ==
