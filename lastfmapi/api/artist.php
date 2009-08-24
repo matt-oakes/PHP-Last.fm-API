@@ -236,7 +236,7 @@ class lastfmApiArtist extends lastfmApi {
 			$info['image']['large'] = (string) $call->artist->image[2];
 			$info['streamable'] = (string) $call->artist->streamable;
 			$info['stats']['listeners'] = (string) $call->artist->stats->listeners;
-			$info['stats']['playcount'] = (string) $call->artist->stats->plays;
+			$info['stats']['playcount'] = (string) $call->artist->stats->playcount;
 			$i = 0;
 			foreach ( $call->artist->similar->artist as $artist ) {
 				$info['similar'][$i]['name'] = (string) $artist->name;

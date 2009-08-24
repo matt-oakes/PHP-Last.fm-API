@@ -1,3 +1,6 @@
+== VERSION 0.7.1 TO VERSION 0.7.2 ==
+* Fixed bug with playcount in artist.getInfo (thanks to dRowned1723 for reporting this to me)
+
 == VERSION 0.7 TO VERSION 0.7.1 ==
 * Fixed error with non subscribers not being able to use full authed methods. Thanks to all the reported this one to me.
 It took me way too long to fix that one... sorry!
