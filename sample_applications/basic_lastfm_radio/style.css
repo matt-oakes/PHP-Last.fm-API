@@ -1,0 +1,9 @@
+/* GLOBAL STYLES */
+div.panel {
+	display: none;
+}
+
+/* STATION SELECT */
+div.panel#station-select input#radio-details {
+	display: none;
+}
