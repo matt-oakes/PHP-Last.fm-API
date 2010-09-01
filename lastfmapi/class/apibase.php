@@ -51,6 +51,12 @@ class lastfmApi {
 	 * @var class
 	 */
 	private $cache;
+	/*
+	 * Stores the config
+	 * @access private
+	 * @var class
+	 */
+	public $config;
 	
 	/*
 	 * Setup the socket to get the raw api call return
@@ -62,7 +68,8 @@ class lastfmApi {
 		$this->port = 80;
 		$this->connected = 0;
 		
-		if ( $this->socket = new lastfmApiSocket($this->host, $this->port) ) {
+    $this->socket = new lastfmApiSocket($this->host, $this->port);
+    if ( !$this->socket->error_number && !$this->socket->error_string ) {
 			$this->connected = 1;
 			return true;
 		}
@@ -87,6 +94,10 @@ class lastfmApi {
 			elseif( substr($line, 0, 1) == '<' ) {
 				$record = 1;
 			}
+			elseif ( preg_match('/^HTTP\/1.[0-9]{1} ([4-9]{1}[0-9]{2}.*)/', $line, $matches) ) {
+        $this->handleError(99, $this->host.': Service not available (' . trim($matches[1]) . ')');
+        return;
+      }
 		}
 		
 		try {

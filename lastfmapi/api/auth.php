@@ -44,7 +44,7 @@ class lastfmApiAuth extends lastfmApi {
 	 * @access private
 	 * @var string
 	 */
-	private $token;
+	public $token;
 	
 	/**
 	 * Run when the class is created
@@ -66,6 +66,17 @@ class lastfmApiAuth extends lastfmApi {
 				return FALSE;
 			}
 		}
+		elseif ( $method == 'gettoken' ) {
+      if ( !empty($vars['apiKey']) && !empty($vars['secret']) ) {
+        $this->apiKey = $vars['apiKey'];
+        $this->secret = $vars['secret'];
+        $this->getToken();
+      }
+      else {
+        $this->handleError(91, 'Must send an apiKey and a secret in the call for gettoken');
+        return FALSE;
+      }
+    }
 		elseif ( $method == 'setsession' ) {
 			if ( !empty($vars['apiKey']) ) {
 				$this->apiKey = $vars['apiKey'];
@@ -110,6 +121,28 @@ class lastfmApiAuth extends lastfmApi {
 			return FALSE;
 		}
 	}
+	
+  /**
+  * Internal method uses to get a new token via an api call
+  * @return void
+  * @access private
+  */
+  private function getToken() {
+    $vars = array(
+      'method' => 'auth.gettoken',
+      'api_key' => $this->apiKey
+    );
+    
+    $sig = $this->apiSig($this->secret, $vars);
+    $vars['api_sig'] = $sig;
+
+    if ( $call = $this->apiGetCall($vars) ) {
+      $this->token = (string) $call->token;
+    }
+    else {
+      return FALSE;
+    }
+  }
 }
 
 ?>
