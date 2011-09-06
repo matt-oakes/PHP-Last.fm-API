@@ -73,9 +73,13 @@ class lastfmApiSocket {
 			$response = array();
 			$line_num = 0;
 			while ( !feof($this->handle) ) {
-	       			$response[$line_num] = fgets($this->handle, 4096);
-				$line_num++;
-	   		}
+				if( ($response[$line_num] = fgets($this->handle, 4096)) === false ) {
+					break;
+				}
+				else {
+					$line_num++;
+				}
+			}
 			// Return response as array
 			return $response;
 		}
