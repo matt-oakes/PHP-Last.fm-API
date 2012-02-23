@@ -64,6 +64,8 @@ class lastfmApiSocket {
 	 * @return string|array
 	 */
 	function send ($msg, $type = '') {
+		// Set a short timeout to prevent long hangs
+		stream_set_timeout($this->handle, 2);
 		// Send message over connection
 		fwrite($this->handle, $msg);
 		
