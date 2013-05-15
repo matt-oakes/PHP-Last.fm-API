@@ -98,7 +98,7 @@ class lastfmApiArtist extends lastfmApi {
 	 */
 	public function getEvents($methodVars) {
 		// Check for required variables
-		if ( !empty($methodVars['artist']) ) {
+		if ( !empty($methodVars['artist']) || !empty($methodVars['mbid']) ) {
 			$vars = array(
 				'method' => 'artist.getevents',
 				'api_key' => $this->auth->apiKey
@@ -159,61 +159,6 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
-	/**
-	 * Get Images for this artist in a variety of sizes.
-	 * @param array $methodVars An array with the following required values: <i>artist</i> and optional values: <i>page</i>, <i>limit</i>, <i>order</i>
-	 * @return array
-	 */
-	public function getImages($methodVars) {
-		// Check for required variables
-		if ( !empty($methodVars['artist']) ) {
-			$vars = array(
-				'method' => 'artist.getimages',
-				'api_key' => $this->auth->apiKey
-			);
-			$vars = array_merge($vars, $methodVars);
-			
-			if ( $call = $this->apiGetCall($vars) ) {
-				$images = array();
-				$i = 0;
-				$images['artist'] = (string)$call->images['artist'];
-				$images['page'] = (string)$call->images['page'];
-				$images['totalpages'] = (string)$call->images['totalpages'];
-				$images['total'] = (string)$call->images['total'];
-				
-				foreach ( $call->images->image as $image ) {
-					$images['images'][$i]['title'] = (string) $image->title;
-					$images['images'][$i]['url'] = (string) $image->url;
-					$images['images'][$i]['dateadded'] = (string) $image->dateadded;
-					$images['images'][$i]['format'] = (string) $image->format;
-					$images['images'][$i]['sizes'] = array();
-					$official = isset($image['official']) ? (string) $image['official'] : false;
-					$images['images'][$i]['official'] = $official == 'yes';
-					foreach( $image->sizes->size as $size ) {
-						$images['images'][$i]['sizes'][(string)$size['name']] = array(
-							'width' => (string) $size['width'],
-							'height' => (string) $size['height'],
-							'url' => (string) $size,
-						);
-					}
-					$images['images'][$i]['votes'] = array(
-						'thumbsup' => (string) $image->votes->thumbsup,
-						'thumbsdown' => (string) $image->votes->thumbsdown,
-					);
-					$i++;
-				}
-				return $images;
-			}
-			else {
-				return FALSE;
-			}
-		}
-		else {
-			// Give a 91 error if incorrect variables are used
-			$this->handleError(91, 'You must include artist variable in the call for this method');
-			return FALSE;
-		}
-	}
 	
 	/**
 	 * Get the metadata for an artist on Last.fm. Includes biography.
@@ -274,7 +219,7 @@ class lastfmApiArtist extends lastfmApi {
 	 * @return array
 	 */
 	public function getShouts($methodVars) {
-		if ( !empty($methodVars['artist']) ) {
+		if ( !empty($methodVars['artist']) || !empty($methodVars['mbid']) ) {
 			$vars = array(
 				'method' => 'artist.getshouts',
 				'api_key' => $this->auth->apiKey
@@ -312,7 +257,7 @@ class lastfmApiArtist extends lastfmApi {
 	 */
 	public function getSimilar($methodVars) {
 		// Check for required variables
-		if ( !empty($methodVars['artist']) ) {
+		if ( !empty($methodVars['artist']) || !empty($methodVars['mbid']) ) {
 			$vars = array(
 				'method' => 'artist.getsimilar',
 				'api_key' => $this->auth->apiKey
@@ -404,7 +349,7 @@ class lastfmApiArtist extends lastfmApi {
 	 */
 	public function getTopAlbums($methodVars) {
 		// Check for required variables
-		if ( !empty($methodVars['artist']) ) {
+		if ( !empty($methodVars['artist']) || !empty($methodVars['mbid']) ) {
 			$vars = array(
 				'method' => 'artist.gettopalbums',
 				'api_key' => $this->auth->apiKey
@@ -452,7 +397,7 @@ class lastfmApiArtist extends lastfmApi {
 	 */
 	public function getTopFans($methodVars) {
 		// Check for required variables
-		if ( !empty($methodVars['artist']) ) {
+		if ( !empty($methodVars['artist']) || !empty($methodVars['mbid']) ) {
 			$vars = array(
 				'method' => 'artist.gettopfans',
 				'api_key' => $this->auth->apiKey
@@ -498,7 +443,7 @@ class lastfmApiArtist extends lastfmApi {
 	 */
 	public function getTopTags($methodVars) {
 		// Check for required variables
-		if ( !empty($methodVars['artist']) ) {
+		if ( !empty($methodVars['artist']) || !empty($methodVars['mbid']) ) {
 			$vars = array(
 				'method' => 'artist.gettoptags',
 				'api_key' => $this->auth->apiKey
@@ -540,7 +485,7 @@ class lastfmApiArtist extends lastfmApi {
 	 */
 	public function getTopTracks($methodVars) {
 		// Check for required variables
-		if ( !empty($methodVars['artist']) ) {
+		if ( !empty($methodVars['artist']) || !empty($methodVars['mbid']) ) {
 			$vars = array(
 				'method' => 'artist.gettoptracks',
 				'api_key' => $this->auth->apiKey
