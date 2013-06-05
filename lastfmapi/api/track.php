@@ -26,7 +26,7 @@ class lastfmApiTrack extends lastfmApi {
 	 * @var boolean
 	 */
 	private $fullAuth;
-	
+
 	/**
 	 * @param array $auth Passes the authentication variables
 	 * @param array $fullAuth A boolean value stating if the user has full authentication or not
@@ -37,7 +37,7 @@ class lastfmApiTrack extends lastfmApi {
 		$this->fullAuth = $fullAuth;
 		$this->config = $config;
 	}
-	
+
 	/**
 	 * Tag an album using a list of user supplied tags (Requires full auth)
 	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>, <i>tags</i>
@@ -60,7 +60,7 @@ class lastfmApiTrack extends lastfmApi {
 					$tags = $methodVars['tags'];
 				}
 				$methodVars['tags'] = $tags;
-				
+
 				$vars = array(
 					'method' => 'track.addtags',
 					'api_key' => $this->auth->apiKey,
@@ -69,7 +69,7 @@ class lastfmApiTrack extends lastfmApi {
 				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
-				
+
 				if ( $call = $this->apiPostCall($vars) ) {
 					return TRUE;
 				}
@@ -89,7 +89,7 @@ class lastfmApiTrack extends lastfmApi {
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Ban a track for a given user profile. This needs to be supplemented with a scrobbling submission containing the 'ban' rating (see the audioscrobbler API) (Requires full auth)
 	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>
@@ -108,7 +108,7 @@ class lastfmApiTrack extends lastfmApi {
 				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
-				
+
 				if ( $call = $this->apiPostCall($vars) ) {
 					return TRUE;
 				}
@@ -128,7 +128,7 @@ class lastfmApiTrack extends lastfmApi {
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Get the metadata for a track on Last.fm using the artist/track name or a musicbrainz id
 	 * @param array $methodVars An array with the following required values: <i>artist or mbid</i>, <i>track</i>
@@ -140,7 +140,7 @@ class lastfmApiTrack extends lastfmApi {
 			'api_key' => $this->auth->apiKey
 		);
 		$vars = array_merge($vars, $methodVars);
-		
+
 		if ( $call = $this->apiGetCall($vars) ) {
 			$info['id'] = (string) $call->track->id;
 			$info['name'] = (string) $call->track->name;
@@ -171,14 +171,14 @@ class lastfmApiTrack extends lastfmApi {
 			$info['wiki']['published'] = (string) $call->track->wiki->published;
 			$info['wiki']['summary'] = (string) $call->track->wiki->summary;
 			$info['wiki']['content'] = (string) $call->track->wiki->content;
-			
+
 			return $info;
 		}
 		else {
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Get the similar tracks for this track on Last.fm, based on listening data
 	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>
@@ -192,7 +192,7 @@ class lastfmApiTrack extends lastfmApi {
 				'api_key' => $this->auth->apiKey
 			);
 			$vars = array_merge($vars, $methodVars);
-			
+
 			if ( $call = $this->apiGetCall($vars) ) {
 				if ( count($call->similartracks->track) > 0 ) {
 					$i = 0;
@@ -228,7 +228,7 @@ class lastfmApiTrack extends lastfmApi {
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Get the tags applied by an individual user to a track on Last.fm (Requires full auth)
 	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>
@@ -247,7 +247,7 @@ class lastfmApiTrack extends lastfmApi {
 				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
-				
+
 				if ( $call = $this->apiGetCall($vars) ) {
 					if ( count($call->tags->tag) > 0 ) {
 						$tags['artist'] = (string) $call->tags['artist'];
@@ -281,7 +281,7 @@ class lastfmApiTrack extends lastfmApi {
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Get the top fans for this track on Last.fm, based on listening data
 	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>
@@ -295,7 +295,7 @@ class lastfmApiTrack extends lastfmApi {
 				'api_key' => $this->auth->apiKey
 			);
 			$vars = array_merge($vars, $methodVars);
-			
+
 			if ( $call = $this->apiGetCall($vars) ) {
 				if ( count($call->topfans->user) > 0 ) {
 					$topFans['artist'] = (string) $call->topfans['artist'];
@@ -328,7 +328,7 @@ class lastfmApiTrack extends lastfmApi {
 		}
 
 	}
-	
+
 	/**
 	 * Get the top tags for this track on Last.fm, ordered by tag count
 	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>
@@ -342,7 +342,7 @@ class lastfmApiTrack extends lastfmApi {
 				'api_key' => $this->auth->apiKey
 			);
 			$vars = array_merge($vars, $methodVars);
-			
+
 			if ( $call = $this->apiGetCall($vars) ) {
 				if ( count($call->toptags->tag) > 0 ) {
 					$topTags['artist'] = (string) $call->toptags['artist'];
@@ -371,7 +371,7 @@ class lastfmApiTrack extends lastfmApi {
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Love a track for a user profile. This needs to be supplemented with a scrobbling submission containing the 'love' rating (see the audioscrobbler API) (Requires full auth)
 	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>
@@ -390,7 +390,7 @@ class lastfmApiTrack extends lastfmApi {
 				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
-				
+
 				if ( $call = $this->apiPostCall($vars) ) {
 					return TRUE;
 				}
@@ -410,7 +410,7 @@ class lastfmApiTrack extends lastfmApi {
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Remove a user's tag from a track (Requires full auth)
 	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>, <i>tag</i>
@@ -429,7 +429,7 @@ class lastfmApiTrack extends lastfmApi {
 				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
-				
+
 				if ( $call = $this->apiPostCall($vars) ) {
 					return TRUE;
 				}
@@ -449,7 +449,7 @@ class lastfmApiTrack extends lastfmApi {
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Search for a track by track name. Returns track matches sorted by relevance
 	 * @param array $methodVars An array with the following required values: <i>track</i>
@@ -463,7 +463,7 @@ class lastfmApiTrack extends lastfmApi {
 				'api_key' => $this->auth->apiKey
 			);
 			$vars = array_merge($vars, $methodVars);
-			
+
 			if ( $call = $this->apiGetCall($vars) ) {
 				$opensearch = $call->results->children('http://a9.com/-/spec/opensearch/1.1/');
 				if ( $opensearch->totalResults > 0 ) {
@@ -501,7 +501,7 @@ class lastfmApiTrack extends lastfmApi {
 			return FALSE;
 		}
 	}
-	
+
 	/**
 	 * Share a track twith one or more Last.fm users or other friends (Requires full auth)
 	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>, <i>recipient</i> and optional value: <i>message</i>
@@ -520,7 +520,7 @@ class lastfmApiTrack extends lastfmApi {
 				$vars = array_merge($vars, $methodVars);
 				$sig = $this->apiSig($this->auth->secret, $vars);
 				$vars['api_sig'] = $sig;
-				
+
 				if ( $call = $this->apiPostCall($vars) ) {
 					return TRUE;
 				}
@@ -531,6 +531,84 @@ class lastfmApiTrack extends lastfmApi {
 			else {
 				// Give a 91 error if incorrect variables are used
 				$this->handleError(91, 'You must include recipient, artist and track varialbes in the call for this method');
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 92 error if not fully authed
+			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
+			return FALSE;
+		}
+	}
+
+	/**
+	 * Share a track twith one or more Last.fm users or other friends (Requires full auth)
+	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>, <i>recipient</i> and optional value: <i>message</i>
+	 * @return boolean
+	 */
+	public function scrobble($methodVars) {
+		// Only allow full authed calls
+		if ( $this->fullAuth == TRUE ) {
+			// Check for required variables
+			if ( !empty($methodVars['artist']) && !empty($methodVars['track']) && !empty($methodVars['timestamp']) ) {
+				$vars = array(
+					'method' => 'track.scrobble',
+					'api_key' => $this->auth->apiKey,
+					'sk' => $this->auth->sessionKey
+				);
+				$vars = array_merge($vars, $methodVars);
+				$sig = $this->apiSig($this->auth->secret, $vars);
+				$vars['api_sig'] = $sig;
+
+				if ( $call = $this->apiPostCall($vars) ) {
+					return TRUE;
+				}
+				else {
+					return FALSE;
+				}
+			}
+			else {
+				// Give a 91 error if incorrect variables are used
+				$this->handleError(91, 'You must include artist, track and timestamp variables in the call for this method');
+				return FALSE;
+			}
+		}
+		else {
+			// Give a 92 error if not fully authed
+			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
+			return FALSE;
+		}
+	}
+
+	/**
+	 * Share a track twith one or more Last.fm users or other friends (Requires full auth)
+	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>, <i>recipient</i> and optional value: <i>message</i>
+	 * @return boolean
+	 */
+	public function updateNowPlaying($methodVars) {
+		// Only allow full authed calls
+		if ( $this->fullAuth == TRUE ) {
+			// Check for required variables
+			if ( !empty($methodVars['artist']) && !empty($methodVars['track']) ) {
+				$vars = array(
+					'method' => 'track.updateNowPlaying',
+					'api_key' => $this->auth->apiKey,
+					'sk' => $this->auth->sessionKey
+				);
+				$vars = array_merge($vars, $methodVars);
+				$sig = $this->apiSig($this->auth->secret, $vars);
+				$vars['api_sig'] = $sig;
+
+				if ( $call = $this->apiPostCall($vars) ) {
+					return TRUE;
+				}
+				else {
+					return FALSE;
+				}
+			}
+			else {
+				// Give a 91 error if incorrect variables are used
+				$this->handleError(91, 'You must include artist, track and timestamp variables in the call for this method');
 				return FALSE;
 			}
 		}
