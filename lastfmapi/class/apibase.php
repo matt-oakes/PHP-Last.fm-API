@@ -20,7 +20,7 @@ class lastfmApi {
 	 * @var boolean
 	 */
 	public $connected;
-	
+
 	/*
 	 * Stores the host name
 	 * @access private
@@ -57,7 +57,7 @@ class lastfmApi {
 	 * @var class
 	 */
 	public $config;
-	
+
 	/*
 	 * Setup the socket to get the raw api call return
 	 * @access private
@@ -67,7 +67,7 @@ class lastfmApi {
 		$this->host = 'ws.audioscrobbler.com';
 		$this->port = 80;
 		$this->connected = 0;
-		
+
     $this->socket = new lastfmApiSocket($this->host, $this->port);
     if ( !$this->socket->error_number && !$this->socket->error_string ) {
 			$this->connected = 1;
@@ -78,7 +78,7 @@ class lastfmApi {
 			return false;
 		}
 	}
-	
+
 	/*
 	 * Turns the raw response into an xml object
 	 * @access private
@@ -99,18 +99,18 @@ class lastfmApi {
         return;
       }
 		}
-		
+
 		try {
 			libxml_use_internal_errors(true);
 			$xml = new SimpleXMLElement($xmlstr);
-		} 
+		}
 		catch (Exception $e) {
 			// Crap! We got errors!!!
 			$errors = libxml_get_errors();
 			$error = $errors[0];
 			$this->handleError(95, 'SimpleXMLElement error: '.$e->getMessage().': '.$error->message);
 		}
-		
+
 		if ( !isset($e) ) {
 			// All is well :)
 			return $xml;
@@ -123,7 +123,7 @@ class lastfmApi {
 			); */
 		}
 	}
-	
+
 	/*
 	 * Used in api calls that do not require write access. Returns an xml object
 	 * @access protected
@@ -150,14 +150,14 @@ class lastfmApi {
 					}
 					$url = substr($url, 0, -1);
 					$url = str_replace(' ', '%20', $url);
-					
+
 					$out = "GET ".$url." HTTP/1.0\r\n";
 					$out .= "Host: ".$this->host."\r\n";
 					$out .= "\r\n";
 					$this->response = $this->socket->send($out, 'array');
 					$this->cache->set($vars, $this->response);
 				}
-				
+
 				return $this->process_response();
 			}
 		}
@@ -165,7 +165,7 @@ class lastfmApi {
 			return false;
 		}
 	}
-	
+
 	/*
 	 * Used in api calls that require write access. Returns an xml object
 	 * @access protected
@@ -175,14 +175,13 @@ class lastfmApi {
 		$this->setup();
 		if ( $this->connected == 1 ) {
 			$url = '/2.0/';
-			
+
 			$data = '';
 			foreach ( $vars as $name => $value ) {
-				$data .= trim($name).'='.trim($value).'&';
+				$data .= trim($name).'='.trim(urlencode($value)).'&';
 			}
 			$data = substr($data, 0, -1);
-			$data = str_replace(' ', '%20', $data);
-			
+
 			$out = "POST ".$url." HTTP/1.1\r\n";
 			$out .= "Host: ".$this->host."\r\n";
 			$out .= "Content-Length: ".strlen($data)."\r\n";
@@ -190,14 +189,14 @@ class lastfmApi {
 			$out .= "\r\n";
 			$out .= $data."\r\n";
 			$this->response = $this->socket->send($out, 'array');
-			
+
 			return $this->process_response();
 		}
 		else {
 			return false;
 		}
 	}
-	
+
 	/*
 	 * Processes and error and writes to the public variable $error
 	 * @access protected
@@ -220,7 +219,7 @@ class lastfmApi {
 			$this->error['desc'] = 'Unknown error';
 		}
 	}
-	
+
 	/*
 	 * Generates the api signature for use in api calls that require write access
 	 * @access protected
@@ -228,17 +227,17 @@ class lastfmApi {
 	 */
 	protected function apiSig($secret, $vars) {
 		ksort($vars);
-		
+
 		$sig = '';
 		foreach ( $vars as $name => $value ) {
 			$sig .= $name.$value;
 		}
 		$sig .= $secret;
 		$sig = md5($sig);
-		
+
 		return $sig;
 	}
-	
+
 	/*
 	 * Used to return the correct package to allow access to the api calls for that package
 	 * @access public
@@ -250,7 +249,7 @@ class lastfmApi {
 				'enabled' => false
 			);
 		}
-		
+
 		if ( is_object($auth) ) {
 			if ( !empty($auth->apiKey) && !empty($auth->secret) && !empty($auth->username) && !empty($auth->sessionKey) && ($auth->subscriber == 0 || $auth->subscriber == 1) ) {
 				$fullAuth = 1;
@@ -267,7 +266,7 @@ class lastfmApi {
 			$this->handleError(91, 'You need to pass a lastfmApiAuth class as the first variable to this class');
 			return FALSE;
 		}
-		
+
 		if ( $package == 'album' || $package == 'artist' || $package == 'event' || $package == 'geo' || $package == 'group' || $package == 'library' || $package == 'playlist' || $package == 'radio' || $package == 'tag' || $package == 'tasteometer' || $package == 'track' || $package == 'user' || $package == 'venue' ) {
 			$className = 'lastfmApi'.ucfirst($package);
 			return new $className($auth, $fullAuth, $config);
