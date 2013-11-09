@@ -128,6 +128,10 @@ class lastfmApiAlbum extends lastfmApi {
 				$info['toptags'][$i]['url'] = (string) $tags->url;
 				$i++;
 			}
+			$info['wiki'] = array(
+				'summary'=>(string) $call->album->wiki->summary,
+				'content'=>(string) $call->album->wiki->content
+			);
 			
 			return $info;
 		}
