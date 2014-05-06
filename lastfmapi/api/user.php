@@ -173,6 +173,7 @@ class lastfmApiUser extends lastfmApi {
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$info['name'] = (string) $call->user->name;
+				$info['realname'] = (string) $call->user->realname;
 				$info['url'] = (string) $call->user->url;
 				$info['image'] = (string) $call->user->image;
 				$info['lang'] = (string) $call->user->lang;
