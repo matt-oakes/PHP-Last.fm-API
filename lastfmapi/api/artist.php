@@ -205,6 +205,8 @@ class lastfmApiArtist extends lastfmApi {
 			$info['bio']['published'] = (string) $call->artist->bio->published;
 			$info['bio']['summary'] = (string) $call->artist->bio->summary;
 			$info['bio']['content'] = (string) $call->artist->bio->content;
+			$info['bio']['placeformed'] = (string) $call->artist->bio->placeformed;
+			$info['bio']['yearformed'] = (string) $call->artist->bio->yearformed;
 			
 			return $info;
 		}
