@@ -159,6 +159,30 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 	
+	/**
+	 * Get all images for an artist on Last.fm.
+	 * @param array $methodVars An array with the following values: <i>artist</i> or <i>mbid</i>
+	 * @return array
+	 */
+	public function getImages($methodVars) {
+		$vars = array(
+			'method'  => 'artist.getinfo',
+			'api_key' => $this->auth->apiKey
+		);
+		$vars = array_merge($vars, $methodVars);
+		
+		if ($call = $this->apiGetCall($vars)) {
+			$info['image']['small']      = isset($call->artist->image[0]) ? (string) $call->artist->image[0] : null;
+			$info['image']['medium']     = isset($call->artist->image[1]) ? (string) $call->artist->image[1] : null;
+			$info['image']['large']      = isset($call->artist->image[2]) ? (string) $call->artist->image[2] : null;
+			$info['image']['extralarge'] = isset($call->artist->image[3]) ? (string) $call->artist->image[3] : null;
+			$info['image']['mega']       = isset($call->artist->image[4]) ? (string) $call->artist->image[4] : null;
+
+			return $info;
+		} else {
+			return false;
+		}
+	}
 	
 	/**
 	 * Get the metadata for an artist on Last.fm. Includes biography.
