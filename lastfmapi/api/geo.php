@@ -40,6 +40,7 @@ class lastfmApiGeo extends lastfmApi {
 	
 	/**
 	 * Get all events in a specific location by country or city name.
+     * @deprecated as of march 15 2016, 'geo.getevents' service is not available
 	 * @param array $methodVars An array with the following required values: <i>location</i> and optional values: <i>distance</i>, <i>page</i>
 	 * @return array
 	 */
@@ -101,7 +102,7 @@ class lastfmApiGeo extends lastfmApi {
 	
 	/**
 	 * Get the most popular artists on Last.fm by country
-	 * @param array $methodVars An array with the following required values: <i>country</i>
+	 * @param array $methodVars An array with the following required values: <i>country</i> and optional value: <i>limit</i>
 	 * @return array
 	 */
 	public function getTopArtists($methodVars) {
@@ -143,7 +144,7 @@ class lastfmApiGeo extends lastfmApi {
 	
 	/**
 	 * Get the most popular tracks on Last.fm last week by country
-	 * @param array $methodVars An array with the following required values: <i>country</i>
+	 * @param array $methodVars An array with the following required values: <i>country</i> and optional value: <i>limit</i>, <i>location</i>, <i>page</i>
 	 * @return array
 	 */
 	public function getTopTracks($methodVars) {
@@ -157,7 +158,7 @@ class lastfmApiGeo extends lastfmApi {
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
-				foreach ( $call->toptracks->track as $track ) {
+				foreach ( $call->tracks->track as $track ) {
 					$topTracks[$i]['name'] = (string) $track->name;
 					$topTracks[$i]['rank'] = (string) $track['rank'];
 					$topTracks[$i]['playcount'] = (string) $track->playcount;
@@ -187,5 +188,3 @@ class lastfmApiGeo extends lastfmApi {
 		}
 	}
 }
-
-?>

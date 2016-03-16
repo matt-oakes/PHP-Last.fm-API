@@ -5,6 +5,7 @@
  */
 /**
  * Allows access to the api requests relating to user playlists
+ * @deprecated as of march 15 2016, 'Playlist' services are not available
  * @package apicalls
  */
 class lastfmApiPlaylist extends lastfmApi {

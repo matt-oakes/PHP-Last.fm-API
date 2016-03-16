@@ -5,6 +5,7 @@
  */
 /**
  * Allows access to the api requests relating to the lastfm radio
+ * @deprecated as of march 15 2016, 'Radio' services are not available
  * @package apicalls
  */
 class lastfmApiRadio extends lastfmApi {

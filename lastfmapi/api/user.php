@@ -40,6 +40,7 @@ class lastfmApiUser extends lastfmApi {
 	
 	/**
 	 * Get a list of upcoming events that this user is attending
+     * @deprecated as of march 15 2016, 'user.getevents' method is not available
 	 * @param array $methodVars An array with the following required values: <i>user</i>
 	 * @return array
 	 */
@@ -248,6 +249,7 @@ class lastfmApiUser extends lastfmApi {
 	
 	/**
 	 * Get a list of a user's neighbours on Last.fm
+     * @deprecated as of march 15 2016, 'user.getneighbours' method is not available
 	 * @param array $methodVars An array with the following required values: <i>user</i>
 	 * @return array
 	 */
@@ -294,6 +296,7 @@ class lastfmApiUser extends lastfmApi {
 	
 	/**
 	 * Get a paginated list of all events a user has attended in the past
+     * @deprecated as of march 15 2016, 'user.getpastevents' method is not available
 	 * @param array $methodVars An array with the following required values: <i>user</i>
 	 * @return array
 	 */
@@ -358,6 +361,7 @@ class lastfmApiUser extends lastfmApi {
 	
 	/**
 	 * Get a list of a user's playlists on Last.fm
+     * @deprecated as of march 15 2016, 'user.getplaylists' method is not available
 	 * @param array $methodVars An array with the following required values: <i>user</i>
 	 * @return array
 	 */
@@ -457,6 +461,7 @@ class lastfmApiUser extends lastfmApi {
 	
 	/**
 	 * Get Last.fm artist recommendations for a user (Requires full auth)
+     * @deprecated as of march 15 2016, 'user.getrecommendedartists' method is not available
 	 * @param array $methodVars An array with the following optional values: <i>limit</i>, <i>page</i>
 	 * @return array
 	 */
@@ -512,6 +517,7 @@ class lastfmApiUser extends lastfmApi {
 	
 	/**
 	 * Get a paginated list of all events recommended to a user by Last.fm, based on their listening profile (Requires full auth)
+     * @deprecated as of march 15 2016, 'user.getrecommendedevents' method is not available
 	 * @param array $methodVars An array with the following optional values: <i>page</i>, <i>limit</i>
 	 * @return array
 	 */
@@ -588,6 +594,7 @@ class lastfmApiUser extends lastfmApi {
 	/**
 	 * Get shouts for this user
 	 * @param array $methodVars An array with the following required values: <i>user</i>
+     * @deprecated as of march 15 2016, 'user.getshouts' method is not available
 	 * @return array
 	 */
 	public function getShouts($methodVars) {

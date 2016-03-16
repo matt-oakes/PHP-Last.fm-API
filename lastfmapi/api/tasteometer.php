@@ -5,6 +5,7 @@
  */
 /**
  * Allows access to the api requests relating to the tasteometer
+ * @deprecated as of march 15 2016, 'Radio' services are not available
  * @package apicalls
  */
 class lastfmApiTasteometer extends lastfmApi {

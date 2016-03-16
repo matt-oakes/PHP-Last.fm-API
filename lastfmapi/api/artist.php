@@ -93,6 +93,7 @@ class lastfmApiArtist extends lastfmApi {
 	
 	/**
 	 * Get a list of upcoming events for this artist.
+     * @deprecated as of march 15 2016, 'artist.getevents' service is not available
 	 * @param array $methodVars An array with the following required values: <i>artist</i>
 	 * @return array
 	 */
@@ -104,8 +105,7 @@ class lastfmApiArtist extends lastfmApi {
 				'api_key' => $this->auth->apiKey
 			);
 			$vars = array_merge($vars, $methodVars);
-			
-			if ( $call = $this->apiGetCall($vars) ) {
+			if ( $call = $this->apiGetCall($vars) ) {             
 				if ( $call->events['total'] != 0 ) {
 					$i = 0;
 					foreach ( $call->events->event as $event ) {
@@ -241,6 +241,7 @@ class lastfmApiArtist extends lastfmApi {
 	
 	/**
 	 * Get shouts for this artist.
+     * @deprecated as of march 15 2016, 'artist.getshouts' service is not available
 	 * @param array $methodVars An array with the following required values: <i>artist</i>
 	 * @return array
 	 */
@@ -278,7 +279,7 @@ class lastfmApiArtist extends lastfmApi {
 	
 	/**
 	 * Get all the artists similar to this artist
-	 * @param array $methodVars An array with the following required value: <i>artist</i> and optional value: <i>limit</i>, <i></i>
+	 * @param array $methodVars An array with the following required value: <i>artist</i> and optional value: <i>limit</i>
 	 * @return array
 	 */
 	public function getSimilar($methodVars) {
@@ -370,7 +371,7 @@ class lastfmApiArtist extends lastfmApi {
 	
 	/**
 	 * Get the top albums for an artist on Last.fm, ordered by popularity
-	 * @param array $methodVars An array with the following required values: <i>artist</i>
+	 * @param array $methodVars An array with the following required values: <i>artist</i> and optional value: <i>limit</i>, <i></i>
 	 * @return array
 	 */
 	public function getTopAlbums($methodVars) {
@@ -418,6 +419,7 @@ class lastfmApiArtist extends lastfmApi {
 	
 	/**
 	 * Get the top fans for an artist on Last.fm, based on listening data
+     * @deprecated as of march 15 2016, 'artist.gettopfans' service is not available
 	 * @param array $methodVars An array with the following required values: <i>artist</i>
 	 * @return array
 	 */
@@ -506,7 +508,7 @@ class lastfmApiArtist extends lastfmApi {
 	
 	/**
 	 * Get the top tracks by an artist on Last.fm, ordered by popularity
-	 * @param array $methodVars An array with the following required values: <i>artist</i>
+	 * @param array $methodVars An array with the following required values: <i>artist</i> and optional value: <i>limit</i>
 	 * @return array
 	 */
 	public function getTopTracks($methodVars) {
@@ -606,6 +608,12 @@ class lastfmApiArtist extends lastfmApi {
 			$vars = array_merge($vars, $methodVars);
 			
 			if ( $call = $this->apiGetCall($vars) ) {
+                $callNamespaces = $call->getDocNamespaces(true);
+                // fix missing namespace (sic)
+                if (!isset($callNamespaces['opensearch'])) {
+                    $call->results->addAttribute('xmlns:xmlns:opensearch', 'http://a9.com/-/spec/opensearch/1.1/');
+                    $call = new SimpleXMLElement($call->asXML());                    
+                }                
 				$opensearch = $call->results->children('http://a9.com/-/spec/opensearch/1.1/');
 				if ( $opensearch->totalResults > 0 ) {
 					$searchResults['totalResults'] = (string) $opensearch->totalResults;
@@ -719,5 +727,3 @@ class lastfmApiArtist extends lastfmApi {
 		}
 	}
 }
-
-?>

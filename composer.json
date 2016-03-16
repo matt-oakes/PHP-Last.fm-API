@@ -1,0 +1,26 @@
+{
+    "name": "https://github.com/matto1990/PHP-Last.fm-API",
+    "description": "Extra validators for spanish CCC, DNI...",
+    "keywords": ["last.fm", "api", "webservice client"],
+	"homepage": "https://github.com/devilcius/ExtraValidatorBundle",
+    "type": "Php last.fm api",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matt",
+            "email": "matt@oakes.ws"
+        },
+        {
+            "name": "Marcos",
+            "email": "devilcius@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+        "php": ">=5.3.3",
+        "phpunit/phpunit": "~4.8"
+    },
+    "minimum-stability": "dev"
+}

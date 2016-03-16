@@ -5,6 +5,7 @@
  */
 /**
  * Allows access to the api requests relating to groups
+ * @deprecated as of march 15 2016, 'Group' services are not available
  * @package apicalls
  */
 class lastfmApiGroup extends lastfmApi {

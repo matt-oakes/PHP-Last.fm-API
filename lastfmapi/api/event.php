@@ -5,6 +5,7 @@
  */
 /**
  * Allows access to the api requests relating to events
+ * @deprecated as of march 15 2016, 'Event' services are not available
  * @package apicalls
  */
 class lastfmApiEvent extends lastfmApi {

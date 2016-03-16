@@ -284,6 +284,7 @@ class lastfmApiTrack extends lastfmApi {
 
 	/**
 	 * Get the top fans for this track on Last.fm, based on listening data
+     * @deprecated as of march 15 2016, 'track.gettopfans' method is not available
 	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>
 	 * @return array
 	 */
@@ -465,6 +466,12 @@ class lastfmApiTrack extends lastfmApi {
 			$vars = array_merge($vars, $methodVars);
 
 			if ( $call = $this->apiGetCall($vars) ) {
+                $callNamespaces = $call->getDocNamespaces(true);
+                // fix missing namespace (sic)
+                if (!isset($callNamespaces['opensearch'])) {
+                    $call->results->addAttribute('xmlns:xmlns:opensearch', 'http://a9.com/-/spec/opensearch/1.1/');
+                    $call = new SimpleXMLElement($call->asXML());                    
+                }                
 				$opensearch = $call->results->children('http://a9.com/-/spec/opensearch/1.1/');
 				if ( $opensearch->totalResults > 0 ) {
 					$searchResults['totalResults'] = (string) $opensearch->totalResults;
@@ -619,5 +626,3 @@ class lastfmApiTrack extends lastfmApi {
 		}
 	}
 }
-
-?>

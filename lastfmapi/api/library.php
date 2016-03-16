@@ -157,6 +157,7 @@ class lastfmApiLibrary extends lastfmApi {
 	
 	/**
 	 * A paginated list of all the albums in a user's library, with play counts and tag counts
+     * @deprecated as of march 15 2016, 'library.getalbums' service is not available
 	 * @param array $methodVars An array with the following required values: <i>user</i> and optional values: <i>page</i>, <i>limit</i>
 	 * @return array
 	 */

@@ -51,7 +51,7 @@ class lastfmApiTag extends lastfmApi {
 				'api_key' => $this->auth->apiKey
 			);
 			$vars = array_merge($vars, $methodVars);
-			
+			$similar = array();
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
 				foreach ( $call->similartags->tag as $tag ) {
@@ -89,7 +89,7 @@ class lastfmApiTag extends lastfmApi {
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
-				foreach ( $call->topalbums->album as $album ) {
+				foreach ( $call->albums->album as $album ) {
 					$topAlbums[$i]['name'] = (string) $album->name;
 					$topAlbums[$i]['tagcount'] = (string) $album->tagcount;
 					$topAlbums[$i]['url'] = (string) $album->url;
@@ -196,7 +196,7 @@ class lastfmApiTag extends lastfmApi {
 			
 			if ( $call = $this->apiGetCall($vars) ) {
 				$i = 0;
-				foreach ( $call->toptracks->track as $track ) {
+				foreach ( $call->tracks->track as $track ) {
 					$topTracks[$i]['name'] = (string) $track->name;
 					$topTracks[$i]['tagcount'] = (string) $track->tagcount;
 					$topTracks[$i]['url'] = (string) $track->url;
@@ -225,6 +225,7 @@ class lastfmApiTag extends lastfmApi {
 	
 	/**
 	 * Get an artist chart for a tag, for a given date range. If no date range is supplied, it will return the most recent artist chart for this tag
+     * @deprecated as of march 15 2016, 'tag.getweeklyartistchar' method is not available
 	 * @param array $methodVars An array with the following required values: <i>tag</i> and optional values: <i>to</i>, <i>from</i>
 	 * @return array
 	 */
@@ -298,6 +299,7 @@ class lastfmApiTag extends lastfmApi {
 	
 	/**
 	 * Search for a tag by name. Returns matches sorted by relevance
+     * @deprecated as of march 15 2016, 'tag.search' method is not available
 	 * @param array $methodVars An array with the following required values: <i>tag</i>
 	 * @return array
 	 */
@@ -342,5 +344,3 @@ class lastfmApiTag extends lastfmApi {
 		}
 	}
 }
-
-?>
