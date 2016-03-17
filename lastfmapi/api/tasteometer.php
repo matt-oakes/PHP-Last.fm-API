@@ -150,5 +150,3 @@ class lastfmApiTasteometer extends lastfmApi {
 		}
 	}
 }
-
-?>

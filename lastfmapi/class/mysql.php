@@ -162,4 +162,3 @@ class lastfmApiDatabase_result {
 		return mysql_num_rows($this->query);
 	}
 }
-?>

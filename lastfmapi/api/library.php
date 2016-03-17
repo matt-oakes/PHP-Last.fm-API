@@ -296,5 +296,3 @@ class lastfmApiLibrary extends lastfmApi {
 		}
 	}
 }
-
-?>

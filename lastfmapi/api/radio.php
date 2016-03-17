@@ -145,5 +145,3 @@ class lastfmApiRadio extends lastfmApi {
 		}
 	}
 }
-
-?>

@@ -252,5 +252,3 @@ class lastfmApiCache {
 		}
 	}
 }
-
-?>

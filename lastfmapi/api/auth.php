@@ -144,5 +144,3 @@ class lastfmApiAuth extends lastfmApi {
     }
   }
 }
-
-?>

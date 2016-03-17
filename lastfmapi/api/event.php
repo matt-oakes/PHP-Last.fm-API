@@ -291,5 +291,3 @@ class lastfmApiEvent extends lastfmApi {
 		}
 	}
 }
-
-?>

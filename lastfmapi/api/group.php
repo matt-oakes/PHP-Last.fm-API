@@ -228,5 +228,3 @@ class lastfmApiGroup extends lastfmApi {
 		}
 	}
 }
-
-?>

@@ -168,5 +168,3 @@ class lastfmApiPlaylist extends lastfmApi {
 		}
 	}
 }
-
-?>

@@ -232,5 +232,3 @@ class lastfmApiVenue extends lastfmApi {
 		}
 	}
 }
-
-?>

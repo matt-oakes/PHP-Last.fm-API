@@ -1012,5 +1012,3 @@ class lastfmApiUser extends lastfmApi {
 		}
 	}
 }
-
-?>

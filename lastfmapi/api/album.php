@@ -310,5 +310,3 @@ class lastfmApiAlbum extends lastfmApi
     }
 
 }
-
-?>

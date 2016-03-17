@@ -125,4 +125,3 @@ class lastfmApiDatabase_result {
 		return sqlite_num_rows($this->query);
 	}
 }
-?>
