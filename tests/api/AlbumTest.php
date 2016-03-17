@@ -34,6 +34,15 @@ class AlbumTest extends BaseNotAuthenticatedApiTest
         $this->assertArrayHasKey('name', $albumInfo);
     }
 
+    public function testTracksInInfo()
+    {
+        $albumInfo = $this->albumPackage->getInfo(array(
+            'album' => self::ALBUM_TITLE,
+            'artist' => self::ALBUM_ARTIST));
+        // Assert
+        $this->assertArrayHasKey('tracks', $albumInfo);
+    }
+
     public function testGetNonExistingInfo()
     {
         $albumInfo = $this->albumPackage->getInfo(array(

@@ -115,6 +115,7 @@ class lastfmApiAlbum extends lastfmApi
         $vars = array_merge($vars, $methodVars);
 
         $info = array();
+        $i = 0;
         if ($call = $this->apiGetCall($vars)) {
             $info['name'] = (string) $call->album->name;
             $info['artist'] = (string) $call->album->artist;
@@ -127,10 +128,22 @@ class lastfmApiAlbum extends lastfmApi
             $info['image']['large'] = (string) $call->album->image[2];
             $info['listeners'] = (string) $call->album->listeners;
             $info['playcount'] = (string) $call->album->playcount;
-            $i = 0;
             foreach ($call->album->tags->tag as $tags) {
                 $info['toptags'][$i]['name'] = (string) $tags->name;
                 $info['toptags'][$i]['url'] = (string) $tags->url;
+                $i++;
+            }
+            $i = 0;
+            foreach ($call->album->tracks->track as $track) {
+                $info['tracks'][$i]['name'] = (string) $track->name;
+                $info['tracks'][$i]['url'] = (string) $track->url;
+                $info['tracks'][$i]['duration'] = (string) $track->duration;
+                $info['tracks'][$i]['streamable'] = (string) $track->streamable;
+                $info['tracks'][$i]['rank'] = (string) $track['rank'];
+                $info['tracks'][$i]['artist'] = array();
+                $info['tracks'][$i]['artist']['name'] =$track->artist->name;
+                $info['tracks'][$i]['artist']['mbid'] =$track->artist->mbid;
+                $info['tracks'][$i]['artist']['url'] =$track->artist->url;
                 $i++;
             }
             $info['wiki'] = array(
@@ -260,7 +273,7 @@ class lastfmApiAlbum extends lastfmApi
                 // fix missing namespace (sic)
                 if (!isset($callNamespaces['opensearch'])) {
                     $call->results->addAttribute('xmlns:xmlns:opensearch', 'http://a9.com/-/spec/opensearch/1.1/');
-                    $call = new SimpleXMLElement($call->asXML());                    
+                    $call = new SimpleXMLElement($call->asXML());
                 }
                 $opensearch = $call->results->children('http://a9.com/-/spec/opensearch/1.1/');
                 if ($opensearch->totalResults > 0) {
