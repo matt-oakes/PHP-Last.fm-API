@@ -1,3 +1,7 @@
+== VERSION 1.2 ==
+PSR-4
+Removed deprecated services
+Architecture refactoring
 == VERSION 1.1 ==
 Test suite for not authenticated API calls.
 Some methods marked as deprecated. 
