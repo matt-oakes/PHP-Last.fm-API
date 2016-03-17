@@ -7,7 +7,7 @@
         "webservice client"
     ],
     "homepage": "https://github.com/matto1990/PHP-Last.fm-API",
-    "type": "PHP last.fm api",
+    "type": "library",
     "license": "MIT",
     "authors": [
         {
