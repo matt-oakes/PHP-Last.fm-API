@@ -334,24 +334,4 @@ class BaseApi
         }
     }
 
-    /*
-     * Generates the api signature for use in api calls that require write access
-     * @access protected
-     * @return string
-     */
-
-    protected function apiSig($secret, $vars)
-    {
-        ksort($vars);
-
-        $sig = '';
-        foreach ($vars as $name => $value) {
-            $sig .= $name . $value;
-        }
-        $sig .= $secret;
-        $sig = md5($sig);
-
-        return $sig;
-    }
-
 }

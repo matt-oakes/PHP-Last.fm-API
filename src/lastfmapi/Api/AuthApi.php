@@ -9,7 +9,7 @@ namespace LastFmApi\Api;
 /**
  * Allows access to the api requests relating to authentication
  */
-class AuthApi
+class AuthApi extends BaseApi
 {
 
     /**
@@ -24,7 +24,7 @@ class AuthApi
      * @access public
      * @var string
      */
-    public $secret;
+    public $apiSecret;
 
     /**
      * Stores the authenticated username
@@ -64,9 +64,9 @@ class AuthApi
     public function __construct($method, $vars)
     {
         if ($method == 'getsession') {
-            if (!empty($vars['apiKey']) && !empty($vars['secret']) && !empty($vars['token'])) {
+            if (!empty($vars['apiKey']) && !empty($vars['apiSecret']) && !empty($vars['token'])) {
                 $this->apiKey = $vars['apiKey'];
-                $this->secret = $vars['secret'];
+                $this->apiSecret = $vars['apiSecret'];
                 $this->token = $vars['token'];
                 $this->getSession();
             } else {
@@ -74,9 +74,9 @@ class AuthApi
                 return false;
             }
         } elseif ($method == 'gettoken') {
-            if (!empty($vars['apiKey']) && !empty($vars['secret'])) {
+            if (!empty($vars['apiKey']) && !empty($vars['apiSecret'])) {
                 $this->apiKey = $vars['apiKey'];
-                $this->secret = $vars['secret'];
+                $this->apiSecret = $vars['apiSecret'];
                 $this->getToken();
             } else {
                 $this->handleError(91, 'Must send an apiKey and a secret in the call for gettoken');
@@ -85,8 +85,8 @@ class AuthApi
         } elseif ($method == 'setsession') {
             if (!empty($vars['apiKey'])) {
                 $this->apiKey = $vars['apiKey'];
-                if (!empty($vars['secret']) && !empty($vars['username']) && !empty($vars['sessionKey']) && isset($vars['subscriber'])) {
-                    $this->secret = $vars['secret'];
+                if (!empty($vars['apiSecret']) && !empty($vars['username']) && !empty($vars['sessionKey']) && isset($vars['subscriber'])) {
+                    $this->apiSecret = $vars['apiSecret'];
                     $this->username = $vars['username'];
                     $this->sessionKey = $vars['sessionKey'];
                     $this->subscriber = $vars['subscriber'];
@@ -109,11 +109,11 @@ class AuthApi
     private function getSession()
     {
         $vars = array(
-            'method' => 'auth.getsession',
+            'method' => 'auth.getSession',
             'api_key' => $this->apiKey,
             'token' => $this->token
         );
-        $sig = $this->apiSig($this->secret, $vars);
+        $sig = $this->apiSig($this->apiSecret, $vars);
         $vars['api_sig'] = $sig;
 
         if ($call = $this->apiGetCall($vars)) {
@@ -133,18 +133,38 @@ class AuthApi
     private function getToken()
     {
         $vars = array(
-            'method' => 'auth.gettoken',
+            'method' => 'auth.getToken',
             'api_key' => $this->apiKey
         );
 
-        $sig = $this->apiSig($this->secret, $vars);
+        $sig = $this->apiSig($this->apiSecret, $vars);
         $vars['api_sig'] = $sig;
 
         if ($call = $this->apiGetCall($vars)) {
-            $this->token = (string) $call->token;
+            $this->token = $call->token;
         } else {
             return false;
         }
+    }
+
+    /*
+     * Generates the api signature for use in api calls that require write access
+     * @access protected
+     * @return string
+     */
+
+    protected function apiSig($apiSecret, $vars)
+    {
+        ksort($vars);
+
+        $signature = '';
+        foreach ($vars as $name => $value) {
+            $signature .= $name . $value;
+        }
+        $signature .= $apiSecret;;
+        $hashedSignature = md5($signature);
+
+        return $hashedSignature;
     }
 
 }

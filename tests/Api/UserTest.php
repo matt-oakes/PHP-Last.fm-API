@@ -68,16 +68,13 @@ class UserTest extends BaseNotAuthenticatedApiTest
         $this->assertNotEmpty($result);
     }
 
-    /**
-     *  AS of march 15 is returning an empty array no matter what tag is passed
-     */
     public function testTopTags()
     {
         $result = $this->userApi->getTopTags(array(
             'user' => self::USERNAME_NAME,
             'limit' => 1)
         );
-        $this->assertFalse($result);
+        $this->assertNotEmpty($result);
     }
 
     public function testTopTracks()
