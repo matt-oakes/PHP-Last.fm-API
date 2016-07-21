@@ -2,6 +2,8 @@
 
 namespace LastFmApi\Api;
 
+use LastFmApi\Exception\InvalidArgumentException;
+
 /**
  * File that stores api calls for getting authentication values
  */
@@ -70,8 +72,7 @@ class AuthApi extends BaseApi
                 $this->token = $vars['token'];
                 $this->getSession();
             } else {
-                $this->handleError(91, 'Must send an apiKey, token and a secret in the call for getsession');
-                return false;
+                throw new InvalidArgumentException('Must send an apiKey, token and a secret in the call for getsession');
             }
         } elseif ($method == 'gettoken') {
             if (!empty($vars['apiKey']) && !empty($vars['apiSecret'])) {
@@ -79,8 +80,7 @@ class AuthApi extends BaseApi
                 $this->apiSecret = $vars['apiSecret'];
                 $this->getToken();
             } else {
-                $this->handleError(91, 'Must send an apiKey and a secret in the call for gettoken');
-                return false;
+                throw new InvalidArgumentException('Must send an apiKey and a secret in the call for gettoken');
             }
         } elseif ($method == 'setsession') {
             if (!empty($vars['apiKey'])) {
@@ -92,12 +92,10 @@ class AuthApi extends BaseApi
                     $this->subscriber = $vars['subscriber'];
                 }
             } else {
-                $this->handleError(91, 'Must send an apiKey, secret, usernamne, subcriber and sessionKey in the call for setsession');
-                return false;
+                throw new InvalidArgumentException('Must send an apiKey, secret, usernamne, subcriber and sessionKey in the call for setsession');
             }
         } else {
-            $this->handleError(91, 'Incorrect use of method variable ("getsession" or "setsession")');
-            return false;
+            throw new InvalidArgumentException('Incorrect use of method variable ("getsession" or "setsession")');
         }
     }
 

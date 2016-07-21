@@ -1,6 +1,8 @@
 <?php
-
 namespace LastFmApi\Api;
+
+use LastFmApi\Exception\InvalidArgumentException;
+use LastFmApi\Exception\NoResultsException;
 
 /**
  * Allows access to the api requests relating to tags
@@ -36,9 +38,7 @@ class TagApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include tag variable in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include tag variable in the call for this method');
         }
     }
 
@@ -76,9 +76,7 @@ class TagApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include tag variable in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include tag variable in the call for this method');
         }
     }
 
@@ -115,9 +113,7 @@ class TagApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include tag variable in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include tag variable in the call for this method');
         }
     }
 
@@ -183,9 +179,7 @@ class TagApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include tag variable in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include tag variable in the call for this method');
         }
     }
 
@@ -221,9 +215,7 @@ class TagApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include artist variable in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include artist variable in the call for this method');
         }
     }
 
@@ -255,9 +247,7 @@ class TagApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include artist variable in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include artist variable in the call for this method');
         }
     }
 
@@ -292,17 +282,13 @@ class TagApi extends BaseApi
                     }
                     return $searchResults;
                 } else {
-                    // No tagsare found
-                    $this->handleError(90, 'No results');
-                    return false;
+                    throw new NoResultsException('No results');
                 }
             } else {
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include tag variable in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include tag variable in the call for this method');
         }
     }
 

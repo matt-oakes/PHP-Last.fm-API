@@ -76,10 +76,8 @@ class MySql
     {
         if (!$this->dbConn = @mysql_connect($this->host, $this->dbUser, $this->dbPass)) {
             $this->handleError();
-            return false;
         } else if (!@mysql_select_db($this->dbName, $this->dbConn)) {
             $this->handleError();
-            return false;
         }
     }
 
@@ -89,7 +87,7 @@ class MySql
      */
     private function handleError()
     {
-        $this->error = mysql_error($this->dbConn);
+        throw new \Exception(mysql_error($this->dbConn));
     }
 
     /**
@@ -103,10 +101,8 @@ class MySql
         if (!$queryResource = mysql_query($sql, $this->dbConn)) {
             echo mysql_error();
             $this->handleError();
-            return false;
         } else {
-            $return = new MySqlResult($this, $queryResource);
-            return $return;
+            return new MySqlResult($this, $queryResource);
         }
     }
 

@@ -3,6 +3,7 @@
 namespace Tests\Api;
 
 use LastFmApi\Api\AuthApi;
+use LastFmApi\Exception\ApiFailedException;
 
 /**
  * Tests geo api calls
@@ -13,7 +14,7 @@ class AuthTest extends \PHPUnit_Framework_TestCase
 {
 
     private $apiKey = '';
-    private $apiSecret = '';    
+    private $apiSecret = '';
     private $token;
     protected $authentication;
 
@@ -28,31 +29,33 @@ class AuthTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSession()
     {
+
         $this->setToken();
-        $authentication = new AuthApi('getsession', array(
-            'apiKey' => $this->apiKey,
-            'apiSecret' => $this->apiSecret,
-            'token' => $this->token
-        ));
-        $sessionKey = $authentication->sessionKey;
-        $username = $authentication->username;
-        $subscriber = $authentication->subscriber;
-        $isWorking = ($sessionKey !== null && $username !== null && $subscriber !== null);
-        
-        $this->markTestSkipped('Token authentication is broken as july 2016');
+        try {
+            new AuthApi('getsession', array(
+                'apiKey' => $this->apiKey,
+                'apiSecret' => $this->apiSecret,
+                'token' => $this->token
+            ));
+            $this->fail("Good news: expected token authentication to be broken!");
+        } catch (ApiFailedException $error) {            
+            $this->assertEquals(14, $error->getCode());
+            $this->assertEquals("Unauthorized Token - This token has not been authorized", $error->getMessage());
+        }
     }
-    
+
     private function setToken()
     {
         if (empty($this->apiKey) || empty($this->apiSecret)) {
-            
+
             $this->fail("You must provide a valid apiKey and a valid apiToken!");
-        }        
+        }
         $authentication = new AuthApi('gettoken', array(
             'apiKey' => $this->apiKey,
             'apiSecret' => $this->apiSecret
-        ));        
-        
+        ));
+
         $this->token = $authentication->token;
     }
+
 }

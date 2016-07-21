@@ -2,6 +2,7 @@
 
 namespace Tests\Api;
 
+use LastFmApi\Exception\ApiFailedException;
 use LastFmApi\Api\ArtistApi;
 
 /**
@@ -35,10 +36,14 @@ class ArtistTest extends BaseNotAuthenticatedApiTest
 
     public function testGetNonExistingInfo()
     {
-        $albumInfo = $this->artistApi->getInfo(array(
-            'artist' => 'daqfadfaldfa'));
-        // Assert
-        $this->assertFalse($albumInfo);
+        try {
+            $this->artistApi->getInfo(array(
+                'artist' => 'daqfadfaldfa'));
+            $this->fail("Expected Artist not found exception not thrown");
+        } catch (ApiFailedException $error) {
+            $this->assertEquals(6, $error->getCode());
+            $this->assertEquals("The artist you supplied could not be found", $error->getMessage());
+        }
     }
 
     public function testSearch()

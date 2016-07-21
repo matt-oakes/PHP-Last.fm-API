@@ -3,6 +3,7 @@
 namespace Tests\Api;
 
 use LastFmApi\Api\AlbumApi;
+use LastFmApi\Exception\ApiFailedException;
 
 /**
  * Tests album api calls
@@ -46,11 +47,15 @@ class AlbumTest extends BaseNotAuthenticatedApiTest
 
     public function testGetNonExistingInfo()
     {
-        $albumInfo = $this->albumApi->getInfo(array(
-            'album' => 'afadsffadfadf',
-            'artist' => 'daqfadfaldfa'));
-        // Assert
-        $this->assertFalse($albumInfo);
+        try {
+            $this->albumApi->getInfo(array(
+                'album' => 'afadsffadfadf',
+                'artist' => 'daqfadfaldfa'));
+            $this->fail("Expected Album not found exception not thrown");
+        } catch (ApiFailedException $error) {
+            $this->assertEquals(6, $error->getCode());
+            $this->assertEquals("Album not found", $error->getMessage());
+        }
     }
 
     public function testSearch()

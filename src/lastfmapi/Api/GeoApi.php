@@ -2,6 +2,8 @@
 
 namespace LastFmApi\Api;
 
+use LastFmApi\Exception\InvalidArgumentException;
+
 /**
  * Allows access to the api requests relating to geographical date
  */
@@ -63,9 +65,7 @@ class GeoApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include a location varialbe in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include a location variable in the call for this method');
         }
     }
 
@@ -104,9 +104,7 @@ class GeoApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include a country varialbe in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include a country variable in the call for this method');
         }
     }
 
@@ -149,9 +147,7 @@ class GeoApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include a country varialbe in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include a country variable in the call for this method');
         }
     }
 

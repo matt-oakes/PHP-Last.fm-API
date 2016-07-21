@@ -2,6 +2,10 @@
 
 namespace LastFmApi\Api;
 
+use LastFmApi\Exception\InvalidArgumentException;
+use LastFmApi\Exception\NotAuthenticatedException;
+use LastFmApi\Exception\NoResultsException;
+
 use SimpleXMLElement;
 
 /**
@@ -58,15 +62,11 @@ class AlbumApi extends BaseApi
                     // If there is return false
                     return false;
                 }
-            } else {
-                // Give a 91 error if incorrect variables are used
-                $this->handleError(91, 'You must include album, artist and tags varialbes in the call for this method');
-                return false;
+            } else {                
+                throw new InvalidArgumentException('You must include album, artist and tags variables in the call for this method');
             }
         } else {
-            // Give a 92 error if not fully authed
-            $this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-            return false;
+            throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
         }
     }
 
@@ -163,21 +163,16 @@ class AlbumApi extends BaseApi
 
                         return $tags;
                     } else {
-                        $this->handleError(90, 'User has no tags for this artist');
-                        return false;
+                        throw new NoResultsException('User has no tags for this artist');
                     }
                 } else {
                     return false;
                 }
             } else {
-                // Give a 91 error if incorrect variables are used
-                $this->handleError(91, 'You must include album and artist varialbes in the call for this method');
-                return false;
+                throw new InvalidArgumentException('You must include album, artist and tags variables in the call for this method');
             }
         } else {
-            // Give a 92 error if not fully authed
-            $this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-            return false;
+            throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
         }
     }
 
@@ -211,14 +206,10 @@ class AlbumApi extends BaseApi
                     return false;
                 }
             } else {
-                // Give a 91 error if incorrect variables are used
-                $this->handleError(91, 'You must include album, artist and tag varialbes in the call for this method');
-                return false;
+                throw new InvalidArgumentException('You must include album, artist and tags variables in the call for this method');
             }
         } else {
-            // Give a 92 error if not fully authed
-            $this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-            return false;
+            throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
         }
     }
 
@@ -265,17 +256,13 @@ class AlbumApi extends BaseApi
 
                     return $searchresults;
                 } else {
-                    // No tagsare found
-                    $this->handleError(90, 'No results');
-                    return false;
+                    throw new NoResultsException(90, 'No results');
                 }
             } else {
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include album varialbe in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include album variable in the call for this method');
         }
     }
 

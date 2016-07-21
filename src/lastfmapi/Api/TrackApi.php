@@ -1,6 +1,9 @@
 <?php
 namespace LastFmApi\Api;
 
+use LastFmApi\Exception\InvalidArgumentException;
+use LastFmApi\Exception\NoResultsException;
+use LastFmApi\Exception\NotAuthenticatedException;
 use SimpleXMLElement;
 
 /**
@@ -47,15 +50,11 @@ class TrackApi extends BaseApi {
 				}
 			}
 			else {
-				// Give a 91 error if incorrect variables are used
-				$this->handleError(91, 'You must include artist, track and tags varialbes in the call for this method');
-				return false;
+				throw new InvalidArgumentException('You must include artist, track and tags varialbes in the call for this method');
 			}
 		}
 		else {
-			// Give a 92 error if not fully authed
-			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-			return false;
+			throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 		}
 	}
 
@@ -86,15 +85,12 @@ class TrackApi extends BaseApi {
 				}
 			}
 			else {
-				// Give a 91 error if incorrect variables are used
-				$this->handleError(91, 'You must include artist and track varialbes in the call for this method');
-				return false;
+				throw new InvalidArgumentException('You must include artist and track varialbes in the call for this method');
+
 			}
 		}
 		else {
-			// Give a 92 error if not fully authed
-			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-			return false;
+			throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 		}
 	}
 
@@ -183,8 +179,7 @@ class TrackApi extends BaseApi {
 					return $similar;
 				}
 				else {
-					$this->handleError(90, 'This track has no similar tracks');
-					return false;
+					throw new NoResultsException('This track has no similar tracks');
 				}
 			}
 			else {
@@ -192,9 +187,7 @@ class TrackApi extends BaseApi {
 			}
 		}
 		else {
-			// Give a 91 error if incorrect variables are used
-			$this->handleError(91, 'You must include artist and track varialbes in the call for this method');
-			return false;
+			throw new InvalidArgumentException('You must include artist and track varialbes in the call for this method');
 		}
 	}
 
@@ -230,8 +223,7 @@ class TrackApi extends BaseApi {
 						return $tags;
 					}
 					else {
-						$this->handleError(90, 'The user has no tags on this track');
-						return false;
+						throw new NoResultsException('The user has no tags on this track');
 					}
 				}
 				else {
@@ -239,15 +231,11 @@ class TrackApi extends BaseApi {
 				}
 			}
 			else {
-				// Give a 91 error if incorrect variables are used
-				$this->handleError(91, 'You must include artist and track varialbes in the call for this method');
-				return false;
+				throw new InvalidArgumentException('You must include artist and track varialbes in the call for this method');
 			}
 		}
 		else {
-			// Give a 92 error if not fully authed
-			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-			return false;
+			throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 		}
 	}
 
@@ -283,8 +271,7 @@ class TrackApi extends BaseApi {
 					return $topFans;
 				}
 				else {
-					$this->handleError(90, 'This track has no fans');
-					return false;
+					throw new NoResultsException('This track has no fans');
 				}
 			}
 			else {
@@ -292,9 +279,7 @@ class TrackApi extends BaseApi {
 			}
 		}
 		else {
-			// Give a 91 error if incorrect variables are used
-			$this->handleError(91, 'You must include artist and track varialbes in the call for this method');
-			return false;
+			throw new InvalidArgumentException('You must include artist and track varialbes in the call for this method');
 		}
 
 	}
@@ -327,8 +312,7 @@ class TrackApi extends BaseApi {
 					return $topTags;
 				}
 				else {
-					$this->handleError(90, 'This track has no tags');
-					return false;
+					throw new NoResultsException('This track has no tags');
 				}
 			}
 			else {
@@ -336,9 +320,7 @@ class TrackApi extends BaseApi {
 			}
 		}
 		else {
-			// Give a 91 error if incorrect variables are used
-			$this->handleError(91, 'You must include artist and track varialbes in the call for this method');
-			return false;
+			throw new InvalidArgumentException('You must include artist and track varialbes in the call for this method');
 		}
 	}
 
@@ -369,15 +351,11 @@ class TrackApi extends BaseApi {
 				}
 			}
 			else {
-				// Give a 91 error if incorrect variables are used
-				$this->handleError(91, 'You must include artist and track varialbes in the call for this method');
-				return false;
+				throw new InvalidArgumentException('You must include artist and track varialbes in the call for this method');
 			}
 		}
 		else {
-			// Give a 92 error if not fully authed
-			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-			return false;
+			throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 		}
 	}
 
@@ -408,15 +386,11 @@ class TrackApi extends BaseApi {
 				}
 			}
 			else {
-				// Give a 91 error if incorrect variables are used
-				$this->handleError(91, 'You must include tag, artist and track varialbes in the call for this method');
-				return false;
+				throw new InvalidArgumentException('You must include tag, artist and track varialbes in the call for this method');
 			}
 		}
 		else {
-			// Give a 92 error if not fully authed
-			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-			return false;
+			throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 		}
 	}
 
@@ -462,9 +436,7 @@ class TrackApi extends BaseApi {
 					return $searchResults;
 				}
 				else {
-					// No tagsare found
-					$this->handleError(90, 'No results');
-					return false;
+					throw new NoResultsException('No results');
 				}
 			}
 			else {
@@ -472,9 +444,7 @@ class TrackApi extends BaseApi {
 			}
 		}
 		else {
-			// Give a 91 error if incorrect variables are used
-			$this->handleError(91, 'You must include track variable in the call for this method');
-			return false;
+			throw new InvalidArgumentException('You must include track variable in the call for this method');
 		}
 	}
 
@@ -505,15 +475,11 @@ class TrackApi extends BaseApi {
 				}
 			}
 			else {
-				// Give a 91 error if incorrect variables are used
-				$this->handleError(91, 'You must include recipient, artist and track varialbes in the call for this method');
-				return false;
+				throw new InvalidArgumentException('You must include recipient, artist and track varialbes in the call for this method');
 			}
 		}
 		else {
-			// Give a 92 error if not fully authed
-			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-			return false;
+			throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 		}
 	}
 
@@ -544,15 +510,11 @@ class TrackApi extends BaseApi {
 				}
 			}
 			else {
-				// Give a 91 error if incorrect variables are used
-				$this->handleError(91, 'You must include artist, track and timestamp variables in the call for this method');
-				return false;
+				throw new InvalidArgumentException('You must include artist, track and timestamp variables in the call for this method');
 			}
 		}
 		else {
-			// Give a 92 error if not fully authed
-			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-			return false;
+			throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 		}
 	}
 
@@ -583,15 +545,11 @@ class TrackApi extends BaseApi {
 				}
 			}
 			else {
-				// Give a 91 error if incorrect variables are used
-				$this->handleError(91, 'You must include artist, track and timestamp variables in the call for this method');
-				return false;
+				throw new InvalidArgumentException('You must include artist, track and timestamp variables in the call for this method');
 			}
 		}
 		else {
-			// Give a 92 error if not fully authed
-			$this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-			return false;
+			throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
 		}
 	}
 }

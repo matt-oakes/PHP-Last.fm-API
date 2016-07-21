@@ -1,7 +1,8 @@
 <?php
-
 namespace LastFmApi\Api;
 
+use LastFmApi\Exception\InvalidArgumentException;
+use LastFmApi\Exception\NotAuthenticatedException;
 /**
  * Allows access to the api requests relating to user libraries
  */
@@ -34,14 +35,10 @@ class LibraryApi extends BaseApi
                     return false;
                 }
             } else {
-                // Give a 91 error if incorrect variables are used
-                $this->handleError(91, 'You must include artist and album varialbes in the call for this method');
-                return false;
+                throw new InvalidArgumentException('You must include artist and album varialbes in the call for this method');
             }
         } else {
-            // Give a 92 error if not fully authed
-            $this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-            return false;
+            throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');;
         }
     }
 
@@ -71,14 +68,10 @@ class LibraryApi extends BaseApi
                     return false;
                 }
             } else {
-                // Give a 91 error if incorrect variables are used
-                $this->handleError(91, 'You must include artist varialbe in the call for this method');
-                return false;
+                throw new InvalidArgumentException('You must include artist varialbe in the call for this method');
             }
         } else {
-            // Give a 92 error if not fully authed
-            $this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-            return false;
+            throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');;
         }
     }
 
@@ -108,14 +101,10 @@ class LibraryApi extends BaseApi
                     return false;
                 }
             } else {
-                // Give a 91 error if incorrect variables are used
-                $this->handleError(91, 'You must include artist and track varialbes in the call for this method');
-                return false;
+                throw new InvalidArgumentException('You must include artist and track varialbes in the call for this method');
             }
         } else {
-            // Give a 92 error if not fully authed
-            $this->handleError(92, 'Method requires full auth. Call auth.getSession using lastfmApiAuth class');
-            return false;
+            throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
         }
     }
 
@@ -160,9 +149,7 @@ class LibraryApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include a user variable in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include a user variable in the call for this method');
         }
     }
 
@@ -204,9 +191,7 @@ class LibraryApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include a user variable in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include a user variable in the call for this method');
         }
     }
 
@@ -251,9 +236,7 @@ class LibraryApi extends BaseApi
                 return false;
             }
         } else {
-            // Give a 91 error if incorrect variables are used
-            $this->handleError(91, 'You must include a user variable in the call for this method');
-            return false;
+            throw new InvalidArgumentException('You must include a user variable in the call for this method');
         }
     }
 

@@ -2,6 +2,10 @@
 
 namespace LastFmApi\Api;
 
+use LastFmApi\Exception\ApiFailedException;
+use LastFmApi\Exception\CacheException;
+use LastFmApi\Exception\ConnectionException;
+use LastFmApi\Exception\InvalidArgumentException;
 use LastFmApi\Lib\Socket;
 use LastFmApi\Lib\Cache;
 use \SimpleXMLElement;
@@ -93,13 +97,11 @@ class BaseApi
             } elseif (!empty($auth->apiKey)) {
                 $this->fullAuth = false;
             } else {
-                $this->handleError(91, 'Invalid auth class was passed to lastfmApi. You need to have at least an apiKey set');
-                return false;
+                throw new InvalidArgumentException('Invalid auth class was passed to lastfmApi. You need to have at least an apiKey set');
             }
             $this->auth = $auth;
         } else {
-            $this->handleError(91, 'You need to pass a lastfmApiAuth class as the first variable to this class');
-            return false;
+            throw new InvalidArgumentException('You need to pass a lastfmApiAuth class as the first variable to this class');
         }
     }
 
@@ -151,20 +153,17 @@ class BaseApi
             } elseif (!empty($auth->apiKey)) {
                 $fullAuth = 0;
             } else {
-                $this->handleError(91, 'Invalid auth class was passed to lastfmApi. You need to have at least an apiKey set');
-                return false;
+                throw new InvalidArgumentException('Invalid auth class was passed to lastfmApi. You need to have at least an apiKey set');
             }
         } else {
-            $this->handleError(91, 'You need to pass a lastfmApiAuth class as the first variable to this class');
-            return false;
+            throw new InvalidArgumentException('You need to pass a lastfmApiAuth class as the first variable to this class');
         }
 
         if ($package == 'album' || $package == 'artist' || $package == 'event' || $package == 'geo' || $package == 'group' || $package == 'library' || $package == 'playlist' || $package == 'radio' || $package == 'tag' || $package == 'tasteometer' || $package == 'track' || $package == 'user' || $package == 'venue') {
             $className = 'lastfmApi' . ucfirst($package);
             return new $className($auth, $fullAuth, $config);
         } else {
-            $this->handleError(91, 'The package name you past was invalid');
-            return false;
+            throw new InvalidArgumentException('The package name you past was invalid');
         }
     }
 
@@ -185,8 +184,7 @@ class BaseApi
             $this->connected = 1;
             return true;
         } else {
-            $this->handleError(99, $this->socket->error_string);
-            return false;
+            throw new ConnectionException($this->socket->error_string);
         }
     }
 
@@ -205,36 +203,25 @@ class BaseApi
                 $xmlstr .= $line;
             } elseif (substr($line, 0, 1) == '<') {
                 $record = 1;
-            } elseif (preg_match('/^HTTP\/1.[0-9]{1} ([4-9]{1}[0-9]{2}.*)/', $line, $matches)) {
-                $this->handleError(99, $this->host . ': Service not available (' . trim($matches[1]) . ')');
-                return;
+            } elseif (preg_match('/^HTTP\/1.[0-9]{1} ([5-9]{1}[0-9]{2}.*)/', $line, $matches)) {
+
+                throw new ConnectionException($this->host . ': Service not available (' . trim($matches[1]) . ')');
             }
         }
-
         try {
             libxml_use_internal_errors(true);
             $xml = new SimpleXMLElement($xmlstr);
-        } catch (Exception $e) {
-            // Crap! We got errors!!!
-            $errors = libxml_get_errors();
-            $errorMessage = '';
-            if (is_array($errors) && sizeof($errors)) { //array can be empty
-                $error = $errors[0];
-                $errorMessage = $error->message;
-            }
-            $this->handleError(95, 'SimpleXMLElement error: ' . $e->getMessage() . ': ' . $errorMessage);
-        }
+        } catch (\Exception $error) {
 
-        if (!isset($e)) {
+            throw new ConnectionException($error->getMessage());
+        }
+        if((string)$xml->attributes()->status === 'failed' )
+        {
+            throw new ApiFailedException($xml->error, intval($xml->error['code']));
+        }
+        if (!isset($error)) {
             // All is well :)
             return $xml;
-            /* return filter_var_array(
-              (array) $xml,
-              array(
-              'filter' => FILTER_SANITIZE_STRING,
-              'flags' => FILTER_FLAG_STRIP_HIGH
-              )
-              ); */
         }
     }
 
@@ -250,8 +237,7 @@ class BaseApi
         if ($this->connected == 1) {
             $this->cache = new Cache($this->config);
             if (!empty($this->cache->error)) {
-                $this->handleError(96, $this->cache->error);
-                return false;
+                throw new CacheException($this->cache->error);
             } else {
                 if ($cache = $this->cache->get($vars)) {
                     // Cache exists
