@@ -133,7 +133,7 @@ class UserApi extends BaseApi
                 'sk' => $this->auth->sessionKey
             );
             $vars = array_merge($vars, $methodVars);
-            $apiSig = $this->apiSig($this->auth->secret, $vars);
+            $apiSig = $this->apiSig($this->auth->apiSecret, $vars);
             $vars['api_sig'] = $apiSig;
 
             if ($call = $this->apiGetCall($vars)) {
@@ -410,7 +410,7 @@ class UserApi extends BaseApi
                 'sk' => $this->auth->sessionKey
             );
             $vars = array_merge($vars, $methodVars);
-            $apiSig = $this->apiSig($this->auth->secret, $vars);
+            $apiSig = $this->apiSig($this->auth->apiSecret, $vars);
             $vars['api_sig'] = $apiSig;
 
             if ($call = $this->apiGetCall($vars)) {
@@ -461,7 +461,7 @@ class UserApi extends BaseApi
                 'sk' => $this->auth->sessionKey
             );
             $vars = array_merge($vars, $methodVars);
-            $apiSig = $this->apiSig($this->auth->secret, $vars);
+            $apiSig = $this->apiSig($this->auth->apiSecret, $vars);
             $vars['api_sig'] = $apiSig;
 
             if ($call = $this->apiGetCall($vars)) {
@@ -880,7 +880,7 @@ class UserApi extends BaseApi
                     'sk' => $this->auth->sessionKey
                 );
                 $vars = array_merge($vars, $methodVars);
-                $sig = $this->apiSig($this->auth->secret, $vars);
+                $sig = $this->apiSig($this->auth->apiSecret, $vars);
                 $vars['api_sig'] = $sig;
 
                 if ($call = $this->apiPostCall($vars)) {

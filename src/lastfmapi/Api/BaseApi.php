@@ -8,6 +8,7 @@ use LastFmApi\Exception\ConnectionException;
 use LastFmApi\Exception\InvalidArgumentException;
 use LastFmApi\Lib\Socket;
 use LastFmApi\Lib\Cache;
+use LastFmApi\Lib\ApiUtils;
 use \SimpleXMLElement;
 
 /**
@@ -19,6 +20,7 @@ use \SimpleXMLElement;
  */
 class BaseApi
 {
+    use ApiUtils;
     /*
      * Stores error details
      * @access public
@@ -92,7 +94,7 @@ class BaseApi
         }
 
         if (is_object($auth)) {
-            if (!empty($auth->apiKey) && !empty($auth->secret) && !empty($auth->username) && !empty($auth->sessionKey) && ($auth->subscriber == 0 || $auth->subscriber == 1)) {
+            if (!empty($auth->apiKey) && !empty($auth->apiSecret) && !empty($auth->username) && !empty($auth->sessionKey) && ($auth->subscriber == 0 || $auth->subscriber == 1)) {
                 $this->fullAuth = true;
             } elseif (!empty($auth->apiKey)) {
                 $this->fullAuth = false;
@@ -133,41 +135,6 @@ class BaseApi
     }
 
     /*
-     * Used to return the correct package to allow access to the api calls for that package
-     * @deprecated
-     * @access public
-     * @return class
-     */
-
-    public function getPackage($auth, $package, $config = '')
-    {
-        if ($config == '') {
-            $config = array(
-                'enabled' => false
-            );
-        }
-
-        if (is_object($auth)) {
-            if (!empty($auth->apiKey) && !empty($auth->secret) && !empty($auth->username) && !empty($auth->sessionKey) && ($auth->subscriber == 0 || $auth->subscriber == 1)) {
-                $fullAuth = 1;
-            } elseif (!empty($auth->apiKey)) {
-                $fullAuth = 0;
-            } else {
-                throw new InvalidArgumentException('Invalid auth class was passed to lastfmApi. You need to have at least an apiKey set');
-            }
-        } else {
-            throw new InvalidArgumentException('You need to pass a lastfmApiAuth class as the first variable to this class');
-        }
-
-        if ($package == 'album' || $package == 'artist' || $package == 'event' || $package == 'geo' || $package == 'group' || $package == 'library' || $package == 'playlist' || $package == 'radio' || $package == 'tag' || $package == 'tasteometer' || $package == 'track' || $package == 'user' || $package == 'venue') {
-            $className = 'lastfmApi' . ucfirst($package);
-            return new $className($auth, $fullAuth, $config);
-        } else {
-            throw new InvalidArgumentException('The package name you past was invalid');
-        }
-    }
-
-    /*
      * Setup the socket to get the raw api call return
      * @access private
      * @return boolean
@@ -194,7 +161,7 @@ class BaseApi
      * @return object
      */
 
-    private function process_response()
+    private function processResponse()
     {
         $xmlstr = '';
         $record = 0;
@@ -258,7 +225,7 @@ class BaseApi
                     $this->cache->set($vars, $this->response);
                 }
 
-                return $this->process_response();
+                return $this->processResponse();
             }
         } else {
             return false;
@@ -291,33 +258,9 @@ class BaseApi
             $out .= $data . "\r\n";
             $this->response = $this->socket->send($out, 'array');
 
-            return $this->process_response();
+            return $this->processResponse();
         } else {
             return false;
         }
     }
-
-    /*
-     * Processes and error and writes to the public variable $error
-     * @access protected
-     * @return void
-     */
-
-    protected function handleError($error = '', $customDesc = '')
-    {
-        if (!empty($error) && is_object($error)) {
-            // Fail with error code
-            $this->error['code'] = $error['code'];
-            $this->error['desc'] = $error;
-        } elseif (!empty($error) && is_numeric($error)) {
-            // Fail with custom error code
-            $this->error['code'] = $error;
-            $this->error['desc'] = $customDesc;
-        } else {
-            //Hard failure
-            $this->error['code'] = 0;
-            $this->error['desc'] = 'Unknown error';
-        }
-    }
-
 }

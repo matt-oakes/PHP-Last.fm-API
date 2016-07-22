@@ -10,41 +10,11 @@ use LastFmApi\Exception\ApiFailedException;
  *
  * @author Marcos Peña
  */
-class AuthTest extends \PHPUnit_Framework_TestCase
+class AuthTest extends BaseApiTest
 {
-
-    private $apiKey = '';
-    private $apiSecret = '';
-    private $token;
     protected $authentication;
 
     public function testGetToken()
-    {
-        $this->setToken();
-        $this->assertNotEmpty($this->token);
-    }
-
-    /**
-     * Token authentication is broken as july 2016
-     */
-    public function testGetSessionIsNotWorking()
-    {
-
-        $this->setToken();
-        try {
-            new AuthApi('getsession', array(
-                'apiKey' => $this->apiKey,
-                'apiSecret' => $this->apiSecret,
-                'token' => $this->token
-            ));
-            $this->fail("Is token authentication fixed now?");
-        } catch (ApiFailedException $error) {            
-            $this->assertEquals(14, $error->getCode());
-            $this->assertEquals("Unauthorized Token - This token has not been authorized", $error->getMessage());
-        }
-    }
-
-    private function setToken()
     {
         if (empty($this->apiKey) || empty($this->apiSecret)) {
 
@@ -55,7 +25,32 @@ class AuthTest extends \PHPUnit_Framework_TestCase
             'apiSecret' => $this->apiSecret
         ));
 
-        $this->token = $authentication->token;
+        $this->assertNotEmpty($authentication->token);
+    }
+
+    public function testGetSession()
+    {
+
+        if (empty($this->apiKey) || empty($this->apiSecret) || empty($this->token)) {
+
+            $this->fail("You must provide a valid apiKey and a valid apiToken!");
+        }
+        try {
+            $authorization = new AuthApi('getsession', array(
+                'apiKey' => $this->apiKey,
+                'apiSecret' => $this->apiSecret,
+                'token' => '850e618e152aab87c4de6af8c8362e2f'
+            ));
+            $username = $authorization->username;
+            $subscriber = $authorization->subscriber;
+            $sessionKey = $authorization->sessionKey;
+            $ok = $username !== null && $subscriber !== null && $sessionKey !== null;
+            $this->assertTrue($ok);
+        } catch (ApiFailedException $exception) {
+            if ($exception->getCode() === 4 && $exception->getMessage() == 'Invalid authentication token supplied') {
+                $this->markTestSkipped("Token problably expired");
+            }
+        }
     }
 
 }

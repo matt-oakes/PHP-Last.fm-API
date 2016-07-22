@@ -51,7 +51,7 @@ class AlbumApi extends BaseApi
                 $vars = array_merge($vars, $methodVars);
 
                 // Generate a call signiture
-                $sig = $this->apiSig($this->getAuth()->secret, $vars);
+                $sig = $this->apiSig($this->getAuth()->apiSecret, $vars);
                 $vars['api_sig'] = $sig;
 
                 // Do the call and check for errors
@@ -147,7 +147,7 @@ class AlbumApi extends BaseApi
                 $vars = array_merge($vars, $methodVars);
 
                 // Generate a call signiture
-                $sig = $this->apiSig($this->getAuth()->secret, $vars);
+                $sig = $this->apiSig($this->getAuth()->apiSecret, $vars);
                 $vars['api_sig'] = $sig;
 
                 $tags = array();
@@ -196,7 +196,7 @@ class AlbumApi extends BaseApi
                 $vars = array_merge($vars, $methodVars);
 
                 // Generate a call signature
-                $sig = $this->apiSig($this->getAuth()->secret, $vars);
+                $sig = $this->apiSig($this->getAuth()->apiSecret, $vars);
                 $vars['api_sig'] = $sig;
 
                 // Do the call

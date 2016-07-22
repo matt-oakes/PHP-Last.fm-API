@@ -13,7 +13,6 @@ use LastFmApi\Exception\InvalidArgumentException;
  */
 class AuthApi extends BaseApi
 {
-
     /**
      * Stores the api key
      * @access public
@@ -144,25 +143,4 @@ class AuthApi extends BaseApi
             return false;
         }
     }
-
-    /*
-     * Generates the api signature for use in api calls that require write access
-     * @access protected
-     * @return string
-     */
-
-    protected function apiSig($apiSecret, $vars)
-    {
-        ksort($vars);
-
-        $signature = '';
-        foreach ($vars as $name => $value) {
-            $signature .= $name . $value;
-        }
-        $signature .= $apiSecret;;
-        $hashedSignature = md5($signature);
-
-        return $hashedSignature;
-    }
-
 }

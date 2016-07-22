@@ -39,7 +39,7 @@ class TrackApi extends BaseApi {
 					'sk' => $this->auth->sessionKey
 				);
 				$vars = array_merge($vars, $methodVars);
-				$sig = $this->apiSig($this->auth->secret, $vars);
+				$sig = $this->apiSig($this->auth->apiSecret, $vars);
 				$vars['api_sig'] = $sig;
 
 				if ( $call = $this->apiPostCall($vars) ) {
@@ -74,7 +74,7 @@ class TrackApi extends BaseApi {
 					'sk' => $this->auth->sessionKey
 				);
 				$vars = array_merge($vars, $methodVars);
-				$sig = $this->apiSig($this->auth->secret, $vars);
+				$sig = $this->apiSig($this->auth->apiSecret, $vars);
 				$vars['api_sig'] = $sig;
 
 				if ( $call = $this->apiPostCall($vars) ) {
@@ -207,7 +207,7 @@ class TrackApi extends BaseApi {
 					'sk' => $this->auth->sessionKey
 				);
 				$vars = array_merge($vars, $methodVars);
-				$sig = $this->apiSig($this->auth->secret, $vars);
+				$sig = $this->apiSig($this->auth->apiSecret, $vars);
 				$vars['api_sig'] = $sig;
 
 				if ( $call = $this->apiGetCall($vars) ) {
@@ -340,7 +340,7 @@ class TrackApi extends BaseApi {
 					'sk' => $this->auth->sessionKey
 				);
 				$vars = array_merge($vars, $methodVars);
-				$sig = $this->apiSig($this->auth->secret, $vars);
+				$sig = $this->apiSig($this->auth->apiSecret, $vars);
 				$vars['api_sig'] = $sig;
 
 				if ( $call = $this->apiPostCall($vars) ) {
@@ -375,7 +375,7 @@ class TrackApi extends BaseApi {
 					'sk' => $this->auth->sessionKey
 				);
 				$vars = array_merge($vars, $methodVars);
-				$sig = $this->apiSig($this->auth->secret, $vars);
+				$sig = $this->apiSig($this->auth->apiSecret, $vars);
 				$vars['api_sig'] = $sig;
 
 				if ( $call = $this->apiPostCall($vars) ) {
@@ -464,7 +464,7 @@ class TrackApi extends BaseApi {
 					'sk' => $this->auth->sessionKey
 				);
 				$vars = array_merge($vars, $methodVars);
-				$sig = $this->apiSig($this->auth->secret, $vars);
+				$sig = $this->apiSig($this->auth->apiSecret, $vars);
 				$vars['api_sig'] = $sig;
 
 				if ( $call = $this->apiPostCall($vars) ) {
@@ -499,7 +499,7 @@ class TrackApi extends BaseApi {
 					'sk' => $this->auth->sessionKey
 				);
 				$vars = array_merge($vars, $methodVars);
-				$sig = $this->apiSig($this->auth->secret, $vars);
+				$sig = $this->apiSig($this->auth->apiSecret, $vars);
 				$vars['api_sig'] = $sig;
 
 				if ( $call = $this->apiPostCall($vars) ) {
@@ -534,7 +534,7 @@ class TrackApi extends BaseApi {
 					'sk' => $this->auth->sessionKey
 				);
 				$vars = array_merge($vars, $methodVars);
-				$sig = $this->apiSig($this->auth->secret, $vars);
+				$sig = $this->apiSig($this->auth->apiSecret, $vars);
 				$vars['api_sig'] = $sig;
 
 				if ( $call = $this->apiPostCall($vars) ) {

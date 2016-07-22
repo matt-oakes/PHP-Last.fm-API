@@ -9,19 +9,26 @@ use LastFmApi\Api\AuthApi;
  *
  * @author Marcos Peña
  */
-abstract class BaseNotAuthenticatedApiTest extends BaseApiTest
+abstract class BaseAuthenticatedApiTest extends BaseApiTest
 {
 
     protected $authentication;
     private $isApiInitiated = false;
-    
+
     public function initiateApi()
     {
         $this->setUp();
         if (empty($this->apiKey)) {
             $this->fail("You must provide a valid apiKey!");
         }
-        $this->authentication = new AuthApi('setsession', array('apiKey' => $this->apiKey));
+        $this->authentication = new AuthApi('setsession', array(
+            'apiKey' => $this->apiKey,
+            'apiSecret' => $this->apiSecret,
+            'sessionKey' => $this->sessionKey,
+            'username' => $this->username,
+            'subscriber' => 0
+                )
+        );
         $this->isApiInitiated = true;
     }
 
