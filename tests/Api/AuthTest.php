@@ -27,7 +27,7 @@ class AuthTest extends \PHPUnit_Framework_TestCase
     /**
      * Token authentication is broken as july 2016
      */
-    public function testGetSession()
+    public function testGetSessionIsNotWorking()
     {
 
         $this->setToken();
@@ -37,7 +37,7 @@ class AuthTest extends \PHPUnit_Framework_TestCase
                 'apiSecret' => $this->apiSecret,
                 'token' => $this->token
             ));
-            $this->fail("Good news: expected token authentication to be broken!");
+            $this->fail("Is token authentication fixed now?");
         } catch (ApiFailedException $error) {            
             $this->assertEquals(14, $error->getCode());
             $this->assertEquals("Unauthorized Token - This token has not been authorized", $error->getMessage());
