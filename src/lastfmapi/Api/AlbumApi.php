@@ -256,7 +256,7 @@ class AlbumApi extends BaseApi
 
                     return $searchresults;
                 } else {
-                    throw new NoResultsException(90, 'No results');
+                    throw new NoResultsException('No results', 90);
                 }
             } else {
                 return false;
