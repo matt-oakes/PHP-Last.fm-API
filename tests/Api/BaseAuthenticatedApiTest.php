@@ -18,8 +18,12 @@ abstract class BaseAuthenticatedApiTest extends BaseApiTest
     public function initiateApi()
     {
         $this->setUp();
-        if (empty($this->apiKey)) {
-            $this->fail("You must provide a valid apiKey!");
+        if (empty($this->apiKey) ||
+                empty($this->apiSecret) ||
+                empty($this->sessionKey) ||
+                empty($this->username)
+        ) {
+            $this->fail("You must provide a valid api key, api secret, session key and username to test this method!");
         }
         $this->authentication = new AuthApi('setsession', array(
             'apiKey' => $this->apiKey,

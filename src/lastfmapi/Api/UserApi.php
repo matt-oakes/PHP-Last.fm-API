@@ -729,6 +729,7 @@ class UserApi extends BaseApi
      */
     public function getWeeklyAlbumChart($methodVars)
     {
+        $weeklyalbums = array();
         // Check for required variables
         if (!empty($methodVars['user'])) {
             $vars = array(
@@ -766,6 +767,8 @@ class UserApi extends BaseApi
      */
     public function getWeeklyArtistChart($methodVars)
     {
+        $weeklyartists = array();
+        
         // Check for required variables
         if (!empty($methodVars['user'])) {
             $vars = array(
@@ -833,6 +836,8 @@ class UserApi extends BaseApi
      */
     public function getWeeklyTrackChart($methodVars)
     {
+        $weeklytracks = array();
+        
         // Check for required variables
         if (!empty($methodVars['user'])) {
             $vars = array(

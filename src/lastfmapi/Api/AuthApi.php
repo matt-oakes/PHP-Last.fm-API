@@ -91,7 +91,7 @@ class AuthApi extends BaseApi
                     $this->subscriber = $vars['subscriber'];
                 }
             } else {
-                throw new InvalidArgumentException('Must send an apiKey, secret, usernamne, subcriber and sessionKey in the call for setsession');
+                throw new InvalidArgumentException('Must send an apiKey, secret, username, subscriber and sessionKey in the call for setsession');
             }
         } else {
             throw new InvalidArgumentException('Incorrect use of method variable ("getsession" or "setsession")');

@@ -30,6 +30,6 @@ class BaseApiTest extends \PHPUnit_Framework_TestCase
     
     public function testDotenvFileExists()
     {
-        $this->assertFileExists(__DIR__ . '/.env', 'You must need to setup a .env file to run the tests. https://github.com/vlucas/phpdotenv');
+        $this->assertFileExists(__DIR__ . '/.env', 'You need to setup a .env file to run the tests. https://github.com/vlucas/phpdotenv');
     }
 }

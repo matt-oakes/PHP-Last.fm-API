@@ -91,7 +91,8 @@ class UserTest extends BaseNotAuthenticatedApiTest
         $result = $this->userApi->getWeeklyAlbumChart(array(
             'user' => self::USERNAME_NAME)
         );
-        $this->assertNotEmpty($result);
+        
+        $this->assertTrue(is_array($result));
     }
 
     public function testWeeklyChartList()
@@ -99,7 +100,8 @@ class UserTest extends BaseNotAuthenticatedApiTest
         $result = $this->userApi->getWeeklyChartList(array(
             'user' => self::USERNAME_NAME)
         );
-        $this->assertNotEmpty($result);
+        
+        $this->assertTrue(is_array($result));
     }
 
     public function testWeeklyTrackChart()
@@ -107,7 +109,8 @@ class UserTest extends BaseNotAuthenticatedApiTest
         $result = $this->userApi->getWeeklyTrackChart(array(
             'user' => self::USERNAME_NAME)
         );
-        $this->assertNotEmpty($result);
+        
+        $this->assertTrue(is_array($result));
     }
 
 }
