@@ -14,7 +14,7 @@ class AuthenticatedTrackTest extends BaseAuthenticatedApiTest
 
     private $trackApi;
     const TRACK_NAME = 'When I get the time';
-    const ARTIST_NAME = 'Descendents';    
+    const ARTIST_NAME = 'Descendents';
     
     public function __construct($name = null, array $data = array(), $dataName = '')
     {
@@ -34,4 +34,14 @@ class AuthenticatedTrackTest extends BaseAuthenticatedApiTest
         
         $this->assertTrue($loved);
     }
+    
+    public function testUnloveTrack()
+    {
+        $result = $this->trackApi->unlove(array(
+            'track' => self::TRACK_NAME,
+            'artist' => self::ARTIST_NAME)
+        );
+
+        $this->assertTrue($result);        
+    }    
 }

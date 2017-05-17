@@ -360,6 +360,41 @@ class TrackApi extends BaseApi {
 	}
 
 	/**
+	 * Unlove a track for a user profile.
+	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>
+	 * @return boolean
+	 */
+	public function unlove($methodVars) {
+		// Only allow full authed calls
+		if ( $this->fullAuth == true ) {
+			// Check for required variables
+			if ( !empty($methodVars['artist']) && !empty($methodVars['track']) ) {
+				$vars = array(
+					'method' => 'track.unlove',
+					'api_key' => $this->auth->apiKey,
+					'sk' => $this->auth->sessionKey
+				);
+				$vars = array_merge($vars, $methodVars);
+				$sig = $this->apiSig($this->auth->apiSecret, $vars);
+				$vars['api_sig'] = $sig;
+
+				if ( $call = $this->apiPostCall($vars) ) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else {
+				throw new InvalidArgumentException('You must include artist and track varialbes in the call for this method');
+			}
+		}
+		else {
+			throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
+		}
+	}
+
+	/**
 	 * Remove a user's tag from a track (Requires full auth)
 	 * @param array $methodVars An array with the following required values: <i>artist</i>, <i>track</i>, <i>tag</i>
 	 * @return boolean
