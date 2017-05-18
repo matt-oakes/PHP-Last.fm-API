@@ -32,5 +32,13 @@ class LastFm
 }
 ``` 
 
-Enjoy!
-Matt Oakes
+# Testing
+
+To run phpunit successfully, a _.env_ file must be included in tests/Api:
+```properties
+lastfm_api_key=
+lastfm_api_secret=
+lastfm_token=
+lastfm_session_key=
+lastfm_username=
+```
