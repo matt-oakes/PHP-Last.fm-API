@@ -246,6 +246,7 @@ class AlbumApi extends BaseApi
                         $searchresults['results'][$i]['name'] = (string) $album->name;
                         $searchresults['results'][$i]['artist'] = (string) $album->artist;
                         $searchresults['results'][$i]['id'] = (string) $album->id;
+			$searchresults['results'][$i]['mbid'] = (string) $album->mbid;
                         $searchresults['results'][$i]['url'] = (string) $album->url;
                         $searchresults['results'][$i]['streamable'] = (string) $album->streamable;
                         $searchresults['results'][$i]['image']['small'] = (string) $album->image[0];
