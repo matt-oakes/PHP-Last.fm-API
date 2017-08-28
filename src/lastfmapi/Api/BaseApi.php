@@ -176,7 +176,7 @@ class BaseApi
             }
         }
         try {
-            libxml_use_internal_errors(true);
+            libxml_use_internal_errors(false);
             $xml = new SimpleXMLElement($xmlstr);
         } catch (\Exception $error) {
 
