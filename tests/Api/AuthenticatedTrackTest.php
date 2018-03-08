@@ -45,7 +45,7 @@ class AuthenticatedTrackTest extends BaseAuthenticatedApiTest
         $this->assertTrue($result);        
     }    
     
-    public function testScrobble()
+    public function testScrobbleASingleTrack()
     {
         $result = $this->trackApi->scrobble(array(
             'artist' => self::ARTIST_NAME,
@@ -55,5 +55,23 @@ class AuthenticatedTrackTest extends BaseAuthenticatedApiTest
         );
 
         $this->assertTrue($result);        
-    }    
+    }
+
+    public function testScrobbleABatchOfTracks()
+    {
+        $result = $this->trackApi->scrobble(array(
+            array(
+                'artist' => self::ARTIST_NAME,
+                'track' => self::TRACK_NAME,
+                'timestamp' => time() - 60
+            ),
+            array(
+                'artist' => self::ARTIST_NAME,
+                'track' => self::TRACK_NAME,
+                'timestamp' => time() - 120
+            )
+        ));
+
+        $this->assertTrue($result);
+    }
 }

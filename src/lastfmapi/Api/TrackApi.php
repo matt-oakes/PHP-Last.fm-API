@@ -526,27 +526,48 @@ class TrackApi extends BaseApi {
 	public function scrobble($methodVars) {
 		// Only allow full authed calls
 		if ( $this->fullAuth == true ) {
-			// Check for required variables
-			if ( !empty($methodVars['artist']) && !empty($methodVars['track']) && !empty($methodVars['timestamp']) ) {
-				$vars = array(
-					'method' => 'track.scrobble',
-					'api_key' => $this->auth->apiKey,
-					'sk' => $this->auth->sessionKey
-				);
-				$vars = array_merge($vars, $methodVars);
-				$sig = $this->apiSig($this->auth->apiSecret, $vars);
-				$vars['api_sig'] = $sig;
+		    // Check if $methodVars is not an multi dimensional array
+            if (count($methodVars) == count($methodVars, COUNT_RECURSIVE)) {
+                // Array is singular, convert to multi dimensional
+                $methodVars = array($methodVars);
+            }
 
-				if ( $call = $this->apiPostCall($vars) ) {
-					return true;
-				}
-				else {
-					return false;
-				}
-			}
-			else {
-				throw new InvalidArgumentException('You must include artist, track and timestamp variables in the call for this method');
-			}
+            // Check for maximum batch size
+            if (count($methodVars) <= 50) {
+                // Build scrobble params, and add array notation to key names
+                $params = array();
+                foreach($methodVars as $i => $track) {
+                    // Check for required variables
+                    if ( !empty($track['artist']) && !empty($track['track']) && !empty($track['timestamp']) ) {
+                        foreach($track as $key => $value) {
+                            $_key = sprintf("%s[%d]", $key, $i);
+                            $params[$_key] = $value;
+                        }
+                    }
+                    else {
+                        throw new InvalidArgumentException('You must include artist, track and timestamp variables in the call for this method');
+                    }
+                }
+
+                $vars = array(
+                    'method' => 'track.scrobble',
+                    'api_key' => $this->auth->apiKey,
+                    'sk' => $this->auth->sessionKey
+                );
+                $vars = array_merge($vars, $params);
+                $sig = $this->apiSig($this->auth->apiSecret, $vars);
+                $vars['api_sig'] = $sig;
+
+                if ( $call = $this->apiPostCall($vars) ) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                throw new InvalidArgumentException('Batch size exceed maximum of 50 tracks');
+            }
 		}
 		else {
 			throw new NotAuthenticatedException('Method requires full auth. Call auth.getSession using lastfmApiAuth class');
