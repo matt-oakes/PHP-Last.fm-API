@@ -99,7 +99,7 @@ class ArtistApi extends BaseApi
                         $events[$i]['startdate'] = strtotime(trim((string) $event->startDate));
                         $events[$i]['description'] = (string) $event->description;
                         $events[$i]['image']['small'] = (string) $event->image[0];
-                        $events[$i]['image']['mendium'] = (string) $event->image[1];
+                        $events[$i]['image']['medium'] = (string) $event->image[1];
                         $events[$i]['image']['large'] = (string) $event->image[2];
                         $events[$i]['attendance'] = (string) $event->attendance;
                         $events[$i]['reviews'] = (string) $event->reviews;
@@ -167,6 +167,8 @@ class ArtistApi extends BaseApi
             $info['image']['small'] = (string) $call->artist->image;
             $info['image']['medium'] = (string) $call->artist->image[1];
             $info['image']['large'] = (string) $call->artist->image[2];
+            $info['image']['extralarge'] = (string) $call->artist->image[3];
+            $info['image']['mega'] = (string) $call->artist->image[4];
             $info['streamable'] = (string) $call->artist->streamable;
             $info['stats']['listeners'] = (string) $call->artist->stats->listeners;
             $info['stats']['playcount'] = (string) $call->artist->stats->playcount;
@@ -177,6 +179,8 @@ class ArtistApi extends BaseApi
                 $info['similar'][$i]['image']['small'] = (string) $artist->image;
                 $info['similar'][$i]['image']['medium'] = (string) $artist->image[1];
                 $info['similar'][$i]['image']['large'] = (string) $artist->image[2];
+                $info['similar'][$i]['image']['extralarge'] = (string) $artist->image[3];
+                $info['similar'][$i]['image']['mega'] = (string) $artist->image[4];
                 $i++;
             }
             if (count($call->artist->tags->tag) > 0) {
