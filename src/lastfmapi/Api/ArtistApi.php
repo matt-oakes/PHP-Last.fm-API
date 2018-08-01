@@ -256,7 +256,7 @@ class ArtistApi extends BaseApi
             $vars = array_merge($vars, $methodVars);
 
             if ($call = $this->apiGetCall($vars)) {
-                $similar = '';
+                $similar = array();
                 $i = 0;
                 foreach ($call->similarartists->artist as $artist) {
                     $similar[$i]['name'] = (string) $artist->name;
