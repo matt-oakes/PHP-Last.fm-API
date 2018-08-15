@@ -547,8 +547,11 @@ class ArtistApi extends BaseApi
                         $searchResults['results'][$i]['mbid'] = (string) $artist->mbid;
                         $searchResults['results'][$i]['url'] = (string) $artist->url;
                         $searchResults['results'][$i]['streamable'] = (string) $artist->streamable;
-                        $searchResults['results'][$i]['image']['small'] = (string) $artist->image_small;
-                        $searchResults['results'][$i]['image']['large'] = (string) $artist->image;
+                        $searchResults['results'][$i]['image']['small'] = (string) $artist->image[0];
+                        $searchResults['results'][$i]['image']['medium'] = (string) $artist->image[1];
+                        $searchResults['results'][$i]['image']['large'] = (string) $artist->image[2];
+                        $searchResults['results'][$i]['image']['extralarge'] = (string) $artist->image[3];
+                        $searchResults['results'][$i]['image']['mega'] = (string) $artist->image[4];
                         $i++;
                     }
 
@@ -560,7 +563,7 @@ class ArtistApi extends BaseApi
                 return false;
             }
         } else {
-            throw new InvalidArgumentException('You must include artist varialbe in the call for this method');
+            throw new InvalidArgumentException('You must include artist variable in the call for this method');
         }
     }
 
