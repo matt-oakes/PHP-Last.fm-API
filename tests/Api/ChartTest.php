@@ -2,19 +2,17 @@
 
 namespace Tests\Api;
 
-use LastFmApi\Api\GeoApi;
+use LastFmApi\Api\ChartApi;
 
 /**
- * Tests geo api calls
+ * Tests chart api calls
  *
  * @author Marcos Peña
  */
-class GeoTest extends BaseNotAuthenticatedApiTest
+class ChartTest extends BaseNotAuthenticatedApiTest
 {
 
-    private $geoApi;
-
-    const COUNTRY_NAME = 'Spain';
+    private $chartApi;
 
     public function __construct($name = null, array $data = array(), $dataName = '')
     {
@@ -22,22 +20,28 @@ class GeoTest extends BaseNotAuthenticatedApiTest
             $this->initiateApi();
         }
         parent::__construct($name, $data, $dataName);
-        $this->geoApi = new GeoApi($this->authentication);
+        $this->chartApi = new ChartApi($this->authentication);
     }
 
-    public function testTopArtist()
+    public function testTopArtists()
     {
-        $result = $this->geoApi->getTopArtists(array(
-            'country' => self::COUNTRY_NAME,
+        $result = $this->chartApi->getTopArtists(array(
             'limit' => 1)
+        );
+        $this->assertNotEmpty($result);
+    }
+
+    public function testTopTags()
+    {
+        $result = $this->chartApi->getTopTags(array(
+                'limit' => 1)
         );
         $this->assertNotEmpty($result);
     }
 
     public function testTopTracks()
     {
-        $result = $this->geoApi->getTopTracks(array(
-            'country' => self::COUNTRY_NAME,
+        $result = $this->chartApi->getTopTracks(array(
             'limit' => 1)
         );
         $this->assertNotEmpty($result);
