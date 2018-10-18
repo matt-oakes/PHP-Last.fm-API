@@ -7,6 +7,7 @@ use LastFmApi\Api\TrackApi;
 /**
  * Tests track api calls
  *
+ * @group notAuthenticated
  * @author Marcos Peña
  */
 class TrackTest extends BaseNotAuthenticatedApiTest

@@ -8,6 +8,7 @@ use LastFmApi\Api\ArtistApi;
 /**
  * Tests artist api calls
  *
+ * @group notAuthenticated
  * @author Marcos Peña
  */
 class ArtistTest extends BaseNotAuthenticatedApiTest

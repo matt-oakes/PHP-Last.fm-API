@@ -7,6 +7,7 @@ use LastFmApi\Api\ChartApi;
 /**
  * Tests chart api calls
  *
+ * @group notAuthenticated
  * @author Marcos Peña
  */
 class ChartTest extends BaseNotAuthenticatedApiTest

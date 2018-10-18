@@ -8,6 +8,7 @@ use LastFmApi\Exception\ApiFailedException;
 /**
  * Tests album api calls
  *
+ * @group notAuthenticated
  * @author Marcos Peña
  */
 class AlbumTest extends BaseNotAuthenticatedApiTest

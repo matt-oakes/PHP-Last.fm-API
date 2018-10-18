@@ -7,6 +7,7 @@ use LastFmApi\Api\GeoApi;
 /**
  * Tests geo api calls
  *
+ * @group notAuthenticated
  * @author Marcos Peña
  */
 class GeoTest extends BaseNotAuthenticatedApiTest

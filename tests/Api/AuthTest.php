@@ -8,6 +8,7 @@ use LastFmApi\Exception\ApiFailedException;
 /**
  * Tests geo api calls
  *
+ * @group notAuthenticated
  * @author Marcos Peña
  */
 class AuthTest extends BaseApiTest

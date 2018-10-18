@@ -7,6 +7,7 @@ use LastFmApi\Api\TagApi;
 /**
  * Tests tag api calls
  *
+ * @group notAuthenticated
  * @author Marcos Peña
  */
 class TagTest extends BaseNotAuthenticatedApiTest

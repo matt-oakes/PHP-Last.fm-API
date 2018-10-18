@@ -7,6 +7,7 @@ use LastFmApi\Api\UserApi;
 /**
  * Tests user api calls
  *
+ * @group notAuthenticated
  * @author Marcos Peña
  */
 class UserTest extends BaseNotAuthenticatedApiTest
