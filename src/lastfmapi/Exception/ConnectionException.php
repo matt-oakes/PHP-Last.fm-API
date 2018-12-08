@@ -6,6 +6,6 @@ namespace LastFmApi\Exception;
  *
  * @author Marcos Peña
  */
-class ConnectionException extends LastFmApiExeption
+class ConnectionException extends LastFmApiException
 {
 }
