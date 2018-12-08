@@ -6,6 +6,6 @@ namespace LastFmApi\Exception;
  *
  * @author Marcos Peña
  */
-class NoResultsException extends LastFmApiExeption
+class NoResultsException extends LastFmApiException
 {
 }
