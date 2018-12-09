@@ -6,7 +6,7 @@ namespace LastFmApi\Exception;
  *
  * @author Marcos Peña
  */
-abstract class LastFmApiExeption extends \Exception
+abstract class LastFmApiException extends \Exception
 {
     public function __construct($message, $code = 0)
     {

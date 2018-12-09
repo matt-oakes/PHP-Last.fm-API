@@ -6,6 +6,6 @@ namespace LastFmApi\Exception;
  *
  * @author Marcos Peña
  */
-class InvalidArgumentException extends LastFmApiExeption
+class InvalidArgumentException extends LastFmApiException
 {
 }

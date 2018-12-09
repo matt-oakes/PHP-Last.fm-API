@@ -6,6 +6,6 @@ namespace LastFmApi\Exception;
  *
  * @author Marcos Peña
  */
-class CacheException extends LastFmApiExeption
+class CacheException extends LastFmApiException
 {
 }

@@ -6,6 +6,6 @@ namespace LastFmApi\Exception;
  *
  * @author Marcos Peña
  */
-class NotAuthenticatedException extends LastFmApiExeption
+class NotAuthenticatedException extends LastFmApiException
 {
 }
