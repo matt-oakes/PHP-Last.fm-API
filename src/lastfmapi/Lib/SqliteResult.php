@@ -9,13 +9,6 @@ namespace LastFmApi\Lib;
  */
 class SqliteResult
 {
-
-    /**
-     * Stores the sqlite class
-     * @var class
-     */
-    var $sqlite;
-
     /**
      * Stores the query
      * @var class
@@ -28,9 +21,8 @@ class SqliteResult
      * @param class $query The query
      * @return void
      */
-    public function __construct(&$sqlite, $query)
+    public function __construct($query)
     {
-        $this->sqlite = &$sqlite;
         $this->query = $query;
     }
 
@@ -40,14 +32,7 @@ class SqliteResult
      */
     function fetch()
     {
-        if ($row = sqlite_fetch_array($this->query)) {
-            return $row;
-        } else if ($this->size() > 0) {
-            sqlite_seek($this->query, 0);
-            return false;
-        } else {
-            return false;
-        }
+        return $this->query->fetchArray();
     }
 
     /**
@@ -57,7 +42,7 @@ class SqliteResult
     function fetchAll()
     {
         $result = array();
-        while ($row = sqlite_fetch_array($this->query)) {
+        while ($row = $this->fetch()) {
             $result[] = $row;
         }
         return $result;
@@ -69,7 +54,7 @@ class SqliteResult
      */
     function size()
     {
-        return sqlite_num_rows($this->query);
+        return $this->query->numColumns();
     }
 
 }

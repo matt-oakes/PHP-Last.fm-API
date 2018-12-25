@@ -73,7 +73,7 @@ class Cache
 
         if ($this->enabled == true) {
             if ($this->type == 'sqlite') {
-                $this->db = new Sqlite($this->config['path'] . 'phplastfmapi');
+                $this->db = new Sqlite($this->config['path'] . '/phplastfmapi.sqlite3');
             } else {
                 if (isset($this->config['database']['host']) && isset($this->config['database']['username']) && isset($this->config['database']['password']) && isset($this->config['database']['name'])) {
                     $this->db = new MySql($this->config['database']['host'], $this->config['database']['username'], $this->config['database']['password'], $this->config['database']['name']);
@@ -99,7 +99,7 @@ class Cache
      */
     private function check_if_enabled()
     {
-        if ($this->config['enabled'] == true && function_exists('sqlite_open')) {
+        if ($this->config['enabled'] == true && extension_loaded('sqlite3')) {
             $this->enabled = true;
         } else {
             $this->enabled = false;
