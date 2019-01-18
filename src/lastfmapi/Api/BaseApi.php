@@ -209,6 +209,7 @@ class BaseApi
                 if ($cache = $this->cache->get($vars)) {
                     // Cache exists
                     $this->response = $cache;
+                    return $this->processResponse();
                 } else {
                     // Cache doesnt exist
                     $url = '/2.0/?';
@@ -222,10 +223,10 @@ class BaseApi
                     $out .= "Host: " . $this->host . "\r\n";
                     $out .= "\r\n";
                     $this->response = $this->socket->send($out, 'array');
+                    $return = $this->processResponse();
                     $this->cache->set($vars, $this->response);
+                    return $return;
                 }
-
-                return $this->processResponse();
             }
         } else {
             return false;
