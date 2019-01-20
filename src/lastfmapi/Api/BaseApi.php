@@ -223,9 +223,10 @@ class BaseApi
                     $out .= "Host: " . $this->host . "\r\n";
                     $out .= "\r\n";
                     $this->response = $this->socket->send($out, 'array');
-                    $return = $this->processResponse();
+                    $processedResponse = $this->processResponse();
                     $this->cache->set($vars, $this->response);
-                    return $return;
+                    
+                    return $processedResponse;
                 }
             }
         } else {
@@ -239,7 +240,7 @@ class BaseApi
      * @return object
      */
 
-    protected function apiPostCall($vars, $return = 'bool')
+    protected function apiPostCall($vars)
     {
         $this->setup();
         if ($this->connected == 1) {
