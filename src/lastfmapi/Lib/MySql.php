@@ -2,6 +2,8 @@
 
 namespace LastFmApi\Lib;
 
+use LastFmApi\Exception\DatabaseException;
+
 /**
  * Stores the mysql database methods
  * @package base
@@ -87,7 +89,7 @@ class MySql
      */
     private function handleError()
     {
-        throw new \Exception(mysql_error($this->dbConn));
+        throw new DatabaseException(mysql_error($this->dbConn));
     }
 
     /**

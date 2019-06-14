@@ -43,4 +43,4 @@ lastfm_session_key=
 lastfm_username=
 ```
 
-If you just want to run the tests that don't need authentication: `phpunit --group notAuthenticated`. In this case you'll only need to set `lastfm_api_key` property.
+If you just want to run the tests that don't need authentication: `vendor/bin/phpunit --group notAuthenticated`. In this case you'll only need to set `lastfm_api_key` property.

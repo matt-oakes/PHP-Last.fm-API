@@ -2,6 +2,8 @@
 
 namespace LastFmApi\Lib;
 
+use LastFmApi\Exception\ConnectionException;
+
 /**
  * Stores the socket methods
  */
@@ -56,7 +58,7 @@ class Socket
         // Open a connection in the class variable
         $this->handle = @fsockopen($this->host, $this->port, $this->error_number, $this->error_string);
         if (!$this->handle) {
-            throw new \Exception("error opening socket");
+            throw new ConnectionException("error opening socket");
         }
     }
 

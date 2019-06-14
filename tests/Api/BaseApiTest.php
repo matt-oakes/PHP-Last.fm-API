@@ -4,12 +4,14 @@ namespace Tests\Api;
 
 use Dotenv\Dotenv;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Description of BaseApiTest
  *
  * @author Marcos Peña
  */
-class BaseApiTest extends \PHPUnit_Framework_TestCase
+class BaseApiTest extends TestCase
 {
     protected $apiKey;
     protected $apiSecret;
