@@ -67,4 +67,16 @@ class AlbumTest extends BaseNotAuthenticatedApiTest
         $this->assertArrayHasKey('results', $searchResults);
     }
 
+    public function testCanSerializeResponse()
+    {
+        $albumInfo = $this->albumApi->getInfo(array(
+            'album' => self::ALBUM_TITLE,
+            'artist' => self::ALBUM_ARTIST));
+
+        $string = serialize($albumInfo);
+        $this->assertTrue(is_string($string));
+
+        $object = unserialize($string);
+        $this->assertTrue(is_object($object));
+    }
 }
