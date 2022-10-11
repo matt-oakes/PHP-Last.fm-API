@@ -13,13 +13,13 @@ class Cache
 {
 
     /**
-     * Stores the batabase class
+     * Stores the database class
      * @var class
      */
     private $db;
 
     /**
-     * Stores the batabase type
+     * Stores the database type
      * @var string
      */
     private $type;
