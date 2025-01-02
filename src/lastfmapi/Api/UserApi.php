@@ -696,6 +696,7 @@ class UserApi extends BaseApi
                     foreach ($call->toptracks->track as $track) {
                         $toptracks[$i]['name'] = (string) $track->name;
                         $toptracks[$i]['rank'] = (string) $track['rank'];
+                        $toptracks[$i]['duration'] = (string) $track->duration;
                         $toptracks[$i]['playcount'] = (string) $track->playcount;
                         $toptracks[$i]['mbid'] = (string) $track->mbid;
                         $toptracks[$i]['url'] = (string) $track->url;
@@ -707,6 +708,7 @@ class UserApi extends BaseApi
                         $toptracks[$i]['images']['small'] = (string) $track->image[0];
                         $toptracks[$i]['images']['medium'] = (string) $track->image[1];
                         $toptracks[$i]['images']['large'] = (string) $track->image[2];
+                        $toptracks[$i]['images']['extralarge'] = (string) $track->image[3];
                         $i++;
                     }
 
